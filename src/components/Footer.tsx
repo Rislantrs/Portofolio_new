@@ -167,10 +167,7 @@ export default function Footer() {
       id="contact-footer"
       className="relative flex min-h-[100svh] w-full overflow-hidden border-t border-white/5 bg-bg py-14 md:py-18"
     >
-      <div
-        className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat opacity-12 mix-blend-screen pointer-events-none"
-        style={{ backgroundImage: "url('/assets/Hero/Hero_bg.png')" }}
-      />
+
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_70%_55%_at_68%_75%,rgba(255,255,255,0.06),transparent)] pointer-events-none" />
       <FooterGrid />
 
