@@ -49,7 +49,7 @@ export function useProjectsTimeline({
       }
 
       const cards = gsap.utils.toArray<HTMLElement>(".proj-card", section);
-      const scrollBudget = Math.max(2.8, pagesLength * 1.05 + 1.8);
+      const scrollBudget = Math.max(3.2, pagesLength * 1.15 + 2.2);
 
       gsap.set(stage, { opacity: 0 });
       if (teaser) gsap.set(teaser, { autoAlpha: 1, pointerEvents: "none" });
@@ -93,22 +93,22 @@ export function useProjectsTimeline({
         tl.fromTo(
           teaserText,
           { x: "100vw" },
-          { x: "-130%", duration: 1.45, ease: "none" },
+          { x: "-150%", duration: 1.8, ease: "none" },
           0.72
         );
       }
 
       if (teaser) {
-        tl.to(teaser, { backgroundColor: "#050505", autoAlpha: 0, duration: 0.58, ease: "power2.inOut" }, 1.18);
+        tl.to(teaser, { backgroundColor: "#050505", autoAlpha: 0, duration: 0.55, ease: "power2.inOut" }, 2.55);
       }
 
-      tl.to(stage, { opacity: 1, duration: 0.5, ease: "power2.out" }, 1.35)
-        .to(cards, { opacity: 1, y: 0, scale: 1, stagger: 0.035, duration: 0.5, ease: "power3.out" }, 1.48);
+      tl.to(stage, { opacity: 1, duration: 0.5, ease: "power2.out" }, 2.7)
+        .to(cards, { opacity: 1, y: 0, scale: 1, stagger: 0.035, duration: 0.5, ease: "power3.out" }, 3.6);
 
       pages.forEach((page, index) => {
         if (index === 0) return;
 
-        const at = 1.9 + index * 0.72;
+        const at = 3.5 + index * 0.8;
         const previous = pages[index - 1];
 
         tl.to(previous, {
