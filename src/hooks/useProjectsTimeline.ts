@@ -86,8 +86,8 @@ export function useProjectsTimeline({
 
       if (teaserLogo) {
         tl.to(teaserLogo, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 0.18)
-          .to(teaserLogo, { x: "120vw", scale: 0.65, duration: 0.62, ease: "power2.inOut" }, 1.38)
-          .to(teaserLogo, { opacity: 0, duration: 0.35, ease: "power2.in" }, 1.38);
+          .to(teaserLogo, { x: "120vw", scale: 0.65, duration: 0.9, ease: "power2.inOut" }, 1.1)
+          .to(teaserLogo, { opacity: 0, duration: 0.4, ease: "power2.in" }, 1.15);
       }
 
       if (teaserText) {
