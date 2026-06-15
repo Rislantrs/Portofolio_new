@@ -38,19 +38,13 @@ const experiences = [
     role: "Department Secretary",
     org: "HIMATELKOM",
     period: "2024 - 2025",
-    bullets: [
-      "Compiled comprehensive meeting minutes, managed official correspondence, and drafted LPJ reports.",
-      "Provided close administrative and operational support to the Head of Department."
-    ]
+    note: "Managed administrative correspondence, meeting minutes, and official LPJ accountability reports."
   },
   {
     role: "Skilltopia Program Lead",
     org: "HIMATELKOM",
     period: "2024 - 2025",
-    bullets: [
-      "Researched, verified, and curated telecommunication training, certifications, and scholarships.",
-      "Distributed validated updates periodically to members through official communication channels."
-    ]
+    note: "Curated, verified, and distributed telecommunication training, certifications, and scholarship opportunities."
   }
 ];
 
@@ -233,7 +227,7 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
             </div>
             <div className="grid w-full max-w-[860px] gap-4 md:grid-cols-2">
               {experiences.map((exp, idx) => (
-                <div key={idx} className="border-l border-black/20 bg-neutral-50/70 p-4 flex flex-col gap-2">
+                <div key={idx} className="border-l border-black/20 bg-neutral-50/70 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <h4 className="text-[13px] font-bold leading-tight text-black md:text-[15px]">{exp.role}</h4>
@@ -241,14 +235,7 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
                     </div>
                     <span className="shrink-0 font-mono text-[10px] text-neutral-600">{exp.period}</span>
                   </div>
-                  <ul className="grid gap-2 mt-1">
-                    {exp.bullets.map((bullet, bIdx) => (
-                      <li key={bIdx} className="flex gap-2 text-[11px] leading-relaxed text-neutral-600 md:text-xs">
-                        <span className="mt-1.5 h-1 w-1 shrink-0 bg-black rounded-full" />
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="mt-2 text-xs text-neutral-600 md:text-[13px] leading-relaxed">{exp.note}</p>
                 </div>
               ))}
             </div>
