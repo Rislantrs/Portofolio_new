@@ -49,7 +49,7 @@ export function useProjectsTimeline({
       }
 
       const cards = gsap.utils.toArray<HTMLElement>(".proj-card", section);
-      const scrollBudget = Math.max(3.2, pagesLength * 1.15 + 2.2);
+      const scrollBudget = Math.max(2.8, pagesLength * 0.95 + 1.5);
 
       gsap.set(stage, { opacity: 0 });
       if (teaser) gsap.set(teaser, { autoAlpha: 1, pointerEvents: "none" });
@@ -85,30 +85,31 @@ export function useProjectsTimeline({
       }
 
       if (teaserLogo) {
-        tl.to(teaserLogo, { opacity: 1, scale: 1, duration: 0.6, ease: "power3.out" }, 0.18)
-          .to(teaserLogo, { x: "125vw", opacity: 0, scale: 0.62, duration: 1.15, ease: "power2.inOut" }, 0.78);
+        tl.to(teaserLogo, { opacity: 1, scale: 1, duration: 0.5, ease: "power3.out" }, 0.18)
+          .to(teaserLogo, { x: "120vw", scale: 0.65, duration: 0.85, ease: "power2.inOut" }, 0.72)
+          .to(teaserLogo, { opacity: 0, duration: 0.35, ease: "power2.in" }, 1.15);
       }
 
       if (teaserText) {
         tl.fromTo(
           teaserText,
           { x: "100vw" },
-          { x: "-150%", duration: 1.8, ease: "none" },
+          { x: "-150%", duration: 1.28, ease: "none" },
           0.72
         );
       }
 
       if (teaser) {
-        tl.to(teaser, { backgroundColor: "#050505", autoAlpha: 0, duration: 0.55, ease: "power2.inOut" }, 2.55);
+        tl.to(teaser, { backgroundColor: "#050505", autoAlpha: 0, duration: 0.35, ease: "power2.inOut" }, 2.0);
       }
 
-      tl.to(stage, { opacity: 1, duration: 0.5, ease: "power2.out" }, 2.7)
-        .to(cards, { opacity: 1, y: 0, scale: 1, stagger: 0.035, duration: 0.5, ease: "power3.out" }, 3.6);
+      tl.to(stage, { opacity: 1, duration: 0.35, ease: "power2.out" }, 2.05)
+        .to(cards, { opacity: 1, y: 0, scale: 1, stagger: 0.03, duration: 0.4, ease: "power3.out" }, 2.55);
 
       pages.forEach((page, index) => {
         if (index === 0) return;
 
-        const at = 3.5 + index * 0.8;
+        const at = 2.25 + index * 0.7;
         const previous = pages[index - 1];
 
         tl.to(previous, {
