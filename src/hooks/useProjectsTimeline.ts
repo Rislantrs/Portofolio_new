@@ -48,8 +48,94 @@ export function useProjectsTimeline({
         return;
       }
 
-      const cards = gsap.utils.toArray<HTMLElement>(".proj-card", section);
-      const scrollBudget = Math.max(2.8, pagesLength * 0.95 + 1.5);
+      const scrollBudget = Math.max(3.4, pagesLength * 1.15 + 2.2);
+      const getPageCards = (page: HTMLDivElement) => gsap.utils.toArray<HTMLElement>(".proj-card", page);
+      const getColumn = (index: number) => (columns > 0 ? index % columns : index % 3);
+      const isShortLastRow = (index: number, total: number) => {
+        const rest = columns > 1 ? total % columns : 0;
+        return rest > 0 && index >= total - rest;
+      };
+      const getEnterVars = (index: number, total: number) => {
+        const column = getColumn(index);
+        const shortRow = isShortLastRow(index, total);
+
+        if (columns === 3) {
+          return column === 1
+            ? { opacity: 0, x: 0, y: shortRow ? 82 : 108, scale: 0.965 }
+            : { opacity: 0, x: 0, y: shortRow ? -74 : -104, scale: 0.965 };
+        }
+
+        if (columns === 2) {
+          return {
+            opacity: 0,
+            x: shortRow ? (column === 0 ? -34 : 34) : 0,
+            y: column === 0 ? -96 : -82,
+            scale: 0.965,
+          };
+        }
+
+        return { opacity: 0, x: 0, y: index % 2 === 0 ? -78 : 78, scale: 0.965 };
+      };
+      const getExitVars = (index: number, total: number) => {
+        const column = getColumn(index);
+        const shortRow = isShortLastRow(index, total);
+
+        if (columns === 3) {
+          if (column === 0) return { opacity: 0, x: shortRow ? -120 : -170, y: -8, scale: 0.955 };
+          if (column === 2) return { opacity: 0, x: shortRow ? 120 : 170, y: -8, scale: 0.955 };
+          return { opacity: 0, x: 0, y: -145, scale: 0.955 };
+        }
+
+        if (columns === 2) {
+          return {
+            opacity: 0,
+            x: column === 0 ? -150 : 150,
+            y: shortRow ? -76 : -18,
+            scale: 0.955,
+          };
+        }
+
+        return { opacity: 0, x: 0, y: -130, scale: 0.955 };
+      };
+      const primePageCards = (page: HTMLDivElement) => {
+        const pageCards = getPageCards(page);
+        pageCards.forEach((card, index) => gsap.set(card, getEnterVars(index, pageCards.length)));
+      };
+      const animatePageIn = (tl: gsap.core.Timeline, page: HTMLDivElement, at: number) => {
+        const pageCards = getPageCards(page);
+        const stagger = pageCards.length % Math.max(columns, 1) === 0 ? 0.035 : 0.046;
+
+        pageCards.forEach((card, index) => {
+          tl.to(
+            card,
+            {
+              opacity: 1,
+              x: 0,
+              y: 0,
+              scale: 1,
+              duration: 0.48,
+              ease: "power3.out",
+            },
+            at + index * stagger
+          );
+        });
+      };
+      const animatePageOut = (tl: gsap.core.Timeline, page: HTMLDivElement, at: number) => {
+        const pageCards = getPageCards(page);
+        const stagger = pageCards.length % Math.max(columns, 1) === 0 ? 0.026 : 0.038;
+
+        pageCards.forEach((card, index) => {
+          tl.to(
+            card,
+            {
+              ...getExitVars(index, pageCards.length),
+              duration: 0.43,
+              ease: "power2.inOut",
+            },
+            at + index * stagger
+          );
+        });
+      };
 
       gsap.set(stage, { opacity: 0 });
       if (teaser) gsap.set(teaser, { autoAlpha: 1, pointerEvents: "none" });
@@ -60,12 +146,11 @@ export function useProjectsTimeline({
         gsap.set(page, {
           autoAlpha: index === 0 ? 1 : 0,
           pointerEvents: index === 0 ? "auto" : "none",
-          xPercent: index === 0 ? 0 : 8,
-          scale: index === 0 ? 1 : 0.985,
+          xPercent: 0,
+          scale: 1,
         });
+        primePageCards(page);
       });
-
-      gsap.set(cards, { opacity: 0, y: 42, scale: 0.965 });
 
       const tl = gsap.timeline({
         scrollTrigger: {
@@ -100,41 +185,38 @@ export function useProjectsTimeline({
       }
 
       if (teaser) {
-        tl.to(teaser, { backgroundColor: "#050505", autoAlpha: 0, duration: 0.35, ease: "power2.inOut" }, 2.0);
+        tl.to(teaser, { backgroundColor: "#050505", autoAlpha: 0, duration: 0.3, ease: "power2.inOut" }, 1.6);
       }
 
-      tl.to(stage, { opacity: 1, duration: 0.35, ease: "power2.out" }, 2.05)
-        .to(cards, { opacity: 1, y: 0, scale: 1, stagger: 0.03, duration: 0.4, ease: "power3.out" }, 2.55);
+      tl.to(stage, { opacity: 1, duration: 0.3, ease: "power2.out" }, 1.65);
+
+      if (pages[0]) {
+        animatePageIn(tl, pages[0], 2.05);
+      }
 
       pages.forEach((page, index) => {
         if (index === 0) return;
 
-        const at = 2.25 + index * 0.7;
+        const at = 2.78 + (index - 1) * 1.02;
         const previous = pages[index - 1];
 
-        tl.to(previous, {
-          autoAlpha: 0,
-          xPercent: -8,
-          scale: 0.985,
-          pointerEvents: "none",
-          duration: 0.42,
-          ease: "power2.inOut",
-        }, at)
-          .to(page, {
+        animatePageOut(tl, previous, at);
+        tl.set(previous, { pointerEvents: "none" }, at)
+          .set(page, {
             autoAlpha: 1,
-            xPercent: 0,
-            scale: 1,
             pointerEvents: "auto",
-            duration: 0.42,
-            ease: "power2.inOut",
-          }, at + 0.02)
-          .fromTo(
-            page.querySelectorAll(".proj-card"),
-            { opacity: 0, y: 34, scale: 0.97 },
-            { opacity: 1, y: 0, scale: 1, stagger: 0.035, duration: 0.36, ease: "power3.out" },
-            at + 0.08
-          );
+          }, at + 0.28)
+          .set(previous, { autoAlpha: 0 }, at + 0.58);
+        animatePageIn(tl, page, at + 0.32);
       });
+
+      const lastPage = pages[pages.length - 1];
+      if (lastPage) {
+        const finalExitAt = 2.92 + Math.max(0, pages.length - 1) * 1.02;
+        animatePageOut(tl, lastPage, finalExitAt);
+        tl.set(lastPage, { pointerEvents: "none" }, finalExitAt)
+          .to(lastPage, { autoAlpha: 0, duration: 0.2, ease: "power1.out" }, finalExitAt + 0.58);
+      }
 
       const refreshAll = () => {
         ScrollTrigger.sort();
