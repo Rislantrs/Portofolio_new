@@ -27,11 +27,11 @@
 }
 
 #home {
-  --color-accent: #D4AF37;
-  --color-accent-light: #E5C158;
-  --color-accent-soft: #FFF7D6;
-  --color-fuchsia: #C82121;
-  --color-pink-glow: rgba(229, 193, 88, 0.15);
+  --color-accent: #d7d7d7;
+  --color-accent-light: #ffffff;
+  --color-accent-soft: #eeeeee;
+  --color-fuchsia: #7f7f7f;
+  --color-pink-glow: rgba(255, 255, 255, 0.12);
 }
 
 @theme {

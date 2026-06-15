@@ -37,8 +37,8 @@ export default function AdminProjectsPage() {
             </Link>
           </header>
 
-          <div className="rounded-lg border border-yellow-400/20 bg-yellow-400/10 p-4">
-            <p className="font-sans text-sm leading-relaxed text-yellow-100">
+          <div className="rounded-lg border border-white/15 bg-white/5 p-4">
+            <p className="font-sans text-sm leading-relaxed text-text-muted">
               Mode ini gratis dan lokal: data tersimpan di browser, bukan database production.
               Jangan jadikan ini panel admin final sebelum auth, RLS, MFA, dan storage aman aktif.
             </p>

@@ -247,6 +247,7 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
 
   return (
     <div
+      data-cert-card
       data-cursor={cert.link ? "view" : ""}
       className="cert-card group relative flex-shrink-0 w-[320px] md:w-[400px] bg-bg-elevated border border-white/10 rounded-2xl overflow-hidden flex flex-col select-none transition-all duration-500 hover:border-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.06)]"
       style={{ height: "clamp(400px, 56vh, 600px)" }}
@@ -273,7 +274,7 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
         )}
 
         {/* Sci-fi scanner line (pulses on hover) */}
-        <div className="absolute left-0 right-0 h-[1px] bg-white/30 shadow-[0_0_12px_rgba(255,255,255,0.35)] top-0 group-hover:animate-[scan_2s_linear_infinite] pointer-events-none z-40" />
+        <div className="cert-scanner-line absolute left-0 right-0 h-[1px] bg-white/30 shadow-[0_0_12px_rgba(255,255,255,0.35)] top-0 group-hover:animate-[scan_2s_linear_infinite] pointer-events-none z-40" />
 
         {/* Glass reflection sweep on hover */}
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out pointer-events-none z-40" />

@@ -76,21 +76,20 @@ export function useProjectsTimeline({
 
         return { opacity: 0, x: 0, y: index % 2 === 0 ? -78 : 78, scale: 0.965 };
       };
-      const getExitVars = (index: number, total: number) => {
+      const getFinalExitVars = (index: number, total: number) => {
         const column = getColumn(index);
         const shortRow = isShortLastRow(index, total);
 
         if (columns === 3) {
-          if (column === 0) return { opacity: 0, x: shortRow ? -120 : -170, y: -8, scale: 0.955 };
-          if (column === 2) return { opacity: 0, x: shortRow ? 120 : 170, y: -8, scale: 0.955 };
-          return { opacity: 0, x: 0, y: -145, scale: 0.955 };
+          if (column === 1) return { opacity: 0, x: 0, y: -150, scale: 0.955 };
+          return { opacity: 0, x: column === 0 ? -170 : 170, y: shortRow ? 16 : 0, scale: 0.955 };
         }
 
         if (columns === 2) {
           return {
             opacity: 0,
-            x: column === 0 ? -150 : 150,
-            y: shortRow ? -76 : -18,
+            x: column === 0 ? -160 : 160,
+            y: shortRow ? 14 : 0,
             scale: 0.955,
           };
         }
@@ -120,7 +119,7 @@ export function useProjectsTimeline({
           );
         });
       };
-      const animatePageOut = (tl: gsap.core.Timeline, page: HTMLDivElement, at: number) => {
+      const animateFinalPageOut = (tl: gsap.core.Timeline, page: HTMLDivElement, at: number) => {
         const pageCards = getPageCards(page);
         const stagger = pageCards.length % Math.max(columns, 1) === 0 ? 0.026 : 0.038;
 
@@ -128,7 +127,7 @@ export function useProjectsTimeline({
           tl.to(
             card,
             {
-              ...getExitVars(index, pageCards.length),
+              ...getFinalExitVars(index, pageCards.length),
               duration: 0.43,
               ease: "power2.inOut",
             },
@@ -200,20 +199,24 @@ export function useProjectsTimeline({
         const at = 2.78 + (index - 1) * 1.02;
         const previous = pages[index - 1];
 
-        animatePageOut(tl, previous, at);
-        tl.set(previous, { pointerEvents: "none" }, at)
+        tl.to(previous, {
+          autoAlpha: 0,
+          pointerEvents: "none",
+          duration: 0.24,
+          ease: "power1.out",
+        }, at)
           .set(page, {
             autoAlpha: 1,
             pointerEvents: "auto",
-          }, at + 0.28)
-          .set(previous, { autoAlpha: 0 }, at + 0.58);
-        animatePageIn(tl, page, at + 0.32);
+          }, at + 0.12);
+        primePageCards(page);
+        animatePageIn(tl, page, at + 0.16);
       });
 
       const lastPage = pages[pages.length - 1];
       if (lastPage) {
         const finalExitAt = 2.92 + Math.max(0, pages.length - 1) * 1.02;
-        animatePageOut(tl, lastPage, finalExitAt);
+        animateFinalPageOut(tl, lastPage, finalExitAt);
         tl.set(lastPage, { pointerEvents: "none" }, finalExitAt)
           .to(lastPage, { autoAlpha: 0, duration: 0.2, ease: "power1.out" }, finalExitAt + 0.58);
       }

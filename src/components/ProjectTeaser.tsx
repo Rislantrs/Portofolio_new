@@ -111,7 +111,7 @@ export default function ProjectTeaser() {
         style={{ opacity: 0 }} // Initially invisible for the breathing room effect
       >
         <Image
-          src="/assets/Slider_logo.svg"
+          src="/assets/Logo_sider.svg"
           alt="Slider Logo"
           width={500}
           height={500}

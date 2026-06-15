@@ -377,7 +377,7 @@ export default function Projects() {
             style={{ opacity: 0 }}
           >
             <Image
-              src="/assets/Slider_logo.svg"
+              src="/assets/Logo_sider.svg"
               alt="Slider Logo"
               width={500}
               height={500}
