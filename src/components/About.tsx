@@ -33,10 +33,25 @@ const education = [
   },
 ];
 
-const experience = [
-  "Secretary of the Professional and Vocational Department of HIMATELKOM.",
-  "Managed meeting minutes, correspondence, and activity accountability reports (LPJ).",
-  "Researched and distributed Skilltopia information, including training, certifications, competitions, and scholarships.",
+const experiences = [
+  {
+    role: "Department Secretary",
+    org: "HIMATELKOM",
+    period: "2024 - 2025",
+    bullets: [
+      "Compiled comprehensive meeting minutes, managed official correspondence, and drafted LPJ reports.",
+      "Provided close administrative and operational support to the Head of Department."
+    ]
+  },
+  {
+    role: "Skilltopia Program Lead",
+    org: "HIMATELKOM",
+    period: "2024 - 2025",
+    bullets: [
+      "Researched, verified, and curated telecommunication training, certifications, and scholarships.",
+      "Distributed validated updates periodically to members through official communication channels."
+    ]
+  }
 ];
 
 const achievements = [
@@ -216,14 +231,27 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
                 Professional & Vocational Staff / HIMATELKOM
               </p>
             </div>
-            <ul className="grid w-full max-w-[860px] gap-3 md:gap-4">
-              {experience.map((item) => (
-                <li key={item} className="flex gap-3 border-l border-black/20 bg-neutral-50/70 py-3 pl-4 pr-4 text-xs leading-5 text-neutral-600 md:text-sm md:leading-6">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 bg-black" />
-                  <span>{item}</span>
-                </li>
+            <div className="grid w-full max-w-[860px] gap-4 md:grid-cols-2">
+              {experiences.map((exp, idx) => (
+                <div key={idx} className="border-l border-black/20 bg-neutral-50/70 p-4 flex flex-col gap-2">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <h4 className="text-[13px] font-bold leading-tight text-black md:text-[15px]">{exp.role}</h4>
+                      <p className="mt-1 text-[11px] font-semibold text-neutral-700 leading-tight">{exp.org}</p>
+                    </div>
+                    <span className="shrink-0 font-mono text-[10px] text-neutral-600">{exp.period}</span>
+                  </div>
+                  <ul className="grid gap-2 mt-1">
+                    {exp.bullets.map((bullet, bIdx) => (
+                      <li key={bIdx} className="flex gap-2 text-[11px] leading-relaxed text-neutral-600 md:text-xs">
+                        <span className="mt-1.5 h-1 w-1 shrink-0 bg-black rounded-full" />
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         )}
 
