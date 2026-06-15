@@ -542,26 +542,35 @@ export default function Hero() {
       ══════════════════════════════════════════════════════════════════════ */}
       <div className="hero-shrink-frame absolute inset-0 w-full h-full z-10 overflow-hidden" style={{ borderRadius: 0 }}>
 
+        {/* ── Base faded background (Batik Megamendung) ───────────────────────── */}
+        <div className="base-hero-bg absolute inset-0 w-full h-full opacity-50 z-0 pointer-events-none select-none">
+          <HeroImage src="/assets/Hero/Hero_bg.png" alt="Base faded background" priority />
+        </div>
+
         {/* ── BG blob reveal layer ────────────────────────────────────────────── */}
         <div ref={bgLayerRef} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
              style={{ opacity: 0, clipPath: "url(#bg-blob-mask)" }}>
+          <HeroImage src="/assets/Hero/Hero_bg_hover.png" alt="BG blob hover" />
           <div className="absolute inset-0"
-               style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.12) 0%, transparent 70%)" }} />
+               style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.10) 0%, transparent 70%)" }} />
         </div>
 
         {/* ── Autonomous blob A ──────────────────────────────────────────────── */}
         <div ref={auto0Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
              style={{ opacity: 0, clipPath: "url(#auto-blob-0)" }}>
+          <HeroImage src="/assets/Hero/Hero_bg_hover.png" alt="Auto blob A hover" />
         </div>
 
         {/* ── Autonomous blob B ──────────────────────────────────────────────── */}
         <div ref={auto1Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
              style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
+          <HeroImage src="/assets/Hero/Hero_bg_hover.png" alt="Auto blob B hover" />
         </div>
 
         {/* ── Autonomous blob C ──────────────────────────────────────────────── */}
         <div ref={auto2Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
              style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
+          <HeroImage src="/assets/Hero/Hero_bg_hover.png" alt="Auto blob C hover" />
         </div>
 
         {/* ── Three.js ink trails ───────────────────────────────────────────── */}
