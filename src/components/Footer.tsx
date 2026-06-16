@@ -74,8 +74,7 @@ const socialLinks = [
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
-  const wordmarkRef = useRef<HTMLDivElement>(null);
-  const firstLetterRef = useRef<HTMLSpanElement>(null);
+  const wordmarkRef = useRef<HTMLHeadingElement>(null);
   const [year, setYear] = useState(2026);
 
   useEffect(() => {
@@ -85,23 +84,20 @@ export default function Footer() {
   useGSAP(() => {
     const footer = footerRef.current;
     const wordmark = wordmarkRef.current;
-    const firstLetter = firstLetterRef.current;
-    if (!footer || !wordmark || !firstLetter) return;
+    if (!footer || !wordmark) return;
 
-    const letters = wordmark.querySelectorAll(".footer-letter");
     const gridLines = footer.querySelectorAll(".footer-grid-line");
     const circle = footer.querySelector(".footer-grid-circle");
     const revealItems = footer.querySelectorAll(".footer-reveal");
 
-    const calculateOffset = () => {
-      const parentWidth = wordmark.offsetWidth;
-      const letterWidth = firstLetter.offsetWidth;
-      const letterLeft = firstLetter.offsetLeft;
-      return parentWidth / 2 - (letterLeft + letterWidth / 2);
-    };
-
-    gsap.set(firstLetter, { x: calculateOffset(), scale: 0.82, opacity: 0 });
-    gsap.set(letters, { opacity: 0, y: 35, filter: "blur(18px)" });
+    gsap.set(wordmark, {
+      opacity: 0,
+      x: 0,
+      y: 0,
+      scale: 1,
+      filter: "none",
+      transformOrigin: "50% 50%",
+    });
     gsap.set(gridLines, {
       strokeDashoffset: (_, el) => el.getAttribute("stroke-dasharray") || 3000,
     });
@@ -116,37 +112,23 @@ export default function Footer() {
       },
     });
 
-    tl.to(firstLetter, {
-      opacity: 1,
-      scale: 1,
-      duration: 0.8,
-      ease: "power4.out",
-    })
-      .to(firstLetter, {
-        x: 0,
-        duration: 1.05,
-        ease: "power3.inOut",
-      }, "+=0.08")
-      .to(gridLines, {
-        strokeDashoffset: 0,
-        duration: 1.1,
-        stagger: 0.035,
-        ease: "power2.inOut",
-      }, "-=0.65")
+    tl.to(gridLines, {
+      strokeDashoffset: 0,
+      duration: 1.1,
+      stagger: 0.035,
+      ease: "power2.inOut",
+    }, 0)
       .to(circle, {
         opacity: 1,
         scale: 1,
         duration: 0.75,
         ease: "power2.out",
-      }, "-=0.55")
-      .to(letters, {
+      }, 0.18)
+      .to(wordmark, {
         opacity: 1,
-        y: 0,
-        filter: "blur(0px)",
-        duration: 1,
-        stagger: 0.055,
-        ease: "power3.out",
-      }, "-=0.45")
+        duration: 0.75,
+        ease: "power2.out",
+      }, 0.22)
       .to([gridLines, circle], {
         opacity: 0,
         duration: 0.8,
@@ -165,7 +147,7 @@ export default function Footer() {
     <footer
       ref={footerRef}
       id="contact-footer"
-      className="relative flex min-h-[100svh] w-full overflow-hidden border-t border-white/5 bg-bg py-14 md:py-18"
+      className="relative flex min-h-[100svh] w-full overflow-x-hidden overflow-y-visible border-t border-white/5 bg-bg py-14 md:py-18"
     >
 
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_70%_55%_at_68%_75%,rgba(255,255,255,0.06),transparent)] pointer-events-none" />
@@ -181,30 +163,12 @@ export default function Footer() {
         </div>
 
         <div className="relative my-12 select-none md:my-16">
-          <p
-            className="pointer-events-none absolute -left-[0.05em] top-1/2 z-0 -translate-y-1/2 font-sans text-[22vw] font-black uppercase leading-none text-transparent opacity-35 [-webkit-text-stroke:1px_rgba(255,255,255,0.13)] md:text-[18vw]"
-            aria-hidden="true"
-          >
-            Rislan
-          </p>
-
-          <div
+          <h2
             ref={wordmarkRef}
-            className="relative z-10 flex w-full items-end justify-start overflow-hidden"
-            aria-label="RISLAN"
+            className="relative z-10 w-full overflow-visible py-[0.08em] font-sans text-[19vw] font-black uppercase leading-none tracking-[-0.085em] text-white md:text-[15.2vw]"
           >
-            {"RISLAN".split("").map((char, index) => (
-              <span
-                key={`${char}-${index}`}
-                ref={index === 0 ? firstLetterRef : undefined}
-                className={`footer-letter relative z-10 font-sans text-[19vw] font-black uppercase leading-[0.74] tracking-[-0.085em] md:text-[15.2vw] ${
-                  index % 2 === 0 ? "text-white" : "text-white/82"
-                }`}
-              >
-                {char}
-              </span>
-            ))}
-          </div>
+            RISLAN
+          </h2>
 
           <div className="footer-reveal mt-5 grid gap-4 border-y border-white/10 py-4 font-mono text-[10px] uppercase tracking-[0.24em] text-white/38 md:grid-cols-[1.15fr_0.85fr] md:text-[11px]">
             <p>M. Rislan Tristansyah / Systems / Intelligent Tech / Infrastructure</p>

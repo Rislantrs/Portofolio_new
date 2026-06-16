@@ -367,10 +367,12 @@ export default function Certifications() {
     <section
       ref={sectionRef}
       id="certifications"
-      className={`relative w-full bg-bg overflow-hidden flex flex-col justify-between ${
+      className={`relative z-20 isolate w-full bg-bg overflow-hidden flex flex-col justify-between ${
         isPinned ? "h-[100svh] py-14" : "py-24"
       }`}
     >
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-bg" />
+
       {/* Dynamic Keyframes Styling */}
       <style jsx global>{`
         @keyframes scan {

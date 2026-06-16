@@ -145,6 +145,12 @@ html.lenis, html.lenis body {
   transform: translateY(110%);
 }
 
+#contact-footer .footer-letter {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+}
+
 /* Selection Highlight */
 ::selection {
   background-color: var(--color-accent);

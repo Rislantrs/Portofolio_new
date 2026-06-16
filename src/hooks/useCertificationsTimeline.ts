@@ -41,6 +41,22 @@ export function useCertificationsTimeline({
       const noiseOverlays = gsap.utils.toArray<HTMLElement>(".noise-overlay", section);
       const scannerLines = gsap.utils.toArray<HTMLElement>(".cert-scanner-line", section);
 
+      gsap.fromTo(section, {
+        y: 56,
+        opacity: 0.92,
+      }, {
+        y: 0,
+        opacity: 1,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 92%",
+          end: "top top",
+          scrub: 0.9,
+          invalidateOnRefresh: true,
+        },
+      });
+
       gsap.set(viewport, { opacity: 1 });
       gsap.set(track, { x: 0 });
       gsap.set(cards, { opacity: 1, y: 0 });

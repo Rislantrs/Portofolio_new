@@ -1,0 +1,61 @@
+[
+  {
+    "id": "thread-1",
+    "title": "Outstanding Portfolio Design and Animations!",
+    "author": "Alex Rivera",
+    "avatar": "🚀",
+    "category": "Review",
+    "rating": 5,
+    "content": "The styling, layout and animations on this portfolio are next level! I am really impressed by how smooth the landing page preloader transitions into the hero component. How did you coordinate the GSAP timeline with Lenis scroll without causing any stuttering on low-end devices?",
+    "createdAt": "2026-06-15T10:15:30.000Z",
+    "comments": [
+      {
+        "id": "comment-1",
+        "author": "M Rislan Tristansyah",
+        "avatar": "👨‍💻",
+        "content": "Thank you, Alex! I appreciate the feedback. To get the animations running smoothly, I implemented a custom hook called `useLowEndDevice` that detects hardware capabilities (using `navigator.deviceMemory` and hardware threads) and disables heavy WebGL/effects if needed. For GSAP and Lenis, I tied Lenis scrolling directly to GSAP's ScrollTrigger by updating ScrollTrigger on every Lenis scroll tick.",
+        "createdAt": "2026-06-15T11:20:00.000Z",
+        "parentId": null
+      },
+      {
+        "id": "comment-2",
+        "author": "Alex Rivera",
+        "avatar": "🚀",
+        "content": "That makes perfect sense! The performance detection is genius. Definitely going to try that in my next project.",
+        "createdAt": "2026-06-15T11:45:00.000Z",
+        "parentId": "comment-1"
+      }
+    ]
+  },
+  {
+    "id": "thread-2",
+    "title": "Question regarding HEDOM IoT Architecture",
+    "author": "Siti Rahma",
+    "avatar": "💡",
+    "category": "QA",
+    "rating": null,
+    "content": "Hey there! I saw your HEDOM IoT Heart Monitor project. I was wondering what protocol you used to stream the real-time sensor data from the ESP32 to the dashboard. Is it MQTT via a broker or direct WebSocket connection?",
+    "createdAt": "2026-06-14T08:30:15.000Z",
+    "comments": [
+      {
+        "id": "comment-3",
+        "author": "M Rislan Tristansyah",
+        "avatar": "👨‍💻",
+        "content": "Hi Siti! For the real-time sensor streaming in HEDOM, I used MQTT over WebSockets. The ESP32 sends the sensor data (heart rate and SpO2) to a HiveMQ broker, and the web dashboard listens to the topics using the `mqtt.js` library in the browser. It works extremely fast with sub-100ms latency!",
+        "createdAt": "2026-06-14T09:15:00.000Z",
+        "parentId": null
+      }
+    ]
+  },
+  {
+    "id": "thread-3",
+    "title": "Contrast adjustments in About section",
+    "author": "Marc Webb",
+    "avatar": "🎨",
+    "category": "Bug",
+    "rating": 4,
+    "content": "Amazing design, very cyberpunk and clean. One small thing: in the Experience timeline under the About section, some of the description text uses a very dark gray (subtle text) which has slightly low contrast against the deep black background. It might be good to raise the contrast slightly to improve readability.",
+    "createdAt": "2026-06-13T14:22:00.000Z",
+    "comments": []
+  }
+]

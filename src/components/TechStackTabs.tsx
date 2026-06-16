@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import type { ReactNode } from "react";
+import { useState } from "react";
 
 const BrandIcon = ({
   deviconSlug,
@@ -14,7 +15,7 @@ const BrandIcon = ({
   simpleIconSlug?: string;
   simpleIconColor?: string;
   src?: string;
-  fallback?: React.ReactNode;
+  fallback?: ReactNode;
 }) => {
   if (src) {
     return <Image src={src} alt="" width={40} height={40} className="h-10 w-10 rounded-lg object-contain" />;
@@ -214,65 +215,72 @@ const roles = [
 export default function TechStackTabs() {
   const [activeTab, setActiveTab] = useState("web");
   const activeRole = roles.find((role) => role.id === activeTab) || roles[0];
+  const activeIndex = roles.findIndex((role) => role.id === activeRole.id);
 
   return (
-    <>
-      <div className="relative w-full overflow-hidden py-5 border-b border-white/5 flex select-none">
-        <div className="absolute top-0 left-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-surface to-transparent z-10 pointer-events-none" />
-        <div className="absolute top-0 right-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-surface to-transparent z-10 pointer-events-none" />
-
-        <div className="flex items-center gap-10 animate-marquee-left-triple whitespace-nowrap shrink-0">
-          {[...roles, ...roles, ...roles].map((role, idx) => {
-            const uniqueKey = `selector-btn-${role.id}-${idx}`;
-            return (
-              <React.Fragment key={uniqueKey}>
-                {idx > 0 && <span className="text-accent/30 text-xs self-center">*</span>}
-                <button
-                  onClick={() => setActiveTab(role.id)}
-                  className={`group px-6 py-3.5 rounded-full flex items-center gap-3 transition-all duration-500 shrink-0 border ${
-                    activeTab === role.id
-                      ? "bg-white border-white text-black shadow-[0_0_20px_rgba(255,255,255,0.16)]"
-                      : "border-white/10 bg-surface/40 text-text-muted hover:bg-white hover:border-white hover:text-black"
-                  }`}
-                >
-                  <div className="w-10 h-10 rounded-full overflow-hidden flex items-center justify-center bg-white p-1.5 border border-accent/20 shrink-0 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-sm">
-                    {role.logo}
-                  </div>
-                  <span
-                    className={`font-sans font-extrabold text-[11px] md:text-xs tracking-wider uppercase transition-colors duration-300 ${
-                      activeTab === role.id ? "text-[#f4f4f4] font-black" : "text-text-muted group-hover:text-[#f4f4f4]"
-                    }`}
-                  >
-                    {role.name}
-                  </span>
-                </button>
-              </React.Fragment>
-            );
-          })}
+    <div className="grid gap-8">
+      <div className="relative w-full overflow-x-auto border-y border-black/15 bg-[#f4f4f4] px-2 py-2 select-none">
+        <div className="flex min-w-max items-center gap-2">
+          {roles.map((role, index) => (
+            <button
+              key={role.id}
+              onClick={() => setActiveTab(role.id)}
+              className={`group flex h-16 shrink-0 items-center gap-3 border px-3 pr-5 transition-all duration-300 ${
+                activeTab === role.id
+                  ? "border-black bg-black text-white shadow-[0_16px_34px_rgba(0,0,0,0.16)]"
+                  : "border-black/10 bg-[#f4f4f4] text-black/55 hover:border-black/35 hover:bg-[#f4f4f4] hover:text-black"
+              }`}
+            >
+              <span className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
+                activeTab === role.id ? "text-white/45" : "text-black/35"
+              }`}>
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-black/10 bg-[#f4f4f4] p-1.5 shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5">
+                {role.logo}
+              </span>
+              <span className="font-sans text-[11px] font-black uppercase tracking-normal md:text-xs">
+                {role.name}
+              </span>
+            </button>
+          ))}
         </div>
       </div>
 
-      <div key={activeTab} className="flex flex-col items-center gap-6 py-4 animate-fade-slide-up w-full">
-        <h4 className="font-display font-extrabold text-lg md:text-xl text-accent-light text-center select-none tracking-tight">
-          {activeRole.title}
-        </h4>
-        <p className="font-sans text-xs md:text-sm text-text-muted text-center max-w-xl mx-auto leading-relaxed select-none">
-          {activeRole.description}
-        </p>
+      <div key={activeTab} className="grid gap-8 animate-fade-slide-up md:grid-cols-[0.72fr_1.28fr] md:items-start">
+        <div className="border-l border-black pl-5">
+          <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-black/40">
+            Selected Area / {String(activeIndex + 1).padStart(2, "0")}
+          </div>
+          <h4 className="mt-4 max-w-xl font-sans text-3xl font-black uppercase leading-none tracking-normal text-black md:text-5xl">
+            {activeRole.title}
+          </h4>
+          <p className="mt-5 max-w-xl font-sans text-sm leading-7 text-black/58 md:text-base md:leading-8">
+            {activeRole.description}
+          </p>
+        </div>
 
-        <div className="flex flex-wrap gap-6 md:gap-8 justify-center w-full max-w-3xl mt-4">
+        <div className="grid grid-cols-2 gap-px overflow-hidden border border-black/12 bg-black/12 sm:grid-cols-3">
           {activeRole.tools.map((tool, idx) => (
-            <div key={idx} className="flex flex-col items-center gap-2.5 group select-none w-20 md:w-24 shrink-0">
-              <div className="w-16 h-16 rounded-xl border border-white/10 bg-white flex items-center justify-center group-hover:border-white/35 group-hover:shadow-[0_0_15px_rgba(255,255,255,0.12)] transition-all duration-300 tool-icon-float shrink-0 overflow-hidden">
+            <div
+              key={idx}
+              className="group flex min-h-40 flex-col justify-between bg-[#f4f4f4] p-4 transition-colors duration-300 hover:bg-[#f4f4f4] md:min-h-48 md:p-5"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-sm border border-black/10 bg-[#f4f4f4] p-2 shadow-sm transition-transform duration-300 group-hover:-translate-y-1">
                 {tool.icon}
+                </div>
+                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-black/28">
+                  {String(idx + 1).padStart(2, "0")}
+                </span>
               </div>
-              <span className="font-display font-bold text-[9px] tracking-wider text-text-muted mt-1 uppercase text-center group-hover:text-accent-light transition-colors duration-300 max-w-[85px] leading-tight select-none">
+              <span className="mt-8 max-w-[10rem] font-sans text-xs font-black uppercase leading-tight tracking-normal text-black/70 transition-colors duration-300 group-hover:text-black md:text-sm">
                 {tool.name}
               </span>
             </div>
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }

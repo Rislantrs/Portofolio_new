@@ -69,7 +69,7 @@ const faces = [
 function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
   return (
     <div
-      className="absolute inset-0 overflow-hidden border border-black/15 bg-white p-5 font-sans text-black shadow-[0_0_40px_rgba(0,0,0,0.12)] sm:p-7 md:p-10"
+      className="absolute inset-0 overflow-hidden border border-black/15 bg-[#f4f4f4] p-5 font-sans text-black shadow-[0_0_40px_rgba(0,0,0,0.12)] sm:p-7 md:p-10"
       style={{
         transform: `rotateY(${faceIndex * 90}deg) translateZ(calc(var(--roll-size) / 2))`,
         backfaceVisibility: "hidden",
@@ -273,6 +273,8 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
 
 export default function About() {
   const introRef = useRef<HTMLDivElement>(null);
+  const skillsPanelRef = useRef<HTMLDivElement>(null);
+  const skillsCurveRef = useRef<HTMLDivElement>(null);
   const cubeRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
@@ -287,6 +289,7 @@ export default function About() {
   useGSAP(() => {
     let lastIndex = -1;
     let aboutTimeline: gsap.core.Timeline | null = null;
+    let skillsMorph: ReturnType<typeof ScrollTrigger.create> | null = null;
     const intro = introRef.current;
     if (!intro || !cubeRef.current) return;
 
@@ -710,19 +713,46 @@ export default function About() {
     gsap.set(progressRef.current, { scaleX: 0, transformOrigin: "left center" });
     }
 
+    const skillsPanel = skillsPanelRef.current;
+    const skillsCurve = skillsCurveRef.current;
+    if (skillsPanel && skillsCurve) {
+      gsap.set(skillsPanel, { y: 0, scale: 1, clearProps: "borderRadius" });
+      gsap.set(skillsCurve, {
+        scaleY: 0.62,
+        y: -22,
+        transformOrigin: "top center",
+      });
+
+      skillsMorph = ScrollTrigger.create({
+        trigger: skillsPanel,
+        start: "bottom 92%",
+        end: "bottom 28%",
+        scrub: 1.05,
+        invalidateOnRefresh: true,
+        animation: gsap.timeline()
+          .to(skillsCurve, {
+            scaleY: 1,
+            y: 0,
+            ease: "none",
+            duration: 1,
+          }, 0),
+      });
+    }
+
     const refreshTimer = window.setTimeout(() => ScrollTrigger.refresh(), 450);
 
     return () => {
       window.clearTimeout(refreshTimer);
       physicsCleanupRef.current?.();
       aboutTimeline?.kill();
+      skillsMorph?.kill();
     };
   }, []);
 
   const activeFace = faces[activeIndex];
 
   return (
-    <section id="about" className="relative w-full bg-white">
+    <section id="about" className="relative w-full bg-[#f4f4f4]">
       <div ref={introRef} className="relative h-screen w-full overflow-hidden bg-black">
         <div className="about-intro-title absolute top-0 left-0 w-full h-[50vh] flex items-end justify-center bg-black pb-[4vh] px-6">
           <h2 className="font-sans text-[14vw] font-black uppercase leading-none tracking-normal text-white md:text-[9vw]">
@@ -771,7 +801,7 @@ export default function About() {
         </div>
 
         {/* 3. Cube Panel (Combined seamlessly inside introRef pinned viewport) */}
-        <div className="about-cube-panel absolute inset-0 bg-white z-40 select-none overflow-hidden" style={{ "--roll-size": "min(78vh, 82vw)" } as CSSProperties}>
+        <div className="about-cube-panel absolute inset-0 bg-[#f4f4f4] z-40 select-none overflow-hidden" style={{ "--roll-size": "min(78vh, 82vw)" } as CSSProperties}>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_32%,rgba(0,0,0,0.035),transparent_30%),radial-gradient(circle_at_78%_70%,rgba(0,0,0,0.03),transparent_36%)]" />
 
           <div className="relative z-10 h-full min-h-screen">
@@ -812,35 +842,56 @@ export default function About() {
         </div>
       </div>
 
-      <div className="section-shell py-20 md:py-28">
-        <MotionReveal y={35} duration={0.6} margin="-80px" id="skills" className="border border-white/5 bg-surface p-6 md:p-8 flex flex-col gap-8 shadow-2xl w-full overflow-hidden">
-          <div className="flex flex-col gap-2 w-full items-center border-b border-white/5 pb-6">
-            <div className="flex items-center justify-center gap-3 font-sans font-bold text-xs tracking-widest text-text-subtle uppercase select-none">
-              <span className="w-8 h-[1px] bg-text-subtle" />
-              01b - TECH STACK &amp; TOOLS
-              <span className="w-8 h-[1px] bg-text-subtle" />
-            </div>
-            <h3 className="font-sans font-extrabold text-2xl md:text-3xl text-text mt-2 text-center select-none">
-              Core Areas &amp; <span className="text-text-muted">Technologies</span>
-            </h3>
-          </div>
+      <div
+        id="skills"
+        className="relative z-0 isolate overflow-visible bg-bg pt-20 text-black md:pt-28"
+      >
+        <div
+          ref={skillsPanelRef}
+          className="relative z-10 mx-auto w-full overflow-hidden border-y border-black/10 bg-[#f4f4f4] py-20 md:py-28"
+        >
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.045)_1px,transparent_1px)] bg-[size:72px_72px]" />
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-black/35" />
 
-          <TechStackTabs />
-        </MotionReveal>
+          <MotionReveal y={35} duration={0.6} margin="-80px" className="section-shell relative z-0 flex w-full flex-col gap-10">
+            <div className="grid gap-8 border-b border-black/15 pb-8 md:grid-cols-[0.82fr_1.18fr] md:items-end">
+              <div className="flex flex-col gap-4">
+                <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-black/45">
+                  <span className="h-px w-10 bg-black/45" />
+                  01B / Technical Index
+                </div>
+                <h3 className="max-w-3xl font-sans text-[clamp(2.5rem,6vw,5.75rem)] font-black uppercase leading-[0.9] tracking-normal text-black">
+                  Core Systems
+                </h3>
+              </div>
+
+              <div className="grid gap-4 md:justify-items-end md:text-right">
+                <p className="max-w-2xl font-sans text-sm leading-7 text-black/58 md:text-base md:leading-8">
+                  A practical map of the tools I use across web engineering, AI, cloud infrastructure, embedded systems, and network security.
+                </p>
+                <div className="flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-black/45 md:justify-end">
+                  <span>Cube output</span>
+                  <span>/</span>
+                  <span>Skill matrix</span>
+                  <span>/</span>
+                  <span>Applied stack</span>
+                </div>
+              </div>
+            </div>
+
+            <TechStackTabs />
+          </MotionReveal>
+        </div>
+
+        <div className="relative -mt-px h-28 overflow-hidden bg-bg md:h-44" aria-hidden="true">
+          <div
+            ref={skillsCurveRef}
+            className="absolute left-1/2 top-[-118%] h-[190%] w-[132vw] -translate-x-1/2 rounded-b-[50%] bg-[#f4f4f4] will-change-transform"
+          />
+        </div>
       </div>
 
       <style>{`
-        @keyframes marquee-left-triple {
-          0% {
-            transform: translate3d(0, 0, 0);
-          }
-          100% {
-            transform: translate3d(-33.3333%, 0, 0);
-          }
-        }
-        .animate-marquee-left-triple {
-          animation: marquee-left-triple 28s linear infinite;
-        }
         .about-profile-face {
           padding-left: clamp(2.25rem, 4vw, 4.25rem);
           padding-right: clamp(1.75rem, 4vw, 4rem);
