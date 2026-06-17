@@ -6,7 +6,6 @@ const Hero = dynamic(() => import("@/components/Hero"));
 const About = dynamic(() => import("@/components/About"));
 const Certifications = dynamic(() => import("@/components/Certifications"));
 const Projects = dynamic(() => import("@/components/Projects"));
-const Contact = dynamic(() => import("@/components/Contact"));
 const Footer = dynamic(() => import("@/components/Footer"));
 
 export default function Home() {
@@ -18,7 +17,6 @@ export default function Home() {
         <About />
         <Certifications />
         <Projects />
-        <Contact />
       </main>
       <Footer />
     </PortfolioShell>

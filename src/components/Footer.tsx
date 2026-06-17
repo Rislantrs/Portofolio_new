@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { ArrowUp, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -75,11 +75,6 @@ const socialLinks = [
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null);
   const wordmarkRef = useRef<HTMLHeadingElement>(null);
-  const [year, setYear] = useState(2026);
-
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
 
   useGSAP(() => {
     const footer = footerRef.current;
@@ -92,11 +87,12 @@ export default function Footer() {
 
     gsap.set(wordmark, {
       opacity: 0,
-      x: 0,
+      x: -24,
       y: 0,
       scale: 1,
-      filter: "none",
-      transformOrigin: "50% 50%",
+      clipPath: "inset(0 100% 0 0)",
+      filter: "blur(10px)",
+      transformOrigin: "0% 50%",
     });
     gsap.set(gridLines, {
       strokeDashoffset: (_, el) => el.getAttribute("stroke-dasharray") || 3000,
@@ -126,9 +122,12 @@ export default function Footer() {
       }, 0.18)
       .to(wordmark, {
         opacity: 1,
-        duration: 0.75,
-        ease: "power2.out",
-      }, 0.22)
+        x: 0,
+        clipPath: "inset(0 0% 0 0)",
+        filter: "blur(0px)",
+        duration: 1.05,
+        ease: "power3.out",
+      }, 0.28)
       .to([gridLines, circle], {
         opacity: 0,
         duration: 0.8,
@@ -147,30 +146,30 @@ export default function Footer() {
     <footer
       ref={footerRef}
       id="contact-footer"
-      className="relative flex min-h-[100svh] w-full overflow-x-hidden overflow-y-visible border-t border-white/5 bg-bg py-14 md:py-18"
+      className="relative flex min-h-[100svh] w-full overflow-hidden border-t border-white/5 bg-bg px-[clamp(1.25rem,5vw,6rem)] py-14 md:py-18"
     >
 
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_70%_55%_at_68%_75%,rgba(255,255,255,0.06),transparent)] pointer-events-none" />
       <FooterGrid />
 
-      <div className="section-shell relative z-10 flex flex-1 flex-col justify-between">
-        <div className="footer-reveal flex items-start justify-between gap-6 font-mono text-[10px] uppercase tracking-[0.28em] text-white/50 md:text-xs">
+      <div className="relative z-10 mx-auto flex w-full max-w-[92rem] flex-1 flex-col justify-between">
+        <div className="footer-reveal type-meta flex items-start justify-between gap-6 text-white/50">
           <span className="inline-flex items-center gap-3">
             <span className="h-px w-10 bg-white/45" />
             Endnote / Contact
           </span>
-          <span className="hidden text-right text-white/30 md:block">MRT / {year}</span>
+          <span className="hidden text-right text-white/30 md:block">MRT / 2026</span>
         </div>
 
         <div className="relative my-12 select-none md:my-16">
           <h2
             ref={wordmarkRef}
-            className="relative z-10 w-full overflow-visible py-[0.08em] font-sans text-[19vw] font-black uppercase leading-none tracking-[-0.085em] text-white md:text-[15.2vw]"
+            className="relative z-10 w-full overflow-visible py-[0.08em] font-sans text-[clamp(5rem,18vw,18rem)] font-black uppercase leading-none tracking-[-0.085em] text-white md:text-[clamp(8rem,14vw,16rem)]"
           >
             RISLAN
           </h2>
 
-          <div className="footer-reveal mt-5 grid gap-4 border-y border-white/10 py-4 font-mono text-[10px] uppercase tracking-[0.24em] text-white/38 md:grid-cols-[1.15fr_0.85fr] md:text-[11px]">
+          <div className="footer-reveal type-meta mt-5 grid gap-4 border-y border-white/10 py-4 text-white/38 md:grid-cols-[1.15fr_0.85fr]">
             <p>M. Rislan Tristansyah / Systems / Intelligent Tech / Infrastructure</p>
             <p className="md:text-right">Purwakarta, Indonesia / Available for thoughtful builds</p>
           </div>
@@ -178,8 +177,8 @@ export default function Footer() {
 
         <div className="footer-reveal grid gap-4 md:grid-cols-[1.1fr_1fr_1fr_0.9fr]">
           <div className="border-t border-white/12 pt-5">
-            <span className="font-mono text-[10px] uppercase tracking-[0.26em] text-white/35">01 / Explore</span>
-            <nav className="mt-5 grid gap-2 font-sans text-xl font-black uppercase leading-none text-white md:text-2xl">
+            <span className="type-meta text-white/35">01 / Explore</span>
+            <nav className="mt-5 grid gap-2 text-[clamp(1.1rem,1.6vw,1.45rem)] font-black uppercase leading-none text-white">
               {navLinks.map(([label, href]) => (
                 <a key={label} href={href} className="w-fit text-white/80 transition-colors hover:text-white">
                   {label}
@@ -189,8 +188,8 @@ export default function Footer() {
           </div>
 
           <div className="border-t border-white/12 pt-5">
-            <span className="font-mono text-[10px] uppercase tracking-[0.26em] text-white/35">02 / Connect</span>
-            <div className="mt-5 grid gap-3 font-mono text-[11px] uppercase tracking-[0.18em] text-white/55">
+            <span className="type-meta text-white/35">02 / Connect</span>
+            <div className="type-meta mt-5 grid gap-3 text-white/55">
               {socialLinks.map(([label, href]) => (
                 <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="flex w-fit items-center gap-2 transition-colors hover:text-white">
                   {label} <ArrowUpRight size={12} />
@@ -200,25 +199,25 @@ export default function Footer() {
           </div>
 
           <div className="border-t border-white/12 pt-5">
-            <span className="font-mono text-[10px] uppercase tracking-[0.26em] text-white/35">03 / Signal</span>
+            <span className="type-meta text-white/35">03 / Signal</span>
             <div className="mt-5 grid gap-4">
-              <p className="font-sans text-2xl font-black uppercase leading-none text-white">Open to build</p>
-              <a href="mailto:rislantristansyah@gmail.com" className="break-all font-mono text-[11px] lowercase tracking-[0.08em] text-white/55 transition-colors hover:text-white">
+              <p className="type-panel-title uppercase text-white">Open to build</p>
+              <a href="mailto:rislantristansyah@gmail.com" className="type-small break-all lowercase text-white/55 transition-colors hover:text-white">
                 rislantristansyah@gmail.com
               </a>
             </div>
           </div>
 
           <div className="border-t border-white/12 pt-5 md:text-right">
-            <span className="font-mono text-[10px] uppercase tracking-[0.26em] text-white/35">04 / Return</span>
+            <span className="type-meta text-white/35">04 / Return</span>
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="mt-5 inline-flex items-center gap-2 font-sans text-2xl font-black uppercase leading-none text-white/80 transition-colors hover:text-white"
+              className="mt-5 inline-flex items-center gap-2 text-[clamp(1.1rem,1.6vw,1.45rem)] font-black uppercase leading-none text-white/80 transition-colors hover:text-white"
             >
               Top <ArrowUp size={18} />
             </button>
-            <p className="mt-8 font-mono text-[10px] uppercase leading-relaxed tracking-[0.18em] text-white/25">
-              &copy; {year} M Rislan Tristansyah.<br />All rights reserved.
+            <p className="type-meta mt-8 leading-relaxed text-white/25">
+              &copy; 2026 M Rislan Tristansyah.<br />All rights reserved.
             </p>
           </div>
         </div>

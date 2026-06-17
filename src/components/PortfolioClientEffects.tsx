@@ -83,6 +83,11 @@ export default function PortfolioClientEffects() {
   const completePreloader = useCallback(() => {
     setLoaded(true);
     setShowPreloader(false);
+    setTimeout(() => {
+      import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+        ScrollTrigger.refresh();
+      });
+    }, 150);
   }, []);
 
   return showPreloader ? <Preloader onComplete={completePreloader} /> : null;

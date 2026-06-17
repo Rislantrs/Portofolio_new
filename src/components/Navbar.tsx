@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
 
 interface NavLink {
@@ -17,10 +18,12 @@ const navLinks: NavLink[] = [
   { label: "Dashboard", href: "/dashboard" },
   { label: "Forum", href: "/forum" },
   { label: "Skills",   id: "skills"  },
-  { label: "Contact",  id: "contact" },
+  { label: "Contact",  id: "contact-footer" },
 ];
 
 export default function Navbar() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   const [activeSection, setActiveSection] = useState<string>("home");
   const [menuOpen, setMenuOpen]           = useState<boolean>(false);
   const [scrolled, setScrolled]           = useState<boolean>(false);
@@ -45,6 +48,11 @@ export default function Navbar() {
   const scrollTo = (e: React.MouseEvent<HTMLElement>, link: NavLink) => {
     setMenuOpen(false);
     if (link.href) return;
+
+    if (!isHome) {
+      // Allow default navigation to /#id
+      return;
+    }
 
     e.preventDefault();
     const id = link.id;
@@ -106,15 +114,15 @@ export default function Navbar() {
               {content}
             </Link>
           ) : (
-            <a
+            <Link
               key={link.id}
-              href={`#${link.id}`}
+              href={isHome ? `#${link.id}` : `/#${link.id}`}
               onClick={(e) => scrollTo(e, link)}
               className={className}
               style={style}
             >
               {content}
-            </a>
+            </Link>
           );
         })}
       </nav>

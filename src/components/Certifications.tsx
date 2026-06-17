@@ -250,7 +250,7 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
       data-cert-card
       data-cursor={cert.link ? "view" : ""}
       className="cert-card group relative flex-shrink-0 w-[320px] md:w-[400px] bg-bg-elevated border border-white/10 rounded-2xl overflow-hidden flex flex-col select-none transition-all duration-500 hover:border-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.06)]"
-      style={{ height: "clamp(400px, 56vh, 600px)" }}
+      style={{ height: "clamp(340px, 48vh, 520px)" }}
     >
       {/* Showcase Frame — takes up all available space above the info section */}
       <div className="relative w-full flex-1 overflow-hidden bg-bg flex items-center justify-center">
@@ -282,7 +282,7 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
 
       {/* Info content */}
       <div className="flex flex-col gap-3 p-5 md:p-6">
-        <div className="flex justify-between items-center text-[9px] font-sans font-bold tracking-widest text-accent/80 uppercase">
+        <div className="type-meta flex justify-between items-center text-accent/80">
           <span>
             {cert.category === "ai"
               ? "AI / ML"
@@ -292,14 +292,14 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
               ? "WEB DEV"
               : "NETWORKING"}
           </span>
-          <span className="text-text-subtle font-mono">{cert.year}</span>
+          <span className="text-text-subtle">{cert.year}</span>
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <h3 className="font-display font-black text-base md:text-lg tracking-tight leading-snug text-white group-hover:text-accent-light transition-colors duration-300 uppercase">
+          <h3 className="type-card-title uppercase text-white group-hover:text-accent-light transition-colors duration-300">
             {cert.name}
           </h3>
-          <p className="font-sans text-[11px] text-text-muted">
+          <p className="type-small text-text-muted">
             Issued by <span className="font-semibold text-white">{cert.organizer}</span>
           </p>
         </div>
@@ -307,10 +307,10 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
         {/* Footer verify link */}
         <div className="flex justify-between items-center pt-3 border-t border-white/5 mt-1">
           <div className="flex flex-col gap-0.5">
-            <span className="font-sans font-bold text-[8px] tracking-widest text-text-subtle uppercase">
+            <span className="type-meta text-text-subtle">
               {cert.badgeName}
             </span>
-            <span className="font-mono text-[8px] text-accent/40 tracking-wider">
+            <span className="type-meta text-accent/40">
               {credentialId}
             </span>
           </div>
@@ -320,13 +320,13 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
               href={cert.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 font-sans font-bold text-[9px] tracking-widest text-accent hover:text-white transition-all duration-300"
+              className="type-action inline-flex items-center gap-1 text-accent hover:text-white transition-all duration-300"
             >
               VERIFY
               <ExternalLink size={10} className="text-accent group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
             </a>
           ) : (
-            <span className="inline-flex items-center gap-1 text-[8px] font-sans font-bold text-accent tracking-widest uppercase select-none">
+            <span className="type-action inline-flex items-center gap-1 text-accent select-none">
               VERIFIED
               <Award size={11} className="text-accent animate-pulse" />
             </span>
@@ -367,8 +367,8 @@ export default function Certifications() {
     <section
       ref={sectionRef}
       id="certifications"
-      className={`relative z-20 isolate w-full bg-bg overflow-hidden flex flex-col justify-between ${
-        isPinned ? "h-[100svh] py-14" : "py-24"
+      className={`relative z-20 isolate w-full bg-bg overflow-hidden flex flex-col ${
+        isPinned ? "h-[100svh] pt-20 pb-10" : "py-24"
       }`}
     >
       <div className="pointer-events-none absolute inset-0 -z-10 bg-bg" />
@@ -384,7 +384,7 @@ export default function Certifications() {
 
       {/* Cinematic HUD Top Bar */}
       {isPinned && (
-        <div className="section-shell absolute top-5 left-1/2 -translate-x-1/2 flex justify-between items-center border-b border-white/5 pb-3 pointer-events-none select-none font-mono text-[9px] tracking-widest text-text-muted z-30">
+        <div className="type-meta section-shell absolute top-5 left-1/2 -translate-x-1/2 flex justify-between items-center border-b border-white/5 pb-3 pointer-events-none select-none text-text-muted z-30">
           <div className="flex items-center gap-3">
             <span className="text-accent animate-pulse font-black">● REC</span>
             <span>CRD_VAL_SYS_03</span>
@@ -395,19 +395,19 @@ export default function Certifications() {
       )}
 
       {/* Header (Section Title) */}
-      <div className={`section-shell flex flex-col gap-2 shrink-0 ${isPinned ? "mt-8" : "mb-10"}`}>
-        <div className="flex items-center gap-3 font-display font-bold text-xs tracking-widest text-accent uppercase select-none">
+      <div className={`section-shell flex flex-col gap-2 shrink-0 ${isPinned ? "" : "mb-10"}`}>
+        <div className="type-kicker flex items-center gap-3 text-accent select-none">
           <span className="w-8 h-[1px] bg-accent" />
           03 — EXPERTISE VALIDATION
         </div>
-        <h2 className="font-display font-black text-3xl md:text-5xl tracking-tighter leading-none select-none">
+        <h2 className="type-section-title select-none">
           Earned <span className="text-accent-light italic">Credentials</span>
         </h2>
       </div>
 
       {isPinned ? (
         /* Pinned Horizontal Track Layout */
-        <div ref={trackViewportRef} className="section-shell flex-1 flex items-center overflow-hidden my-4 relative">
+        <div ref={trackViewportRef} className="section-shell min-h-0 flex-1 flex items-center overflow-hidden py-5 relative">
           {/* Right edge vignette only — left side is clean so the first card is fully visible */}
           <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-bg to-transparent z-20 pointer-events-none" />
 
@@ -431,8 +431,8 @@ export default function Certifications() {
       )}
 
       {/* HUD Bottom Bar with Progress Indicator */}
-      <div className={`section-shell flex items-center justify-between shrink-0 font-mono text-[9px] tracking-widest text-text-muted ${
-        isPinned ? "mb-1" : "mt-10"
+      <div className={`type-meta section-shell flex items-center justify-between shrink-0 text-text-muted ${
+        isPinned ? "" : "mt-10"
       }`}>
         {isPinned ? (
           <div className="flex items-center gap-4 select-none">

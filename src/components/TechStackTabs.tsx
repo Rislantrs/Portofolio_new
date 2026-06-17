@@ -18,7 +18,7 @@ const BrandIcon = ({
   fallback?: ReactNode;
 }) => {
   if (src) {
-    return <Image src={src} alt="" width={40} height={40} className="h-10 w-10 rounded-lg object-contain" />;
+    return <Image src={src} alt="" width={40} height={40} className="h-10 w-10 object-contain" />;
   }
   if (deviconSlug) {
     return (
@@ -53,7 +53,7 @@ const roles = [
     id: "web",
     name: "WEB DEV",
     title: "Web Development & Engineering",
-    logo: <BrandIcon deviconSlug="react" />,
+    logo: <BrandIcon src="/assets/l_webdev.png" />,
     description: "Merancang dan membangun platform digital interaktif, profil institusi, dan aplikasi web berbasis kecerdasan buatan (AI) menggunakan teknologi modern.",
     tools: [
       { name: "React", icon: <BrandIcon deviconSlug="react" /> },
@@ -68,7 +68,7 @@ const roles = [
     id: "ds",
     name: "AI/ML",
     title: "Artificial Intelligence & Machine Learning",
-    logo: <BrandIcon deviconSlug="python" />,
+    logo: <BrandIcon src="/assets/l_aiml.png" />,
     description: "Mengembangkan model klasifikasi, regresi, prediksi churn, dan analisis sentimen menggunakan algoritme machine learning modern.",
     tools: [
       { name: "Python", icon: <BrandIcon deviconSlug="python" /> },
@@ -95,7 +95,7 @@ const roles = [
     id: "cloud",
     name: "CLOUD COMPUTING",
     title: "Cloud Computing & Infrastructure",
-    logo: <BrandIcon deviconSlug="googlecloud" />,
+    logo: <BrandIcon src="/assets/l_cloud.png" />,
     description: "Mengimplementasikan solusi komputasi awan, virtualisasi jaringan, arsitektur serverless, serta administrasi sistem cloud pada Google Cloud Platform (GCP) dan Alibaba Cloud.",
     tools: [
       { name: "Google Cloud", icon: <BrandIcon deviconSlug="googlecloud" /> },
@@ -107,7 +107,7 @@ const roles = [
     id: "iot",
     name: "IOT",
     title: "IoT & Embedded Systems",
-    logo: <BrandIcon deviconSlug="arduino" />,
+    logo: <BrandIcon src="/assets/l_iot.png" />,
     description: "Merancang dan memprogram perangkat cerdas, sensor pembaca kesehatan, modul pemantau nirkabel, dan otomasi mikrokontroler.",
     tools: [
       { name: "Arduino", icon: <BrandIcon deviconSlug="arduino" /> },
@@ -151,18 +151,7 @@ const roles = [
     id: "security",
     name: "NETWORKING",
     title: "Networking & Cyber Security",
-    logo: (
-      <BrandIcon
-        fallback={
-          <svg className="w-6 h-6 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <rect x="16" y="16" width="6" height="6" rx="1" />
-            <rect x="2" y="16" width="6" height="6" rx="1" />
-            <rect x="9" y="2" width="6" height="6" rx="1" />
-            <path d="M12 8v4M5 16v-4h14v4" />
-          </svg>
-        }
-      />
-    ),
+    logo: <BrandIcon src="/assets/l_net.png" />,
     description: "Menerapkan Software Defined Networking (SDN), analisis kualitas lalu lintas jaringan, steganografi LSB, enkripsi, dan keamanan siber.",
     tools: [
       {
@@ -231,15 +220,15 @@ export default function TechStackTabs() {
                   : "border-black/10 bg-[#f4f4f4] text-black/55 hover:border-black/35 hover:bg-[#f4f4f4] hover:text-black"
               }`}
             >
-              <span className={`font-mono text-[10px] uppercase tracking-[0.18em] ${
+              <span className={`type-meta ${
                 activeTab === role.id ? "text-white/45" : "text-black/35"
               }`}>
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <span className="flex h-10 w-10 items-center justify-center rounded-sm border border-black/10 bg-[#f4f4f4] p-1.5 shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5">
+              <span className="flex h-11 w-11 items-center justify-center rounded-md border border-black/10 bg-[#f4f4f4] p-1.5 shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5">
                 {role.logo}
               </span>
-              <span className="font-sans text-[11px] font-black uppercase tracking-normal md:text-xs">
+              <span className="type-action">
                 {role.name}
               </span>
             </button>
@@ -249,13 +238,13 @@ export default function TechStackTabs() {
 
       <div key={activeTab} className="grid gap-8 animate-fade-slide-up md:grid-cols-[0.72fr_1.28fr] md:items-start">
         <div className="border-l border-black pl-5">
-          <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-black/40">
+          <div className="type-meta text-black/40">
             Selected Area / {String(activeIndex + 1).padStart(2, "0")}
           </div>
-          <h4 className="mt-4 max-w-xl font-sans text-3xl font-black uppercase leading-none tracking-normal text-black md:text-5xl">
+          <h4 className="type-panel-title mt-4 max-w-xl uppercase text-black">
             {activeRole.title}
           </h4>
-          <p className="mt-5 max-w-xl font-sans text-sm leading-7 text-black/58 md:text-base md:leading-8">
+          <p className="type-body mt-5 max-w-xl text-black/58">
             {activeRole.description}
           </p>
         </div>
@@ -270,11 +259,11 @@ export default function TechStackTabs() {
                 <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-sm border border-black/10 bg-[#f4f4f4] p-2 shadow-sm transition-transform duration-300 group-hover:-translate-y-1">
                 {tool.icon}
                 </div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-black/28">
+                <span className="type-meta text-black/28">
                   {String(idx + 1).padStart(2, "0")}
                 </span>
               </div>
-              <span className="mt-8 max-w-[10rem] font-sans text-xs font-black uppercase leading-tight tracking-normal text-black/70 transition-colors duration-300 group-hover:text-black md:text-sm">
+              <span className="type-action mt-8 max-w-[10rem] leading-tight text-black/70 transition-colors duration-300 group-hover:text-black">
                 {tool.name}
               </span>
             </div>

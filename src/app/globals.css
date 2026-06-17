@@ -17,7 +17,16 @@
 
   --font-display: 'Inter', sans-serif;
   --font-body: 'Inter', sans-serif;
-  --font-mega: 'Montserrat', sans-serif;
+  --font-mono: 'Inter', sans-serif;
+  --font-mega: 'Inter', sans-serif;
+
+  --type-display: clamp(3.25rem, 7.4vw, 7rem);
+  --type-section-title: clamp(2.15rem, 4.7vw, 4.9rem);
+  --type-panel-title: clamp(1.45rem, 2.25vw, 2.15rem);
+  --type-card-title: clamp(1rem, 1.18vw, 1.22rem);
+  --type-body: clamp(0.95rem, 0.35vw + 0.86rem, 1.12rem);
+  --type-small: clamp(0.78rem, 0.22vw + 0.72rem, 0.9rem);
+  --type-micro: 0.68rem;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
@@ -49,6 +58,7 @@
   
   --font-display: var(--font-display);
   --font-sans: var(--font-body);
+  --font-mono: var(--font-mono);
   --font-mega: var(--font-mega);
 }
 
@@ -89,6 +99,93 @@ body {
   padding-inline: var(--section-gutter);
 }
 
+#about,
+#skills,
+#projects,
+#certifications,
+#contact-footer,
+#journey,
+#admin,
+#project-detail {
+  font-family: var(--font-body);
+}
+
+#about :is(.font-display, .font-sans, .font-mono, .font-mega),
+#skills :is(.font-display, .font-sans, .font-mono, .font-mega),
+#projects :is(.font-display, .font-sans, .font-mono, .font-mega),
+#certifications :is(.font-display, .font-sans, .font-mono, .font-mega),
+#contact-footer :is(.font-display, .font-sans, .font-mono, .font-mega),
+#journey :is(.font-display, .font-sans, .font-mono, .font-mega) {
+  font-family: var(--font-body) !important;
+}
+
+.type-kicker {
+  font-family: var(--font-body);
+  font-size: var(--type-micro);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.type-section-title {
+  font-family: var(--font-body);
+  font-size: var(--type-section-title);
+  font-weight: 900;
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+}
+
+.type-panel-title {
+  font-family: var(--font-body);
+  font-size: var(--type-panel-title);
+  font-weight: 850;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+}
+
+.type-card-title {
+  font-family: var(--font-body);
+  font-size: var(--type-card-title);
+  font-weight: 800;
+  line-height: 1.16;
+  letter-spacing: -0.018em;
+}
+
+.type-body {
+  font-family: var(--font-body);
+  font-size: var(--type-body);
+  font-weight: 400;
+  line-height: 1.72;
+  letter-spacing: -0.01em;
+}
+
+.type-small {
+  font-family: var(--font-body);
+  font-size: var(--type-small);
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+.type-meta {
+  font-family: var(--font-body);
+  font-size: var(--type-micro);
+  font-weight: 750;
+  line-height: 1.28;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.type-action {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 850;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 767px) {
   :root {
     --section-gutter: clamp(1.25rem, 6vw, 2rem);
@@ -103,6 +200,17 @@ body::-webkit-scrollbar {
 html, body {
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
+}
+
+* {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+*::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+  display: none !important;
 }
 
 /* Lenis Custom Core Styles */

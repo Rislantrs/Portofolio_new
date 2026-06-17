@@ -18,33 +18,38 @@ const education = [
     period: "2023 - Present",
     meta: "Telecommunication Systems",
     note: "Bachelor's Degree",
+    logo: "/assets/s1.png",
   },
   {
     title: "SMA Negeri 1 Cibatu",
     period: "2019 - 2022",
     meta: "Purwakarta",
     note: "Senior High School",
+    logo: "/assets/sma.png",
   },
   {
     title: "SMP Negeri 1 Campaka",
     period: "2016 - 2019",
     meta: "Purwakarta",
     note: "Junior High School",
+    logo: "/assets/smp.png",
   },
 ];
 
 const experiences = [
   {
-    role: "Department Secretary",
-    org: "HIMATELKOM",
-    period: "2024 - 2025",
-    note: "Managed administrative correspondence, meeting minutes, and official LPJ accountability reports."
+    title: "Magang di Dinas Kearsipan",
+    role: "Internship Student",
+    org: "Dinas Arsip dan Perpustakaan Kabupaten Purwakarta",
+    period: "Jan - Jun 2026",
+    note: "Magang di bidang Pembinaan, Pelestarian dan Pengembangan Kearsipan (P3K)."
   },
   {
-    role: "Skilltopia Program Lead",
-    org: "HIMATELKOM",
+    title: "HMST",
+    role: "Staff Departemen Profesi dan Kejuruan",
+    org: "HIMATELKOM (Himpunan Mahasiswa Sistem Telekomunikasi)",
     period: "2024 - 2025",
-    note: "Curated, verified, and distributed telecommunication training, certifications, and scholarship opportunities."
+    note: "Menyusun dan melaksanakan program pelatihan kejuruan serta sertifikasi telekomunikasi."
   }
 ];
 
@@ -78,10 +83,10 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(0,0,0,0.04),transparent_28%),radial-gradient(circle_at_85%_85%,rgba(0,0,0,0.035),transparent_34%)]" />
       <div className="relative z-10 flex h-full flex-col">
         <div className="mb-4 flex items-center justify-between gap-4 border-b border-black/15 pb-3 md:mb-5">
-          <span className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-black">
+          <span className="type-meta text-black">
             {faces[faceIndex].caption}
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-neutral-500">
+          <span className="type-meta text-neutral-500">
             0{faceIndex + 1}/04
           </span>
         </div>
@@ -100,21 +105,21 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
                 </div>
 
                 {/* Name and Title */}
-                <div className="flex-1 flex flex-col justify-center min-w-0">
-                  <h3 className="font-sans text-lg sm:text-[1.35rem] md:text-[1.75rem] font-extrabold tracking-tight leading-tight text-neutral-900">
+                <div className="flex-1 flex min-w-0 flex-col justify-center">
+                  <h3 className="type-panel-title break-words text-neutral-900">
                     M Rislan Tristansyah
                   </h3>
-                  <p className="mt-1 text-[10px] sm:text-xs md:text-[13px] font-bold uppercase tracking-widest text-neutral-500">
+                  <p className="type-meta mt-1 max-w-[36rem] text-neutral-500">
                     Telecommunication Systems Student &bull; Semester 7
                   </p>
-                  <p className="mt-0.5 text-[9px] sm:text-[11px] font-semibold text-neutral-400 font-mono tracking-wider">
+                  <p className="type-small mt-1 text-neutral-400">
                     Universitas Pendidikan Indonesia
                   </p>
                 </div>
               </div>
 
               {/* About Description */}
-              <p className="text-[11px] sm:text-xs md:text-sm leading-relaxed text-neutral-600 font-normal text-left">
+              <p className="type-body max-w-[54rem] text-left text-neutral-600">
                 I am a 7th-semester Telecommunication Systems student at Universitas Pendidikan Indonesia with a deep passion for Artificial Intelligence, neural networks, and modern networking systems. I am driven to build intelligent tech solutions that are clean, efficient, and create a real-world impact.
               </p>
 
@@ -125,7 +130,7 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
                   href="/assets/M Rislan Tristansyah-resume.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-10 min-w-[132px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-neutral-900 px-5 text-[11px] font-bold uppercase tracking-normal text-white shadow-md shadow-black/10 transition-all duration-300 hover:bg-black hover:shadow-black/20 select-none cursor-pointer"
+                  className="type-action inline-flex h-10 min-w-[132px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-neutral-900 px-5 text-white shadow-md shadow-black/10 transition-all duration-300 hover:bg-black hover:shadow-black/20 select-none cursor-pointer"
                 >
                   <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
@@ -197,20 +202,25 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
         {faceIndex === 1 && (
           <div className="about-detail-face grid flex-1 content-center gap-5 select-none">
             <div className="w-full max-w-[860px]">
-              <h3 className="font-sans text-lg font-black text-black md:text-[1.75rem]">Education</h3>
-              <p className="mt-1 max-w-xl text-xs leading-5 text-neutral-500 md:text-sm">
+              <h3 className="type-panel-title text-black">Education</h3>
+              <p className="type-small mt-2 max-w-xl text-neutral-500">
                 Formal learning path and academic background.
               </p>
             </div>
             <div className="grid w-full max-w-[860px] gap-3 md:gap-4">
               {education.map((item) => (
-                <div key={item.title} className="border-l border-black/20 bg-neutral-50/70 py-3 pl-4 pr-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <h4 className="text-[13px] font-bold leading-5 text-black md:text-[15px]">{item.title}</h4>
-                    <span className="shrink-0 font-mono text-[10px] text-neutral-600">{item.period}</span>
+                <div key={item.title} className="flex items-center gap-4 border-l border-black/15 bg-white/25 py-3 pl-4 pr-4">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center">
+                    <img src={item.logo} alt={`${item.title} logo`} className="h-full w-full object-contain" />
                   </div>
-                  <p className="mt-1 text-xs font-semibold text-neutral-700 md:text-[13px]">{item.meta}</p>
-                  <p className="text-xs text-neutral-600 md:text-[13px]">{item.note}</p>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-start justify-between gap-4">
+                      <h4 className="text-[clamp(0.92rem,1.1vw,1.08rem)] font-extrabold leading-tight tracking-[-0.015em] text-black">{item.title}</h4>
+                      <span className="type-meta shrink-0 text-neutral-500">{item.period}</span>
+                    </div>
+                    <p className="mt-1 text-[clamp(0.8rem,0.9vw,0.92rem)] font-semibold leading-snug text-neutral-700">{item.meta}</p>
+                    <p className="text-[clamp(0.76rem,0.82vw,0.86rem)] font-medium leading-snug text-neutral-500">{item.note}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -220,22 +230,36 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
         {faceIndex === 2 && (
           <div className="about-detail-face grid flex-1 content-center gap-5 select-none">
             <div className="w-full max-w-[860px]">
-              <h3 className="font-sans text-lg font-black text-black md:text-[1.75rem]">Experience</h3>
-              <p className="mt-1 text-xs font-semibold leading-5 text-neutral-700 md:text-sm">
-                Professional & Vocational Staff / HIMATELKOM
+              <h3 className="type-panel-title text-black">Experience</h3>
+              <p className="type-small mt-2 text-neutral-700">
+                Internship and organization experience.
               </p>
             </div>
-            <div className="grid w-full max-w-[860px] gap-4 md:grid-cols-2">
+            <div className="grid w-full max-w-[860px] gap-3 md:gap-4">
               {experiences.map((exp, idx) => (
-                <div key={idx} className="border-l border-black/20 bg-neutral-50/70 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h4 className="text-[13px] font-bold leading-tight text-black md:text-[15px]">{exp.role}</h4>
-                      <p className="mt-1 text-[11px] font-semibold text-neutral-700 leading-tight">{exp.org}</p>
-                    </div>
-                    <span className="shrink-0 font-mono text-[10px] text-neutral-600">{exp.period}</span>
+                <div key={idx} className="border-l border-black/15 bg-white/25 py-3.5 pl-4 pr-4">
+                  <div className="mb-3 flex items-start justify-between gap-4">
+                    <h4 className="text-[clamp(0.95rem,1.18vw,1.12rem)] font-extrabold leading-tight tracking-[-0.015em] text-black">{exp.title}</h4>
+                    <span className="type-meta shrink-0 text-neutral-500">{exp.period}</span>
                   </div>
-                  <p className="mt-2 text-xs text-neutral-600 md:text-[13px] leading-relaxed">{exp.note}</p>
+                  <dl className="grid gap-2.5">
+                    <div className="grid gap-1 sm:grid-cols-[4.9rem_1fr]">
+                      <dt className="text-[0.62rem] font-extrabold uppercase leading-snug tracking-[0.08em] text-neutral-400">Posisi</dt>
+                      <dd className="text-[clamp(0.78rem,0.9vw,0.9rem)] font-bold leading-snug text-neutral-800">{exp.role}</dd>
+                    </div>
+                    <div className="grid gap-1 sm:grid-cols-[4.9rem_1fr]">
+                      <dt className="text-[0.62rem] font-extrabold uppercase leading-snug tracking-[0.08em] text-neutral-400">Instansi</dt>
+                      <dd className="text-[clamp(0.78rem,0.9vw,0.9rem)] font-semibold leading-snug text-neutral-700">{exp.org}</dd>
+                    </div>
+                    <div className="grid gap-1 sm:grid-cols-[4.9rem_1fr]">
+                      <dt className="text-[0.62rem] font-extrabold uppercase leading-snug tracking-[0.08em] text-neutral-400">Waktu</dt>
+                      <dd className="text-[clamp(0.78rem,0.9vw,0.9rem)] font-semibold leading-snug text-neutral-700">{exp.period}</dd>
+                    </div>
+                    <div className="grid gap-1 sm:grid-cols-[4.9rem_1fr]">
+                      <dt className="text-[0.62rem] font-extrabold uppercase leading-snug tracking-[0.08em] text-neutral-400">Deskripsi</dt>
+                      <dd className="text-[clamp(0.78rem,0.9vw,0.9rem)] font-medium leading-relaxed text-neutral-600">{exp.note}</dd>
+                    </div>
+                  </dl>
                 </div>
               ))}
             </div>
@@ -245,21 +269,21 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
         {faceIndex === 3 && (
           <div className="about-detail-face grid flex-1 content-center gap-5 select-none">
             <div className="w-full max-w-[860px]">
-              <h3 className="font-sans text-lg font-black text-black md:text-[1.75rem]">Achievements & Highlights</h3>
-              <p className="mt-1 max-w-xl text-xs leading-5 text-neutral-500 md:text-sm">
+              <h3 className="type-panel-title text-black">Achievements & Highlights</h3>
+              <p className="type-small mt-2 max-w-xl text-neutral-500">
                 Compact summary of strengths, focus areas, and recent development.
               </p>
             </div>
             <ul className="grid w-full max-w-[860px] gap-3 md:gap-4">
               {achievements.map((item) => (
-                <li key={item} className="border-l border-black/20 bg-neutral-50/70 py-3 pl-4 pr-4 text-xs leading-5 text-neutral-600 md:text-sm md:leading-6">
+                <li key={item} className="type-small border-l border-black/20 bg-neutral-50/70 py-3 pl-4 pr-4 text-neutral-600">
                   {item}
                 </li>
               ))}
             </ul>
             <div className="flex w-full max-w-[860px] flex-wrap gap-2 pt-1">
               {profileFocus.map((item) => (
-                <span key={item} className="border border-black/15 bg-black/5 px-2.5 py-1 text-[10px] font-bold uppercase tracking-normal text-neutral-700">
+                <span key={item} className="type-meta border border-black/15 bg-black/5 px-2.5 py-1 text-neutral-700">
                   {item}
                 </span>
               ))}
@@ -755,34 +779,34 @@ export default function About() {
     <section id="about" className="relative w-full bg-[#f4f4f4]">
       <div ref={introRef} className="relative h-screen w-full overflow-hidden bg-black">
         <div className="about-intro-title absolute top-0 left-0 w-full h-[50vh] flex items-end justify-center bg-black pb-[4vh] px-6">
-          <h2 className="font-sans text-[14vw] font-black uppercase leading-none tracking-normal text-white md:text-[9vw]">
+          <h2 className="type-section-title uppercase text-white">
             About Me
           </h2>
         </div>
 
         <div className="about-intro-quote absolute inset-0 overflow-hidden bg-[#f4f4f4] px-6 py-10 text-black md:px-16 md:py-14" style={{ touchAction: "none" }}>
           <div className="flex h-full flex-col justify-between">
-            <div className="flex items-center justify-between font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-black/55 md:text-xs">
+            <div className="type-meta flex items-center justify-between text-black/55">
               <span>[ About Me ]</span>
               <span>02/04</span>
             </div>
 
             <div className="flex min-h-[58vh] w-full items-center pl-[clamp(3.5rem,12vw,16rem)] pr-[clamp(2rem,8vw,10rem)]">
-              <p className="flex max-w-[78rem] flex-wrap justify-start gap-x-[0.44em] gap-y-[0.18em] font-sans text-[clamp(1.55rem,4.25vw,4.75rem)] font-black uppercase leading-[1.05] tracking-normal">
+              <p className="flex max-w-[78rem] flex-wrap justify-start gap-x-[0.34em] gap-y-[0.18em] font-sans text-[clamp(1.55rem,4.25vw,4.75rem)] font-black uppercase leading-[1.05] tracking-normal">
                 {manifestoWords.map((word, index) => {
                   const quietWord = index % 3 === 1 || index % 5 === 0;
 
                   return (
                     <span
                       key={`${word}-${index}`}
-                      className={`about-manifesto-word inline-flex whitespace-nowrap ${
+                      className={`about-manifesto-word inline-flex whitespace-nowrap tracking-normal ${
                         quietWord ? "text-[#9d9d9d]" : "text-black"
                       }`}
                     >
                       {Array.from(word).map((letter, letterIndex) => (
                         <span
                           key={`${word}-${letter}-${letterIndex}`}
-                          className="about-manifesto-char inline-block min-w-[0.58em] will-change-transform"
+                          className="about-manifesto-char inline-block will-change-transform"
                         >
                           {letter}
                         </span>
@@ -793,7 +817,7 @@ export default function About() {
               </p>
             </div>
 
-            <div className="flex items-end justify-between gap-6 font-mono text-[10px] uppercase tracking-[0.22em] text-black/45">
+            <div className="type-meta flex items-end justify-between gap-6 text-black/45">
               <span>Scroll to reveal story</span>
               <span>Growth / Hope</span>
             </div>
@@ -806,7 +830,7 @@ export default function About() {
 
           <div className="relative z-10 h-full min-h-screen">
             <div className="relative h-full min-h-screen overflow-hidden">
-              <div className="absolute left-8 top-20 z-20 flex flex-col gap-3 font-mono text-[10px] uppercase tracking-[0.32em] text-neutral-700 md:left-16">
+              <div className="type-meta absolute left-8 top-20 z-20 flex flex-col gap-3 text-neutral-700 md:left-16">
                 <span>Side {String(activeIndex + 1).padStart(2, "0")}</span>
                 <span className="font-bold">{activeFace.label}</span>
               </div>
@@ -828,7 +852,7 @@ export default function About() {
                 </div>
               </div>
 
-              <div className="absolute bottom-10 right-8 z-20 w-72 font-mono text-[10px] uppercase tracking-widest text-neutral-500 md:right-16">
+              <div className="type-meta absolute bottom-10 right-8 z-20 w-72 text-neutral-500 md:right-16">
                 <div className="mb-2 flex justify-between">
                   <span>Scroll Progress</span>
                   <span>{String(activeIndex + 1).padStart(2, "0")}/04</span>
@@ -856,20 +880,20 @@ export default function About() {
           <MotionReveal y={35} duration={0.6} margin="-80px" className="section-shell relative z-0 flex w-full flex-col gap-10">
             <div className="grid gap-8 border-b border-black/15 pb-8 md:grid-cols-[0.82fr_1.18fr] md:items-end">
               <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-black/45">
+                <div className="type-kicker flex items-center gap-3 text-black/45">
                   <span className="h-px w-10 bg-black/45" />
                   01B / Technical Index
                 </div>
-                <h3 className="max-w-3xl font-sans text-[clamp(2.5rem,6vw,5.75rem)] font-black uppercase leading-[0.9] tracking-normal text-black">
+                <h3 className="type-section-title max-w-3xl uppercase text-black">
                   Core Systems
                 </h3>
               </div>
 
               <div className="grid gap-4 md:justify-items-end md:text-right">
-                <p className="max-w-2xl font-sans text-sm leading-7 text-black/58 md:text-base md:leading-8">
+                <p className="type-body max-w-2xl text-black/58">
                   A practical map of the tools I use across web engineering, AI, cloud infrastructure, embedded systems, and network security.
                 </p>
-                <div className="flex flex-wrap gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-black/45 md:justify-end">
+                <div className="type-meta flex flex-wrap gap-2 text-black/45 md:justify-end">
                   <span>Cube output</span>
                   <span>/</span>
                   <span>Skill matrix</span>

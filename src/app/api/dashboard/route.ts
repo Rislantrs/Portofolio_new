@@ -17,12 +17,14 @@ export async function GET() {
   let githubData = {
     username: githubUsername,
     profileUrl: `https://github.com/${githubUsername}`,
-    chartUrl: `https://ghchart.rshah.org/8A8A8A/${githubUsername}`,
+    chartUrl: `https://ghchart.rshah.org/39d353/${githubUsername}`,
     contributions: {
       total: 348,
       thisWeek: 24,
       best: 15,
       average: 1.2,
+      currentStreak: 12,
+      longestStreak: 34,
       days: [] as any[],
       available: false,
     },
@@ -79,6 +81,12 @@ export async function GET() {
     visitors: 480,
     visits: 620,
     bounceRate: 38.5,
+    topPages: [
+      { path: "/", views: 820, percent: 66 },
+      { path: "/projects", views: 248, percent: 20 },
+      { path: "/dashboard", views: 124, percent: 10 },
+      { path: "/forum", views: 48, percent: 4 },
+    ],
   };
 
   let wakatimeData = {
@@ -86,6 +94,15 @@ export async function GET() {
     available: false,
     totalHours: 28.6,
     dailyAverage: 4.1,
+    weeklyTrend: [
+      { day: "Mon", hours: 3.2 },
+      { day: "Tue", hours: 4.8 },
+      { day: "Wed", hours: 5.4 },
+      { day: "Thu", hours: 2.1 },
+      { day: "Fri", hours: 4.2 },
+      { day: "Sat", hours: 5.1 },
+      { day: "Sun", hours: 3.8 },
+    ],
     languages: [
       { name: "TypeScript", percent: 42.5, hours: 12.2 },
       { name: "CSS/Tailwind", percent: 21.0, hours: 6.0 },
