@@ -585,11 +585,9 @@ export default function Hero() {
         </div>
 
         {/* ── Three.js ink trails ───────────────────────────────────────────── */}
-        {!isLowEnd && (
-          <div className="hero-ink-canvas-wrapper absolute inset-0 w-full h-full z-2 pointer-events-none">
-            <InkCanvas />
-          </div>
-        )}
+        <div className="hero-ink-canvas-wrapper absolute inset-0 w-full h-full z-2 pointer-events-none">
+          <InkCanvas />
+        </div>
 
         {/* ── Portrait wrapper ──────────────────────────────────────────────── */}
         <div className="hero-portrait-scale-wrapper absolute inset-0 w-full h-full z-3 select-none overflow-hidden">

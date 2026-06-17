@@ -28,20 +28,10 @@ const Preloader = dynamic(() => import("@/components/Preloader"), {
 export default function PortfolioClientEffects() {
   const [loaded, setLoaded] = useState(false);
   const [showPreloader, setShowPreloader] = useState(true);
-  const [liteMode, setLiteMode] = useState(false);
+  const liteMode = false;
 
   useEffect(() => {
-    const updateMode = () => {
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const nextLiteMode = reduceMotion;
-
-      setLiteMode(nextLiteMode);
-      document.documentElement.dataset.perfMode = nextLiteMode ? "lite" : "full";
-    };
-
-    updateMode();
-    window.addEventListener("resize", updateMode);
-    return () => window.removeEventListener("resize", updateMode);
+    document.documentElement.dataset.perfMode = "full";
   }, []);
 
   useEffect(() => {
@@ -106,13 +96,6 @@ export default function PortfolioClientEffects() {
       });
     }, 150);
   }, []);
-
-  useEffect(() => {
-    if (!liteMode || !showPreloader) return;
-
-    const timer = window.setTimeout(completePreloader, 0);
-    return () => window.clearTimeout(timer);
-  }, [completePreloader, liteMode, showPreloader]);
 
   return showPreloader ? <Preloader onComplete={completePreloader} /> : null;
 }
