@@ -31,23 +31,9 @@ export default function PortfolioClientEffects() {
   const [liteMode, setLiteMode] = useState(false);
 
   useEffect(() => {
-    const nav = window.navigator as Navigator & {
-      deviceMemory?: number;
-      hardwareConcurrency?: number;
-    };
     const updateMode = () => {
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-      const smallScreen = window.innerWidth <= performanceConfig.smallScreenMax;
-      const mobileScreen = window.innerWidth <= performanceConfig.mobileMax;
-      const lowMemory =
-        typeof nav.deviceMemory === "number" &&
-        nav.deviceMemory <= performanceConfig.lowMemoryGB;
-      const lowCpu =
-        typeof nav.hardwareConcurrency === "number" &&
-        nav.hardwareConcurrency <= performanceConfig.lowCpuCores;
-      const nextLiteMode =
-        reduceMotion || coarsePointer || smallScreen || mobileScreen || lowMemory || lowCpu;
+      const nextLiteMode = reduceMotion;
 
       setLiteMode(nextLiteMode);
       document.documentElement.dataset.perfMode = nextLiteMode ? "lite" : "full";

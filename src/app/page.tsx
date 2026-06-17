@@ -13,6 +13,7 @@ export default function Home() {
     <PortfolioShell>
       <Navbar />
       <main className="relative z-1 block w-full">
+        <h1 className="sr-only">M Rislan Tristansyah - Creative Developer & AI Enthusiast Portfolio</h1>
         <Hero />
         <About />
         <Certifications />

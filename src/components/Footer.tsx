@@ -180,7 +180,7 @@ export default function Footer() {
             <span className="type-meta text-white/35">01 / Explore</span>
             <nav className="mt-5 grid gap-2 text-[clamp(1.1rem,1.6vw,1.45rem)] font-black uppercase leading-none text-white">
               {navLinks.map(([label, href]) => (
-                <a key={label} href={href} className="w-fit text-white/80 transition-colors hover:text-white">
+                <a key={label} href={href} className="w-fit text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm">
                   {label}
                 </a>
               ))}
@@ -191,7 +191,7 @@ export default function Footer() {
             <span className="type-meta text-white/35">02 / Connect</span>
             <div className="type-meta mt-5 grid gap-3 text-white/55">
               {socialLinks.map(([label, href]) => (
-                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="flex w-fit items-center gap-2 transition-colors hover:text-white">
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="flex w-fit items-center gap-2 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm">
                   {label} <ArrowUpRight size={12} />
                 </a>
               ))}
@@ -202,7 +202,7 @@ export default function Footer() {
             <span className="type-meta text-white/35">03 / Signal</span>
             <div className="mt-5 grid gap-4">
               <p className="type-panel-title uppercase text-white">Open to build</p>
-              <a href="mailto:rislantristansyah@gmail.com" className="type-small break-all lowercase text-white/55 transition-colors hover:text-white">
+              <a href="mailto:rislantristansyah@gmail.com" className="type-small break-all lowercase text-white/55 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-sm">
                 rislantristansyah@gmail.com
               </a>
             </div>
@@ -212,7 +212,7 @@ export default function Footer() {
             <span className="type-meta text-white/35">04 / Return</span>
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="mt-5 inline-flex items-center gap-2 text-[clamp(1.1rem,1.6vw,1.45rem)] font-black uppercase leading-none text-white/80 transition-colors hover:text-white"
+              className="mt-5 inline-flex items-center gap-2 text-[clamp(1.1rem,1.6vw,1.45rem)] font-black uppercase leading-none text-white/80 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent rounded-md"
             >
               Top <ArrowUp size={18} />
             </button>

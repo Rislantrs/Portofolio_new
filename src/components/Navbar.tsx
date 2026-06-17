@@ -65,13 +65,13 @@ export default function Navbar() {
   };
 
   return (
-    <>
+    <header className="contents">
       {/* ── Fixed Burger Button at Top Right ────────────────────────────────── */}
       <button
         id="navbar-burger-btn"
         onClick={() => setMenuOpen(!menuOpen)}
         aria-label="Toggle menu"
-        className={`fixed top-6 right-6 md:right-8 z-50 flex items-center justify-center w-12 h-12 rounded-full border transition-all duration-300 ${
+        className={`fixed top-6 right-6 md:right-8 z-50 flex items-center justify-center w-12 h-12 rounded-full border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent ${
           scrolled || menuOpen
             ? "bg-bg-elevated/80 border-accent/20 text-white shadow-lg backdrop-blur-md"
             : "bg-black/40 border-white/10 text-white hover:bg-black/60 backdrop-blur-sm"
@@ -90,7 +90,7 @@ export default function Navbar() {
         style={{ background: "rgba(5,5,5,0.97)", backdropFilter: "blur(24px)" }}
       >
         {navLinks.map((link, i) => {
-          const className = `group relative font-display font-black text-4xl md:text-6xl tracking-tighter uppercase transition-all duration-300 select-none ${
+          const className = `group relative font-display font-black text-4xl md:text-6xl tracking-tighter uppercase transition-all duration-300 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
             link.id && activeSection === link.id
               ? "text-accent-light"
               : "text-white/25 hover:text-white"
@@ -126,6 +126,6 @@ export default function Navbar() {
           );
         })}
       </nav>
-    </>
+    </header>
   );
 }

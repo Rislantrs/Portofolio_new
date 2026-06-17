@@ -209,7 +209,16 @@ function ProjectCard({
   return (
     <div
       onClick={onClick}
-      className="group relative h-full w-full cursor-pointer select-none transition-transform duration-500 hover:-translate-y-1.5"
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      className="group relative h-full w-full cursor-pointer select-none transition-transform duration-500 hover:-translate-y-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent"
+      aria-label={`View details of project ${project.title}`}
     >
       {/* Outer border & shadow container */}
       <div
@@ -270,11 +279,15 @@ function ProjectCard({
                       className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5 text-[0.45rem] font-bold text-text-muted shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)] hover:bg-white/10 transition-colors"
                     >
                       {tech.icon ? (
-                        <img 
-                          src={tech.icon} 
-                          alt="" 
-                          className={`h-4 w-4 object-contain ${tech.invert ? "invert brightness-200" : ""}`} 
-                        />
+                        <div className="relative h-4 w-4">
+                          <Image 
+                            src={tech.icon} 
+                            alt="" 
+                            fill
+                            sizes="16px"
+                            className={`object-contain ${tech.invert ? "invert brightness-200" : ""}`} 
+                          />
+                        </div>
                       ) : (
                         <span className="text-[8px] font-bold tracking-tight text-white">{tech.label}</span>
                       )}
@@ -290,6 +303,7 @@ function ProjectCard({
     </div>
   );
 }
+
 
 // ─── ProjectModal ──────────────────────────────────────────────────────────
 function ProjectModal({ project, onClose }: { project: Project; onClose: () => void }) {
@@ -311,7 +325,7 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         className="w-full max-w-4xl bg-bg-elevated border border-white/15 rounded-2xl overflow-hidden shadow-2xl relative flex flex-col md:flex-row animate-in fade-in zoom-in-95 duration-250"
         onClick={(e) => e.stopPropagation()}
       >
-        <button onClick={onClose} aria-label="Close modal" className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/60 text-white hover:bg-accent hover:text-black transition-all duration-300 cursor-pointer">
+        <button onClick={onClose} aria-label="Close modal" className="absolute top-4 right-4 z-50 p-2 rounded-full bg-black/60 text-white hover:bg-accent hover:text-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent transition-all duration-300 cursor-pointer">
           <X size={18} />
         </button>
 
@@ -346,14 +360,14 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
             <div className="flex items-center gap-4 pt-2 border-t border-white/5">
               {project.github && (
                 <a href={project.github} target="_blank" rel="noopener noreferrer"
-                  className="type-action flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all flex items-center justify-center gap-2">
+                  className="type-action flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent">
                   <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" /></svg>
                   GitHub
                 </a>
               )}
               {project.demo && (
                 <a href={project.demo} target="_blank" rel="noopener noreferrer"
-                  className="type-action flex-1 py-3 rounded-xl bg-accent hover:bg-accent-light text-black transition-all flex items-center justify-center gap-2">
+                  className="type-action flex-1 py-3 rounded-xl bg-accent hover:bg-accent-light text-black transition-all flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-accent">
                   <ExternalLink size={14} /> Live Demo
                 </a>
               )}

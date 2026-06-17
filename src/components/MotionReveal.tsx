@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLowEndDevice } from "@/hooks/useLowEndDevice";
 
 type MotionRevealProps = {
   children: React.ReactNode;
@@ -21,6 +22,16 @@ export default function MotionReveal({
   delay = 0,
   margin = "-80px",
 }: MotionRevealProps) {
+  const reduceMotion = useLowEndDevice();
+
+  if (reduceMotion) {
+    return (
+      <div id={id} className={className}>
+        {children}
+      </div>
+    );
+  }
+
   return (
     <motion.div
       id={id}
