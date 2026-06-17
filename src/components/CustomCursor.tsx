@@ -8,6 +8,8 @@ export default function CustomCursor() {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
+  const positionRef = useRef({ x: 0, y: 0 });
+  const visibleRef = useRef(false);
   const trailRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -17,15 +19,21 @@ export default function CustomCursor() {
     }
 
     const updatePosition = (e: MouseEvent) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-      if (!isVisible) setIsVisible(true);
+      positionRef.current = { x: e.clientX, y: e.clientY };
+      setPosition(positionRef.current);
+      if (!visibleRef.current) {
+        visibleRef.current = true;
+        setIsVisible(true);
+      }
     };
 
     const handleMouseLeave = () => {
+      visibleRef.current = false;
       setIsVisible(false);
     };
 
     const handleMouseEnter = () => {
+      visibleRef.current = true;
       setIsVisible(true);
     };
 
@@ -58,8 +66,8 @@ export default function CustomCursor() {
     // Smooth trailing animation using requestAnimationFrame
     let animationFrameId: number;
     const render = () => {
-      trailRef.current.x += (position.x - trailRef.current.x) * 0.15;
-      trailRef.current.y += (position.y - trailRef.current.y) * 0.15;
+      trailRef.current.x += (positionRef.current.x - trailRef.current.x) * 0.15;
+      trailRef.current.y += (positionRef.current.y - trailRef.current.y) * 0.15;
       setTrailPosition({ x: trailRef.current.x, y: trailRef.current.y });
       animationFrameId = requestAnimationFrame(render);
     };
@@ -74,7 +82,7 @@ export default function CustomCursor() {
       window.removeEventListener("mouseover", handleMouseOver);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [position, isVisible]);
+  }, []);
 
   if (!isVisible) return null;
 
@@ -82,7 +90,7 @@ export default function CustomCursor() {
     <>
       {/* Outer cursor ring */}
       <div
-        className="pointer-events-none fixed left-0 top-0 z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent bg-transparent transition-all duration-150 ease-out"
+        className="custom-cursor pointer-events-none fixed left-0 top-0 z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent bg-transparent transition-all duration-150 ease-out"
         style={{
           transform: `translate3d(${trailPosition.x}px, ${trailPosition.y}px, 0) scale(${
             isClicking ? 0.8 : isHovered ? 1.5 : 1
@@ -94,7 +102,7 @@ export default function CustomCursor() {
       />
       {/* Inner dot */}
       <div
-        className="pointer-events-none fixed left-0 top-0 z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent transition-transform duration-100 ease-out"
+        className="custom-cursor pointer-events-none fixed left-0 top-0 z-[9999] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent transition-transform duration-100 ease-out"
         style={{
           transform: `translate3d(${position.x}px, ${position.y}px, 0) scale(${
             isClicking ? 1.2 : isHovered ? 0.5 : 1

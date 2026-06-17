@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
+import { performanceConfig } from "@/lib/siteConfig";
 
 function PreloaderFallback() {
   return (
@@ -27,9 +28,39 @@ const Preloader = dynamic(() => import("@/components/Preloader"), {
 export default function PortfolioClientEffects() {
   const [loaded, setLoaded] = useState(false);
   const [showPreloader, setShowPreloader] = useState(true);
+  const [liteMode, setLiteMode] = useState(false);
+
+  useEffect(() => {
+    const nav = window.navigator as Navigator & {
+      deviceMemory?: number;
+      hardwareConcurrency?: number;
+    };
+    const updateMode = () => {
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
+      const smallScreen = window.innerWidth <= performanceConfig.smallScreenMax;
+      const mobileScreen = window.innerWidth <= performanceConfig.mobileMax;
+      const lowMemory =
+        typeof nav.deviceMemory === "number" &&
+        nav.deviceMemory <= performanceConfig.lowMemoryGB;
+      const lowCpu =
+        typeof nav.hardwareConcurrency === "number" &&
+        nav.hardwareConcurrency <= performanceConfig.lowCpuCores;
+      const nextLiteMode =
+        reduceMotion || coarsePointer || smallScreen || mobileScreen || lowMemory || lowCpu;
+
+      setLiteMode(nextLiteMode);
+      document.documentElement.dataset.perfMode = nextLiteMode ? "lite" : "full";
+    };
+
+    updateMode();
+    window.addEventListener("resize", updateMode);
+    return () => window.removeEventListener("resize", updateMode);
+  }, []);
 
   useEffect(() => {
     if (!loaded) return;
+    if (liteMode && !performanceConfig.enableSmoothScrollOnMobile) return;
 
     let frameId = 0;
     let cancelled = false;
@@ -78,7 +109,7 @@ export default function PortfolioClientEffects() {
       lenis?.destroy();
       document.removeEventListener("click", handleAnchorScroll);
     };
-  }, [loaded]);
+  }, [loaded, liteMode]);
 
   const completePreloader = useCallback(() => {
     setLoaded(true);
@@ -89,6 +120,13 @@ export default function PortfolioClientEffects() {
       });
     }, 150);
   }, []);
+
+  useEffect(() => {
+    if (!liteMode || !showPreloader) return;
+
+    const timer = window.setTimeout(completePreloader, 0);
+    return () => window.clearTimeout(timer);
+  }, [completePreloader, liteMode, showPreloader]);
 
   return showPreloader ? <Preloader onComplete={completePreloader} /> : null;
 }

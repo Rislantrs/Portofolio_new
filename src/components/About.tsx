@@ -42,21 +42,23 @@ const experiences = [
     role: "Internship Student",
     org: "Dinas Arsip dan Perpustakaan Kabupaten Purwakarta",
     period: "Jan - Jun 2026",
-    note: "Magang di bidang Pembinaan, Pelestarian dan Pengembangan Kearsipan (P3K)."
+    note: "Magang di bidang Pembinaan, Pelestarian dan Pengembangan Kearsipan (P3K).",
+    logo: "/assets/disispusda.png"
   },
   {
     title: "HMST",
     role: "Staff Departemen Profesi dan Kejuruan",
-    org: "HIMATELKOM (Himpunan Mahasiswa Sistem Telekomunikasi)",
+    org: "HMST (Himpunan Mahasiswa Sistem Telekomunikasi)",
     period: "2024 - 2025",
-    note: "Menyusun dan melaksanakan program pelatihan kejuruan serta sertifikasi telekomunikasi."
+    note: "Menyusun dan melaksanakan program pelatihan kejuruan serta sertifikasi telekomunikasi.",
+    logo: "/assets/hmst.png"
   }
 ];
 
 const achievements = [
   "Strong academic foundation in telecommunications, networking, cloud computing, and AI.",
   "Actively managed skill development opportunities and information for association members.",
-  "Experienced in research, administration, and team coordination.",
+  "Played a key role during the internship, contributing significantly to the organization achieving 1st Place for the Best National Network Node (Simpul Jaringan Terbaik Nasional).",
 ];
 
 const manifestoWords =
@@ -237,29 +239,21 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
             </div>
             <div className="grid w-full max-w-[860px] gap-3 md:gap-4">
               {experiences.map((exp, idx) => (
-                <div key={idx} className="border-l border-black/15 bg-white/25 py-3.5 pl-4 pr-4">
-                  <div className="mb-3 flex items-start justify-between gap-4">
-                    <h4 className="text-[clamp(0.95rem,1.18vw,1.12rem)] font-extrabold leading-tight tracking-[-0.015em] text-black">{exp.title}</h4>
-                    <span className="type-meta shrink-0 text-neutral-500">{exp.period}</span>
+                <div key={idx} className="flex items-start gap-4 border-l border-black/15 bg-white/25 py-3.5 pl-4 pr-4">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center mt-1 bg-white/50 rounded-lg p-1 border border-black/5">
+                    <img src={exp.logo} alt={`${exp.title} logo`} className="h-full w-full object-contain" />
                   </div>
-                  <dl className="grid gap-2.5">
-                    <div className="grid gap-1 sm:grid-cols-[4.9rem_1fr]">
-                      <dt className="text-[0.62rem] font-extrabold uppercase leading-snug tracking-[0.08em] text-neutral-400">Posisi</dt>
-                      <dd className="text-[clamp(0.78rem,0.9vw,0.9rem)] font-bold leading-snug text-neutral-800">{exp.role}</dd>
+                  <div className="min-w-0 flex-grow">
+                    <div className="flex items-start justify-between gap-4">
+                      <h4 className="text-[clamp(0.95rem,1.18vw,1.12rem)] font-extrabold leading-tight tracking-[-0.015em] text-black">{exp.title}</h4>
+                      <span className="type-meta shrink-0 text-neutral-500">{exp.period}</span>
                     </div>
-                    <div className="grid gap-1 sm:grid-cols-[4.9rem_1fr]">
-                      <dt className="text-[0.62rem] font-extrabold uppercase leading-snug tracking-[0.08em] text-neutral-400">Instansi</dt>
-                      <dd className="text-[clamp(0.78rem,0.9vw,0.9rem)] font-semibold leading-snug text-neutral-700">{exp.org}</dd>
+                    <div className="mt-1 flex flex-col gap-0.5">
+                      <p className="text-[clamp(0.78rem,0.9vw,0.9rem)] font-extrabold leading-snug text-neutral-800">{exp.role}</p>
+                      <p className="text-[clamp(0.74rem,0.84vw,0.86rem)] font-semibold leading-snug text-neutral-600">{exp.org}</p>
+                      <p className="mt-2 text-[clamp(0.74rem,0.84vw,0.86rem)] font-medium leading-relaxed text-neutral-500 border-t border-black/5 pt-2">{exp.note}</p>
                     </div>
-                    <div className="grid gap-1 sm:grid-cols-[4.9rem_1fr]">
-                      <dt className="text-[0.62rem] font-extrabold uppercase leading-snug tracking-[0.08em] text-neutral-400">Waktu</dt>
-                      <dd className="text-[clamp(0.78rem,0.9vw,0.9rem)] font-semibold leading-snug text-neutral-700">{exp.period}</dd>
-                    </div>
-                    <div className="grid gap-1 sm:grid-cols-[4.9rem_1fr]">
-                      <dt className="text-[0.62rem] font-extrabold uppercase leading-snug tracking-[0.08em] text-neutral-400">Deskripsi</dt>
-                      <dd className="text-[clamp(0.78rem,0.9vw,0.9rem)] font-medium leading-relaxed text-neutral-600">{exp.note}</dd>
-                    </div>
-                  </dl>
+                  </div>
                 </div>
               ))}
             </div>

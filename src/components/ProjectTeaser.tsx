@@ -124,13 +124,13 @@ export default function ProjectTeaser() {
       <div className="absolute w-full flex items-center overflow-hidden pointer-events-none z-20">
         <div
           ref={textRef}
-          className="whitespace-nowrap flex gap-10 items-center text-[13vw] md:text-[10vw] font-mega uppercase tracking-tighter leading-none select-none px-4"
+          className="whitespace-nowrap flex gap-8 md:gap-10 items-center text-[12vw] md:text-[9vw] font-mega uppercase tracking-normal leading-none select-none px-4"
         >
-          <span className="text-black font-black">EXPLORE MY</span>
-          <span className="text-accent italic font-black">PROJECTS</span>
+          <span className="font-black text-neutral-900/55">EXPLORE MY</span>
+          <span className="font-black italic text-neutral-950 drop-shadow-[0_12px_24px_rgba(0,0,0,0.14)]">PROJECTS</span>
           <span className="text-black font-black">✦</span>
-          <span className="text-black font-black">THE WORKS I</span>
-          <span className="text-accent italic font-black">BUILT</span>
+          <span className="font-black text-neutral-900/55">THE WORKS I</span>
+          <span className="font-black italic text-neutral-950 drop-shadow-[0_12px_24px_rgba(0,0,0,0.14)]">BUILT</span>
         </div>
       </div>
 

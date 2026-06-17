@@ -105,6 +105,7 @@ body {
 #certifications,
 #contact-footer,
 #journey,
+#forum-page,
 #admin,
 #project-detail {
   font-family: var(--font-body);
@@ -115,8 +116,29 @@ body {
 #projects :is(.font-display, .font-sans, .font-mono, .font-mega),
 #certifications :is(.font-display, .font-sans, .font-mono, .font-mega),
 #contact-footer :is(.font-display, .font-sans, .font-mono, .font-mega),
+#forum-page :is(.font-display, .font-sans, .font-mono, .font-mega),
 #journey :is(.font-display, .font-sans, .font-mono, .font-mega) {
   font-family: var(--font-body) !important;
+}
+
+#forum-page {
+  padding-inline: clamp(1.5rem, 4vw, 4rem) !important;
+}
+
+#forum-page .forum-shell {
+  width: 100% !important;
+  max-width: min(80rem, calc(100vw - clamp(3rem, 8vw, 8rem))) !important;
+  margin-inline: auto !important;
+}
+
+@media (max-width: 767px) {
+  #forum-page {
+    padding-inline: clamp(1rem, 5vw, 1.5rem) !important;
+  }
+
+  #forum-page .forum-shell {
+    max-width: calc(100vw - clamp(2rem, 10vw, 3rem)) !important;
+  }
 }
 
 .type-kicker {
@@ -189,6 +211,8 @@ body {
 @media (max-width: 767px) {
   :root {
     --section-gutter: clamp(1.25rem, 6vw, 2rem);
+    --type-section-title: clamp(2rem, 12vw, 3.25rem);
+    --type-panel-title: clamp(1.25rem, 7vw, 1.7rem);
   }
 }
 
@@ -430,4 +454,73 @@ html.lenis, html.lenis body {
 
 .animate-gold-pulse {
   animation: gold-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+html[data-perf-mode="lite"] .grain-overlay {
+  opacity: 0.018;
+}
+
+html[data-perf-mode="lite"] .glass-panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html[data-perf-mode="lite"] .animate-marquee-left,
+html[data-perf-mode="lite"] .animate-marquee-right {
+  animation-duration: 58s;
+}
+
+html[data-perf-mode="lite"] .hero-ink-canvas-wrapper,
+html[data-perf-mode="lite"] .custom-cursor {
+  display: none !important;
+}
+
+@media (max-width: 390px) {
+  :root {
+    --section-gutter: 1rem;
+    --type-section-title: clamp(1.9rem, 13vw, 2.75rem);
+    --type-body: 0.95rem;
+    --type-small: 0.8rem;
+  }
+
+  .section-shell,
+  .section-shell-wide {
+    width: calc(100% - 2rem);
+  }
+
+  #home .hero-reveal-layer {
+    padding-block: 18svh;
+  }
+
+  #home .hero-signature {
+    font-size: 46vw !important;
+  }
+
+  #projects {
+    --project-mobile-gap: 1rem;
+  }
+
+  #projects .section-shell {
+    padding-block: 4rem;
+  }
+
+  #projects .type-section-title {
+    line-height: 1;
+  }
+
+  #projects .mobile-proj-card {
+    min-height: 310px;
+    aspect-ratio: 0.92;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

@@ -357,7 +357,7 @@ export default function Certifications() {
   useCertificationsTimeline({
     isPinned,
     sectionRef,
-    trackViewportRef,
+trackViewportRef,
     trackRef,
     sliderThumbRef,
   });
@@ -368,7 +368,7 @@ export default function Certifications() {
       ref={sectionRef}
       id="certifications"
       className={`relative z-20 isolate w-full bg-bg overflow-hidden flex flex-col ${
-        isPinned ? "h-[100svh] pt-20 pb-10" : "py-24"
+        isPinned ? "h-[100svh] pt-6 pb-10 md:pt-8" : "py-24"
       }`}
     >
       <div className="pointer-events-none absolute inset-0 -z-10 bg-bg" />
@@ -384,7 +384,7 @@ export default function Certifications() {
 
       {/* Cinematic HUD Top Bar */}
       {isPinned && (
-        <div className="type-meta section-shell absolute top-5 left-1/2 -translate-x-1/2 flex justify-between items-center border-b border-white/5 pb-3 pointer-events-none select-none text-text-muted z-30">
+        <div className="type-meta section-shell flex justify-between items-center border-b border-white/5 pb-3 pointer-events-none select-none text-text-muted z-30 mb-6">
           <div className="flex items-center gap-3">
             <span className="text-accent animate-pulse font-black">● REC</span>
             <span>CRD_VAL_SYS_03</span>

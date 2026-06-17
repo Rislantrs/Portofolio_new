@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { ExternalLink, X } from "lucide-react";
 import { motion } from "framer-motion";
 import { useProjectsTimeline } from "@/hooks/useProjectsTimeline";
+import { useLowEndDevice } from "@/hooks/useLowEndDevice";
 
 interface Project {
   id: number;
@@ -140,6 +141,56 @@ function chunk<T>(arr: T[], size: number): T[][] {
   return result;
 }
 
+const deviconBase = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
+
+const techMarks: Record<string, { label: string; color: string; icon?: string; invert?: boolean }> = {
+  PHP: { label: "PHP", color: "#8993be", icon: `${deviconBase}/php/php-original.svg`, invert: true },
+  MySQL: { label: "SQL", color: "#f29111", icon: `${deviconBase}/mysql/mysql-original.svg` },
+  "School Profile": { label: "WEB", color: "#38bdf8" },
+  Consulting: { label: "UX", color: "#facc15" },
+  IoT: { label: "IoT", color: "#22c55e" },
+  ESP8266: { label: "ESP", color: "#14b8a6" },
+  Blynk: { label: "BY", color: "#84cc16" },
+  MAX30102: { label: "HR", color: "#ef4444" },
+  "Machine Learning": { label: "ML", color: "#a78bfa" },
+  XGBoost: { label: "XGB", color: "#f97316" },
+  Python: { label: "PY", color: "#3776ab", icon: `${deviconBase}/python/python-original.svg` },
+  "IBM Dataset": { label: "IBM", color: "#60a5fa" },
+  NLP: { label: "NLP", color: "#ec4899" },
+  "Web Crawling": { label: "CRW", color: "#f59e0b" },
+  Sastrawi: { label: "ID", color: "#fb7185" },
+  SDN: { label: "SDN", color: "#06b6d4" },
+  "Ryu Controller": { label: "RYU", color: "#64748b" },
+  "Mininet-WiFi": { label: "NET", color: "#10b981" },
+  "Hybrid Topo": { label: "TOP", color: "#fde047" },
+  Flask: { label: "FL", color: "#e5e7eb", icon: `${deviconBase}/flask/flask-original.svg`, invert: true },
+  "Groq API": { label: "GQ", color: "#f43f5e" },
+  Llama3: { label: "L3", color: "#fb923c" },
+  CatBoost: { label: "CAT", color: "#facc15" },
+  "Scikit-Learn": { label: "SK", color: "#f97316", icon: `${deviconBase}/scikitlearn/scikitlearn-original.svg` },
+  Regression: { label: "RG", color: "#34d399" },
+  Arduino: { label: "ARD", color: "#00979d", icon: `${deviconBase}/arduino/arduino-original.svg` },
+  "Embedded System": { label: "EMB", color: "#22c55e" },
+  "C++": { label: "C++", color: "#60a5fa", icon: `${deviconBase}/cplusplus/cplusplus-original.svg` },
+  MATLAB: { label: "MAT", color: "#f97316", icon: `${deviconBase}/matlab/matlab-original.svg` },
+  Steganography: { label: "STG", color: "#a3e635" },
+  Cryptography: { label: "CRY", color: "#818cf8" },
+  Security: { label: "SEC", color: "#f87171" },
+};
+
+function getTechMark(tag: string) {
+  if (techMarks[tag]) return techMarks[tag];
+
+  const label = tag
+    .split(/[\s/-]+/)
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 3)
+    .toUpperCase();
+
+  return { label: label || "DEV", color: "#d7d7d7" };
+}
+
 // ─── ProjectCard ───────────────────────────────────────────────────────────
 function ProjectCard({
   project,
@@ -148,72 +199,93 @@ function ProjectCard({
   project: Project;
   onClick: () => void;
 }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [dim, setDim] = useState({ w: 0, h: 0 });
-  const [hovered, setHovered] = useState(false);
   const [imageSrc, setImageSrc] = useState(project.image);
+  const visibleTech = project.tags.slice(0, 4);
 
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const ro = new ResizeObserver(() => {
-      setDim({ w: el.offsetWidth, h: el.offsetHeight });
-    });
-    setDim({ w: el.offsetWidth, h: el.offsetHeight });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  const { w, h } = dim;
-  const clipId = `clip-${project.id}`;
-  const r = 14; const nr = 10; const nw = 120; const nh = 30;
-  const path = w && h
-    ? `M ${r+1},1 L ${w-r-1},1 A ${r},${r} 0 0 1 ${w-1},${r+1} L ${w-1},${h-nh-nr-1} A ${nr},${nr} 0 0 0 ${w-nr-1},${h-nh-1} L ${w-nw+nr-1},${h-nh-1} A ${nr},${nr} 0 0 0 ${w-nw-1},${h-nh+nr-1} L ${w-nw-1},${h-r-1} A ${r},${r} 0 0 1 ${w-nw-r-1},${h-1} L ${r+1},${h-1} A ${r},${r} 0 0 1 1,${h-r-1} L 1,${r+1} A ${r},${r} 0 0 1 ${r+1},1 Z`
-    : "";
+  // 2 rounded (top-left & bottom-right), 2 sharp (top-right & bottom-left)
+  const outerRadius = "48px 0px 48px 0px";
+  const innerRadius = "46px 0px 46px 0px";
 
   return (
     <div
-      ref={containerRef}
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="relative w-full h-full group cursor-pointer select-none transition-transform duration-500 hover:scale-[1.018]"
+      className="group relative h-full w-full cursor-pointer select-none transition-transform duration-500 hover:-translate-y-1.5"
     >
-      {path && (
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-          <defs><clipPath id={clipId}><path d={path} /></clipPath></defs>
-          <path
-            d={path}
-            fill="var(--color-surface)"
-            stroke="currentColor"
-            strokeWidth="1.5"
-            className="text-white/10 group-hover:text-accent transition-all duration-300"
-            style={{
-              filter: hovered ? "drop-shadow(0 0 6px rgba(255,255,255,0.35))" : "drop-shadow(0 0 2px rgba(0,0,0,0.5))",
-              transition: "all 0.3s ease",
-            }}
-          />
-        </svg>
-      )}
-
+      {/* Outer border & shadow container */}
       <div
-        className="absolute inset-0 w-full h-full z-[1] overflow-hidden"
-        style={{ clipPath: path ? `url(#${clipId})` : "none" }}
-      >
-        <Image
-          src={imageSrc}
-          alt={project.title}
-          fill
-          sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-700"
-          onError={() => setImageSrc("/assets/IMG_0304.JPG")}
-        />
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-      </div>
+        className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.03)_40%,rgba(0,0,0,0.8))] shadow-[0_20px_45px_rgba(0,0,0,0.6)] border border-white/5 transition-all duration-500 group-hover:border-white/20"
+        style={{ borderRadius: outerRadius }}
+      />
 
-      <div className="absolute bottom-0 right-0 w-[120px] h-[30px] flex items-center justify-end pr-4 pointer-events-none z-10">
-        <span className="type-meta text-text-muted">{project.shortTitle}</span>
-        <span className="type-meta ml-1.5 text-accent">{project.year}</span>
+      {/* Inner card frame */}
+      <div
+        className="relative flex h-full min-h-[220px] flex-col overflow-hidden bg-[#111] p-1.5"
+        style={{ borderRadius: outerRadius }}
+      >
+        {/* Content Box */}
+        <div 
+          className="relative z-10 flex h-full min-w-0 flex-col overflow-hidden bg-[#0c0c0c] border border-white/5" 
+          style={{ borderRadius: innerRadius }}
+        >
+          {/* Image Container (Simple, Premium, Visible Contrast) */}
+          <div className="relative min-h-0 flex-1 overflow-hidden bg-gradient-to-b from-[#22201d] to-[#0d0c0b] border-b border-white/5">
+            <Image
+              src={imageSrc}
+              alt={project.title}
+              fill
+              sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
+              className="object-contain p-4 transition-transform duration-700 group-hover:scale-[1.03] drop-shadow-[0_6px_15px_rgba(0,0,0,0.5)]"
+              onError={() => setImageSrc("/assets/IMG_0304.JPG")}
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+            <span className="type-meta absolute right-3 top-3 rounded-full bg-black/80 border border-white/10 px-2 py-0.5 text-accent text-[9px] font-bold">
+              {project.year}
+            </span>
+          </div>
+
+          {/* Project Details Bottom Area */}
+          <div className="shrink-0 bg-[#0e0e0e]">
+            {/* Title Bar */}
+            <div className="bg-gradient-to-r from-[#141414] to-[#0a0a0a] px-3.5 py-2.5">
+              <div className="flex items-center justify-between gap-3">
+                <h3 className="min-w-0 flex-1 truncate text-[0.8rem] font-bold uppercase leading-none tracking-normal text-white group-hover:text-accent transition-colors">
+                  {project.title}
+                </h3>
+                <span className="type-meta shrink-0 text-accent font-bold text-[10px]">{project.shortTitle}</span>
+              </div>
+            </div>
+
+            {/* Tech Stack Bar */}
+            <div className="flex h-10 items-center gap-2 border-t border-white/5 bg-[#0a0a0a] px-3.5">
+              <span className="type-meta shrink-0 text-white/40 text-[9px] font-bold">STACK</span>
+              <div className="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden">
+                {visibleTech.map((tag) => {
+                  const tech = getTechMark(tag);
+
+                  return (
+                    <span
+                      key={tag}
+                      title={tag}
+                      aria-label={tag}
+                      className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-white/10 bg-white/5 text-[0.45rem] font-bold text-text-muted shadow-[inset_0_1px_2px_rgba(255,255,255,0.05)] hover:bg-white/10 transition-colors"
+                    >
+                      {tech.icon ? (
+                        <img 
+                          src={tech.icon} 
+                          alt="" 
+                          className={`h-4 w-4 object-contain ${tech.invert ? "invert brightness-200" : ""}`} 
+                        />
+                      ) : (
+                        <span className="text-[8px] font-bold tracking-tight text-white">{tech.label}</span>
+                      )}
+                    </span>
+                  );
+                })}
+              </div>
+              <span className="type-meta shrink-0 text-white/30 text-[9px] font-bold group-hover:text-accent transition-colors">VIEW</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -297,14 +369,22 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
 }
 
 // ─── Mobile layout ─────────────────────────────────────────────────────────
-function MobileCard({ project, onClick }: { project: Project; onClick: () => void }) {
+function MobileCard({
+  project,
+  onClick,
+  reduceMotion,
+}: {
+  project: Project;
+  onClick: () => void;
+  reduceMotion: boolean;
+}) {
   return (
     <motion.div
-      initial={{ y: 40, opacity: 0 }}
-      whileInView={{ y: 0, opacity: 1 }}
-      viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full aspect-[4/3]"
+      initial={reduceMotion ? false : { y: 24, opacity: 0 }}
+      whileInView={reduceMotion ? undefined : { y: 0, opacity: 1 }}
+      viewport={reduceMotion ? undefined : { once: true, margin: "-40px" }}
+      transition={reduceMotion ? undefined : { duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      className="mobile-proj-card w-full min-h-[300px] aspect-[4/3]"
     >
       <ProjectCard project={project} onClick={onClick} />
     </motion.div>
@@ -314,6 +394,7 @@ function MobileCard({ project, onClick }: { project: Project; onClick: () => voi
 // ─── Main Combined Projects & Teaser Component ─────────────────────────────
 export default function Projects() {
   const router = useRouter();
+  const isLowEnd = useLowEndDevice();
   const sectionRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const teaserRef = useRef<HTMLDivElement>(null);
@@ -390,13 +471,13 @@ export default function Projects() {
           <div className="absolute w-full flex items-center overflow-hidden pointer-events-none z-20">
             <div
               ref={teaserTextRef}
-              className="whitespace-nowrap flex gap-10 items-center text-[13vw] md:text-[10vw] font-mega uppercase tracking-tighter leading-none select-none px-4"
+              className="whitespace-nowrap flex gap-8 md:gap-10 items-center text-[12vw] md:text-[9vw] font-mega uppercase tracking-normal leading-none select-none px-4"
             >
-              <span className="text-black font-black">EXPLORE MY</span>
-              <span className="text-accent italic font-black">PROJECTS</span>
+              <span className="font-black text-neutral-900/55">EXPLORE MY</span>
+              <span className="font-black italic text-neutral-950 drop-shadow-[0_12px_24px_rgba(0,0,0,0.14)]">PROJECTS</span>
               <span className="text-accent font-black">✦</span>
-              <span className="text-black font-black">THE WORKS I</span>
-              <span className="text-accent italic font-black">BUILT</span>
+              <span className="font-black text-neutral-900/55">THE WORKS I</span>
+              <span className="font-black italic text-neutral-950 drop-shadow-[0_12px_24px_rgba(0,0,0,0.14)]">BUILT</span>
             </div>
           </div>
 
@@ -446,7 +527,12 @@ export default function Projects() {
           /* Mobile layout: standard scrolling */
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-2">
             {projects.map((project) => (
-              <MobileCard key={project.id} project={project} onClick={() => openProject(project)} />
+              <MobileCard
+                key={project.id}
+                project={project}
+                onClick={() => openProject(project)}
+                reduceMotion={isLowEnd}
+              />
             ))}
           </div>
         )}

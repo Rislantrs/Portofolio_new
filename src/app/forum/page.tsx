@@ -13,7 +13,11 @@ export default function ForumPage() {
   return (
     <PortfolioShell>
       <Navbar />
-      <main className="relative z-1 block w-full px-6 py-24 text-text md:px-12 md:py-28 lg:px-16">
+      <main
+        id="forum-page"
+        className="relative z-1 block w-full py-24 text-text md:py-28"
+        style={{ paddingInline: "clamp(1.5rem, 4vw, 4rem)" }}
+      >
         <ForumClient />
       </main>
       <Footer />

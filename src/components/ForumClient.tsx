@@ -352,7 +352,10 @@ export default function ForumClient() {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-7xl flex-col gap-8 md:gap-10">
+    <div
+      className="forum-shell mx-auto flex w-full flex-col gap-8 md:gap-10"
+      style={{ maxWidth: "80rem", marginInline: "auto" }}
+    >
       
       {/* ── HEADER SECTION ─────────────────────────────────────────────────── */}
       <header className="flex flex-col justify-between gap-6 border-b border-white/[0.06] pb-6 lg:flex-row lg:items-end">

@@ -221,7 +221,18 @@ export default function Hero() {
     });
 
     // ── Main animation loop ────────────────────────────────────────────────────
+    if (isLowEnd) {
+      return () => {
+        mm.revert();
+        cancelAnimationFrame(rafRef.current);
+      };
+    }
+
     const loop = (now: number) => {
+      if (document.documentElement.dataset.perfMode === "lite") {
+        return;
+      }
+
       const frameInterval = 1000 / 45;
       if (lastLoopFrameRef.current && now - lastLoopFrameRef.current < frameInterval) {
         rafRef.current = requestAnimationFrame(loop);
@@ -486,7 +497,7 @@ export default function Hero() {
       mm.revert();
       cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [isLowEnd]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (scrollProgressRef.current > 0.08) return; // return early and disable updates if scrolled down!
@@ -513,7 +524,7 @@ export default function Hero() {
       <div className="hero-reveal-layer absolute inset-0 w-full h-full z-20 pointer-events-none select-none flex flex-col justify-between py-[15vh] md:py-[12vh]" style={{ opacity: 0 }}>
         {/* Row 1 Marquee (Top) - Scrolls left */}
         <div className="w-full overflow-hidden flex whitespace-nowrap">
-          <div className="flex animate-marquee-left whitespace-nowrap text-[5vh] md:text-[5.5vw] font-sans font-black uppercase tracking-widest text-transparent [-webkit-text-stroke:1px_rgba(214,175,55,0.3)]">
+          <div className="flex animate-marquee-left whitespace-nowrap text-[4.4vh] md:text-[4.9vw] font-display font-black italic uppercase tracking-[0.075em] text-white/28 drop-shadow-[0_12px_30px_rgba(255,255,255,0.12)]">
             <span className="px-6">AI, Cloud, Network &amp; Web Enthusiast • Telecommunication System Student • </span>
             <span className="px-6">AI, Cloud, Network &amp; Web Enthusiast • Telecommunication System Student • </span>
           </div>
@@ -521,15 +532,15 @@ export default function Hero() {
 
         {/* Giant Elegant Calligraphy Signature in Gold */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <h1 className="hero-signature font-signature text-[38vw] md:text-[31vw] text-accent leading-none -rotate-[8deg] select-none translate-y-[2%] -translate-x-[2.5%]"
-              style={{ clipPath: "inset(-100% 100% -100% 0)", opacity: 0 }}>
+          <h1 className="hero-signature font-signature text-[38vw] md:text-[31vw] font-black leading-none -rotate-[8deg] select-none translate-y-[2%] -translate-x-[2.5%] [-webkit-text-stroke:1.4px_rgba(255,255,255,0.38)]"
+              style={{ clipPath: "inset(-100% 100% -100% 0)", opacity: 0, color: "rgba(255,255,255,0.34)", textShadow: "0 20px 70px rgba(255,255,255,0.18), 0 3px 18px rgba(0,0,0,0.45)" }}>
             Rislan
           </h1>
         </div>
 
         {/* Row 2 Marquee (Bottom) - Scrolls right */}
         <div className="w-full overflow-hidden flex whitespace-nowrap">
-          <div className="flex animate-marquee-right whitespace-nowrap text-[5vh] md:text-[5.5vw] font-sans font-black uppercase tracking-widest text-transparent [-webkit-text-stroke:1px_rgba(214,175,55,0.3)]">
+          <div className="flex animate-marquee-right whitespace-nowrap text-[4.4vh] md:text-[4.9vw] font-display font-black italic uppercase tracking-[0.075em] text-white/28 drop-shadow-[0_12px_30px_rgba(255,255,255,0.12)]">
             <span className="px-6">AI, Cloud, Network &amp; Web Enthusiast • Telecommunication System Student • </span>
             <span className="px-6">AI, Cloud, Network &amp; Web Enthusiast • Telecommunication System Student • </span>
           </div>
@@ -574,9 +585,11 @@ export default function Hero() {
         </div>
 
         {/* ── Three.js ink trails ───────────────────────────────────────────── */}
-        <div className="hero-ink-canvas-wrapper absolute inset-0 w-full h-full z-2 pointer-events-none">
-          <InkCanvas />
-        </div>
+        {!isLowEnd && (
+          <div className="hero-ink-canvas-wrapper absolute inset-0 w-full h-full z-2 pointer-events-none">
+            <InkCanvas />
+          </div>
+        )}
 
         {/* ── Portrait wrapper ──────────────────────────────────────────────── */}
         <div className="hero-portrait-scale-wrapper absolute inset-0 w-full h-full z-3 select-none overflow-hidden">

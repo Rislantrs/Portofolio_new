@@ -2,7 +2,20 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ExternalLink } from "lucide-react";
+import { 
+  ExternalLink,
+  Cpu, 
+  Database, 
+  Network, 
+  Brain, 
+  Globe, 
+  Lock, 
+  Shield, 
+  Key, 
+  LineChart, 
+  Wifi, 
+  Layers
+} from "lucide-react";
 import ClientOnlyCustomCursor from "@/components/ClientOnlyCustomCursor";
 import {
   getProjectBySlug,
@@ -70,6 +83,127 @@ function imageAlignClass(align: Extract<ProjectContentBlock, { type: "image" }>[
   };
 
   return classes[align];
+}
+
+const getTechIconDetails = (name: string) => {
+  const clean = name.toLowerCase().trim();
+
+  // 1. Devicon Mapping
+  const deviconMap: Record<string, string> = {
+    "php": "php",
+    "mysql": "mysql",
+    "python": "python",
+    "flask": "flask",
+    "arduino": "arduino",
+    "c++": "cplusplus",
+    "matlab": "matlab",
+    "scikit-learn": "scikitlearn",
+    "react": "react",
+    "next.js": "nextjs",
+    "javascript": "javascript",
+    "typescript": "typescript",
+    "html": "html5",
+    "css": "css3",
+  };
+
+  if (deviconMap[clean]) {
+    return {
+      type: "devicon" as const,
+      slug: deviconMap[clean],
+    };
+  }
+
+  // 2. Simple Icons Mapping
+  const simpleIconMap: Record<string, { slug: string; color: string }> = {
+    "groq api": { slug: "groq", color: "#f4f4f4" },
+    "groq": { slug: "groq", color: "#f4f4f4" },
+    "llama3": { slug: "meta", color: "#044af4" },
+    "blynk": { slug: "blynk", color: "#1cf3a6" },
+    "esp8266": { slug: "espressif", color: "#e7352c" },
+    "xgboost": { slug: "xgboost", color: "#FF6F00" },
+    "catboost": { slug: "catboost", color: "#FF5252" },
+  };
+
+  if (simpleIconMap[clean]) {
+    return {
+      type: "simpleicon" as const,
+      slug: simpleIconMap[clean].slug,
+      color: simpleIconMap[clean].color,
+    };
+  }
+
+  // 3. Lucide Fallback Mapping
+  const lucideMap: Record<string, any> = {
+    "iot": Cpu,
+    "embedded system": Cpu,
+    "embedded": Cpu,
+    "max30102": Cpu,
+    "machine learning": Brain,
+    "nlp": Brain,
+    "web crawling": Globe,
+    "sastrawi": Globe,
+    "sdn": Network,
+    "ryu controller": Network,
+    "mininet-wifi": Wifi,
+    "hybrid topo": Layers,
+    "regression": LineChart,
+    "steganography": Lock,
+    "cryptography": Key,
+    "security": Shield,
+  };
+
+  if (lucideMap[clean]) {
+    return {
+      type: "lucide" as const,
+      icon: lucideMap[clean],
+    };
+  }
+
+  return {
+    type: "lucide" as const,
+    icon: Cpu, // default fallback
+  };
+};
+
+function TechIcon({ name }: { name: string }) {
+  const details = getTechIconDetails(name);
+
+  return (
+    <div 
+      className="group relative flex items-center gap-2 rounded-lg border border-white/5 bg-surface/50 px-2.5 py-1 transition-all duration-300 hover:border-accent/30 hover:bg-surface/80"
+      title={name}
+    >
+      <div className="flex h-4.5 w-4.5 items-center justify-center">
+        {details.type === "devicon" && (
+          <Image
+            src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${details.slug}/${details.slug}-original.svg`}
+            alt={name}
+            width={18}
+            height={18}
+            className="h-full w-full object-contain"
+          />
+        )}
+        {details.type === "simpleicon" && (
+          <div
+            className="h-3.5 w-3.5 shrink-0"
+            style={{
+              mask: `url(https://cdn.jsdelivr.net/npm/simple-icons@11.15.0/icons/${details.slug}.svg) no-repeat center`,
+              WebkitMask: `url(https://cdn.jsdelivr.net/npm/simple-icons@11.15.0/icons/${details.slug}.svg) no-repeat center`,
+              maskSize: "contain",
+              WebkitMaskSize: "contain",
+              backgroundColor: details.color || "currentColor",
+            }}
+          />
+        )}
+        {details.type === "lucide" && (
+          <details.icon size={14} className="text-accent" />
+        )}
+      </div>
+      <span className="font-sans text-[10px] font-semibold text-text-muted transition-colors group-hover:text-accent-light">
+        {name}
+      </span>
+    </div>
+  );
 }
 
 function ContentBlock({ block }: { block: ProjectContentBlock }) {
@@ -211,6 +345,11 @@ export default async function ProjectArticlePage({ params }: PageProps) {
                 <p className="max-w-3xl font-sans text-base leading-8 text-text-muted md:text-lg md:leading-9">
                   {project.summary}
                 </p>
+                <div className="mt-4 flex flex-wrap gap-2.5">
+                  {project.tags.map((tag) => (
+                    <TechIcon key={tag} name={tag} />
+                  ))}
+                </div>
               </div>
 
               <aside className="rounded-lg border border-white/5 bg-surface/80 p-5 lg:mt-8">
@@ -227,12 +366,7 @@ export default async function ProjectArticlePage({ params }: PageProps) {
                     </dt>
                     <dd className="mt-3 flex flex-wrap gap-2">
                       {project.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-accent/15 bg-accent/5 px-2.5 py-1 font-sans text-[10px] font-semibold text-accent-light"
-                        >
-                          {tag}
-                        </span>
+                        <TechIcon key={tag} name={tag} />
                       ))}
                     </dd>
                   </div>
@@ -266,16 +400,25 @@ export default async function ProjectArticlePage({ params }: PageProps) {
               </aside>
             </header>
 
-            <div className="relative mx-auto mb-8 aspect-[16/7] max-h-[360px] w-full max-w-5xl overflow-hidden rounded-lg border border-white/10 bg-surface">
+            <div className="relative mx-auto mb-8 aspect-video md:aspect-[21/9] w-full max-w-none overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-[0_0_50px_rgba(0,0,0,0.8),0_20px_50px_rgba(0,0,0,0.4)]">
+              {/* Blurred background layer */}
+              <Image
+                src={project.image}
+                alt=""
+                fill
+                priority
+                className="object-cover blur-3xl opacity-40 scale-105 pointer-events-none select-none"
+              />
+              {/* Centered clean image layer */}
               <Image
                 src={project.image}
                 alt={project.title}
                 fill
                 priority
-                sizes="(min-width: 1280px) 1024px, 82vw"
-                className="object-contain"
+                sizes="(min-width: 1280px) 1400px, 100vw"
+                className="object-contain relative z-10"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-bg/40 via-transparent to-transparent" />
+              <div className="absolute inset-0 z-20 bg-gradient-to-t from-bg/25 via-transparent to-transparent pointer-events-none" />
             </div>
           </div>
         </section>
