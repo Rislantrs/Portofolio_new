@@ -12,13 +12,13 @@ interface NavLink {
 }
 
 const navLinks: NavLink[] = [
-  { label: "Home",     id: "home"    },
-  { label: "About",    id: "about"   },
-  { label: "Projects", id: "projects"},
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Forum", href: "/forum" },
-  { label: "Skills",   id: "skills"  },
-  { label: "Contact",  id: "contact-footer" },
+  { label: "Home",      id: "home"           },
+  { label: "About",     id: "about"          },
+  { label: "Skills",    id: "skills"         },
+  { label: "Projects",  id: "projects"       },
+  { label: "Dashboard", href: "/dashboard"   },
+  { label: "Forum",     href: "/forum"       },
+  { label: "Contact",   id: "contact-footer" },
 ];
 
 export default function Navbar() {
