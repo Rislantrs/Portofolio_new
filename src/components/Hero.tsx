@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import dynamic from "next/dynamic";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLowEndDevice } from "@/hooks/useLowEndDevice";
@@ -93,6 +93,7 @@ function HeroImage({
       alt={alt}
       fill
       priority={priority}
+      fetchPriority={priority ? "high" : "auto"}
       sizes="100vw"
       className="object-cover object-center"
     />
@@ -101,6 +102,7 @@ function HeroImage({
 
 export default function Hero() {
   const isLowEnd = useLowEndDevice();
+  const [effectsReady, setEffectsReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef     = useRef<HTMLDivElement>(null);
 
@@ -142,6 +144,25 @@ export default function Hero() {
   const transY = useRef(0);
   
   const isDesktopRef = useRef(false);
+
+  useEffect(() => {
+    if (isLowEnd) {
+      return;
+    }
+
+    const idleWindow = window as typeof window & {
+      requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+
+    if (idleWindow.requestIdleCallback) {
+      const idleId = idleWindow.requestIdleCallback(() => setEffectsReady(true), { timeout: 1400 });
+      return () => idleWindow.cancelIdleCallback?.(idleId);
+    }
+
+    const timeoutId = window.setTimeout(() => setEffectsReady(true), 900);
+    return () => window.clearTimeout(timeoutId);
+  }, [isLowEnd]);
 
   // Physics tracking for hover fluid
   const hoverVx = useRef(0);
@@ -221,7 +242,7 @@ export default function Hero() {
     });
 
     // ── Main animation loop ────────────────────────────────────────────────────
-    if (isLowEnd) {
+    if (isLowEnd || !effectsReady) {
       return () => {
         mm.revert();
         cancelAnimationFrame(rafRef.current);
@@ -497,7 +518,7 @@ export default function Hero() {
       mm.revert();
       cancelAnimationFrame(rafRef.current);
     };
-  }, [isLowEnd]);
+  }, [isLowEnd, effectsReady]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (scrollProgressRef.current > 0.08) return; // return early and disable updates if scrolled down!
@@ -509,6 +530,8 @@ export default function Hero() {
   };
 
 
+
+  const shouldRenderHeroEffects = !isLowEnd && effectsReady;
 
   return (
     <section
@@ -556,39 +579,49 @@ export default function Hero() {
 
         {/* ── Base faded background (Batik Megamendung) ───────────────────────── */}
         <div className="base-hero-bg absolute inset-0 w-full h-full opacity-50 z-0 pointer-events-none select-none">
-          <HeroImage src="/assets/Hero/Hero_bg.webp" alt="Base faded background" priority />
+          <HeroImage src="/assets/Hero/Hero_bg.webp" alt="Base faded background" />
         </div>
 
         {/* ── BG blob reveal layer ────────────────────────────────────────────── */}
-        <div ref={bgLayerRef} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
-             style={{ opacity: 0, clipPath: "url(#bg-blob-mask)" }}>
-          <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="BG blob hover" />
-          <div className="absolute inset-0"
-               style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.10) 0%, transparent 70%)" }} />
-        </div>
+        {shouldRenderHeroEffects && (
+          <div ref={bgLayerRef} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
+               style={{ opacity: 0, clipPath: "url(#bg-blob-mask)" }}>
+            <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="BG blob hover" />
+            <div className="absolute inset-0"
+                 style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.10) 0%, transparent 70%)" }} />
+          </div>
+        )}
 
         {/* ── Autonomous blob A ──────────────────────────────────────────────── */}
-        <div ref={auto0Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
-             style={{ opacity: 0, clipPath: "url(#auto-blob-0)" }}>
-          <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob A hover" />
-        </div>
+        {shouldRenderHeroEffects && (
+          <div ref={auto0Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
+               style={{ opacity: 0, clipPath: "url(#auto-blob-0)" }}>
+            <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob A hover" />
+          </div>
+        )}
 
         {/* ── Autonomous blob B ──────────────────────────────────────────────── */}
-        <div ref={auto1Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
-             style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
-          <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob B hover" />
-        </div>
+        {shouldRenderHeroEffects && (
+          <div ref={auto1Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
+               style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
+            <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob B hover" />
+          </div>
+        )}
 
         {/* ── Autonomous blob C ──────────────────────────────────────────────── */}
-        <div ref={auto2Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
-             style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
-          <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob C hover" />
-        </div>
+        {shouldRenderHeroEffects && (
+          <div ref={auto2Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
+               style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
+            <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob C hover" />
+          </div>
+        )}
 
         {/* ── Three.js ink trails ───────────────────────────────────────────── */}
-        <div className="hero-ink-canvas-wrapper absolute inset-0 w-full h-full z-2 pointer-events-none">
-          <InkCanvas />
-        </div>
+        {shouldRenderHeroEffects && (
+          <div className="hero-ink-canvas-wrapper absolute inset-0 w-full h-full z-2 pointer-events-none">
+            <InkCanvas />
+          </div>
+        )}
 
         {/* ── Portrait wrapper ──────────────────────────────────────────────── */}
         <div className="hero-portrait-scale-wrapper absolute inset-0 w-full h-full z-3 select-none overflow-hidden">
@@ -597,22 +630,26 @@ export default function Hero() {
             <div className="absolute inset-0 z-1">
               <HeroImage src="/assets/Hero/Hero.webp" alt="M Rislan Tristansyah portrait" priority />
             </div>
-            <div ref={portraitLayerRef} className="absolute inset-0 z-2"
-                 style={{ opacity: 0, clipPath: "url(#portrait-blob-mask)" }}>
-              <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet watercolor overlay" />
-            </div>
-            <div ref={auto0PortraitLayer} className="absolute inset-0 z-3"
-                 style={{ opacity: 0, clipPath: "url(#auto-blob-0)" }}>
-              <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob A" />
-            </div>
-            <div ref={auto1PortraitLayer} className="absolute inset-0 z-4"
-                 style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
-              <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob B" />
-            </div>
-            <div ref={auto2PortraitLayer} className="absolute inset-0 z-5"
-                 style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
-              <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob C" />
-            </div>
+            {shouldRenderHeroEffects && (
+              <>
+                <div ref={portraitLayerRef} className="absolute inset-0 z-2"
+                     style={{ opacity: 0, clipPath: "url(#portrait-blob-mask)" }}>
+                  <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet watercolor overlay" />
+                </div>
+                <div ref={auto0PortraitLayer} className="absolute inset-0 z-3"
+                     style={{ opacity: 0, clipPath: "url(#auto-blob-0)" }}>
+                  <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob A" />
+                </div>
+                <div ref={auto1PortraitLayer} className="absolute inset-0 z-4"
+                     style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
+                  <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob B" />
+                </div>
+                <div ref={auto2PortraitLayer} className="absolute inset-0 z-5"
+                     style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
+                  <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob C" />
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -628,45 +665,47 @@ export default function Hero() {
 
 
       {/* ══ Hidden SVG defs — all clipPaths & filters ════════════════════════ */}
-      <svg className="absolute w-0 h-0 overflow-hidden" aria-hidden="true">
-        <defs>
-          {/* Viscous liquid goo filter for portrait blob (fuses overlapping drops like mercury!) */}
-          <filter id="edge-bleed-sm" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="11.5" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" result="goo" />
-            <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="1" seed="3" result="noise" />
-            <feDisplacementMap in="goo" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-          {/* Viscous liquid goo filter for background/idle blobs */}
-          <filter id="edge-bleed-lg" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="14.5" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="goo" />
-            <feTurbulence type="fractalNoise" baseFrequency="0.005" numOctaves="1" seed="9" result="noise" />
-            <feDisplacementMap in="goo" in2="noise" scale="16" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
+      {shouldRenderHeroEffects && (
+        <svg className="absolute w-0 h-0 overflow-hidden" aria-hidden="true">
+          <defs>
+            {/* Viscous liquid goo filter for portrait blob (fuses overlapping drops like mercury!) */}
+            <filter id="edge-bleed-sm" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="11.5" result="blur" />
+              <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" result="goo" />
+              <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="1" seed="3" result="noise" />
+              <feDisplacementMap in="goo" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+            {/* Viscous liquid goo filter for background/idle blobs */}
+            <filter id="edge-bleed-lg" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="14.5" result="blur" />
+              <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="goo" />
+              <feTurbulence type="fractalNoise" baseFrequency="0.005" numOctaves="1" seed="9" result="noise" />
+              <feDisplacementMap in="goo" in2="noise" scale="16" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
 
-          {/* Portrait hover blob */}
-          <clipPath id="portrait-blob-mask" clipPathUnits="userSpaceOnUse">
-            <path ref={portraitPathRef} filter="url(#edge-bleed-sm)" d="M 0,0 Z" />
-          </clipPath>
+            {/* Portrait hover blob */}
+            <clipPath id="portrait-blob-mask" clipPathUnits="userSpaceOnUse">
+              <path ref={portraitPathRef} filter="url(#edge-bleed-sm)" d="M 0,0 Z" />
+            </clipPath>
 
-          {/* BG drift blob */}
-          <clipPath id="bg-blob-mask" clipPathUnits="userSpaceOnUse">
-            <path ref={bgPathRef} filter="url(#edge-bleed-lg)" d="M 0,0 Z" />
-          </clipPath>
+            {/* BG drift blob */}
+            <clipPath id="bg-blob-mask" clipPathUnits="userSpaceOnUse">
+              <path ref={bgPathRef} filter="url(#edge-bleed-lg)" d="M 0,0 Z" />
+            </clipPath>
 
-          {/* 3 autonomous blobs */}
-          <clipPath id="auto-blob-0" clipPathUnits="userSpaceOnUse">
-            <path ref={auto0Path} filter="url(#edge-bleed-lg)" d="M 0,0 Z" />
-          </clipPath>
-          <clipPath id="auto-blob-1" clipPathUnits="userSpaceOnUse">
-            <path ref={auto1Path} filter="url(#edge-bleed-sm)" d="M 0,0 Z" />
-          </clipPath>
-          <clipPath id="auto-blob-2" clipPathUnits="userSpaceOnUse">
-            <path ref={auto2Path} filter="url(#edge-bleed-lg)" d="M 0,0 Z" />
-          </clipPath>
-        </defs>
-      </svg>
+            {/* 3 autonomous blobs */}
+            <clipPath id="auto-blob-0" clipPathUnits="userSpaceOnUse">
+              <path ref={auto0Path} filter="url(#edge-bleed-lg)" d="M 0,0 Z" />
+            </clipPath>
+            <clipPath id="auto-blob-1" clipPathUnits="userSpaceOnUse">
+              <path ref={auto1Path} filter="url(#edge-bleed-sm)" d="M 0,0 Z" />
+            </clipPath>
+            <clipPath id="auto-blob-2" clipPathUnits="userSpaceOnUse">
+              <path ref={auto2Path} filter="url(#edge-bleed-lg)" d="M 0,0 Z" />
+            </clipPath>
+          </defs>
+        </svg>
+      )}
     </section>
   );
 }

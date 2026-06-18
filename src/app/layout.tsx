@@ -94,6 +94,26 @@ export default function RootLayout({
     >
       <head>
         <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                try {
+                  var nav = navigator || {};
+                  var coarse = window.matchMedia && window.matchMedia("(pointer: coarse)").matches;
+                  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+                  var lowMemory = typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4;
+                  var lowCpu = typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4;
+                  var mobile = window.innerWidth <= 767;
+                  var saveData = !!(nav.connection && nav.connection.saveData);
+                  document.documentElement.dataset.perfMode = (coarse || reduced || lowMemory || lowCpu || mobile || saveData) ? "lite" : "full";
+                } catch (error) {
+                  document.documentElement.dataset.perfMode = "full";
+                }
+              })();
+            `.replace(/</g, "\\u003c"),
+          }}
+        />
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),

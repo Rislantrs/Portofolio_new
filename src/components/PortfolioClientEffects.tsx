@@ -3,10 +3,11 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { performanceConfig } from "@/lib/siteConfig";
+import { useLowEndDevice } from "@/hooks/useLowEndDevice";
 
 function PreloaderFallback() {
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-[#f4f4f4]">
+    <div className="preloader-fallback fixed inset-0 z-[9999] flex items-center justify-center overflow-hidden bg-[#f4f4f4]">
       <div
         className="absolute inset-0"
         style={{
@@ -26,13 +27,26 @@ const Preloader = dynamic(() => import("@/components/Preloader"), {
 });
 
 export default function PortfolioClientEffects() {
+  const liteMode = useLowEndDevice();
   const [loaded, setLoaded] = useState(false);
   const [showPreloader, setShowPreloader] = useState(true);
-  const liteMode = false;
 
   useEffect(() => {
-    document.documentElement.dataset.perfMode = "full";
-    
+    document.documentElement.dataset.perfMode = liteMode ? "lite" : "full";
+  }, [liteMode]);
+
+  useEffect(() => {
+    if (!liteMode || !showPreloader) return;
+
+    const timer = window.setTimeout(() => {
+      setLoaded(true);
+      setShowPreloader(false);
+      sessionStorage.removeItem("portfolioScrollPosition");
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [liteMode, showPreloader]);
+  useEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
@@ -123,5 +137,5 @@ export default function PortfolioClientEffects() {
     }, 150);
   }, []);
 
-  return showPreloader ? <Preloader onComplete={completePreloader} /> : null;
+  return showPreloader && !liteMode ? <Preloader onComplete={completePreloader} /> : null;
 }

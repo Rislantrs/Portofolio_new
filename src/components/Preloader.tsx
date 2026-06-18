@@ -6,9 +6,10 @@ import gsap from "gsap";
 
 interface PreloaderProps {
   onComplete: () => void;
+  reduceMotion?: boolean;
 }
 
-export default function Preloader({ onComplete }: PreloaderProps) {
+export default function Preloader({ onComplete, reduceMotion = false }: PreloaderProps) {
   const [progress, setProgress] = useState<number>(0);
   const [maskSize, setMaskSize] = useState<number>(0); // Initialize to 0 so the screen is completely solid during loading!
 
@@ -19,7 +20,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
       // Animate percentage and loading ring
       gsap.to(obj, {
         val: 100,
-        duration: 2.8,
+        duration: reduceMotion ? 0.9 : 2.8,
         ease: "power2.out",
         onUpdate: () => {
           setProgress(Math.round(obj.val));
@@ -59,7 +60,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             maskObj,
             {
               val: 2200, // Expands way past screen bounds to fully reveal portfolio
-              duration: 1.3,
+              duration: reduceMotion ? 0.45 : 1.3,
               ease: "power4.inOut",
               onUpdate: () => {
                 setMaskSize(maskObj.val);
@@ -72,7 +73,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
     });
 
     return () => ctx.revert();
-  }, [onComplete]);
+  }, [onComplete, reduceMotion]);
 
   // Circumference for r=46 is 2 * PI * 46 ≈ 289.03
   const strokeDashoffset = 289.03 - (289.03 * progress) / 100;
@@ -175,6 +176,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
             fill
             sizes="(min-width: 768px) 224px, 176px"
             className="object-cover"
+            priority
+            fetchPriority="high"
             style={{ 
               transform: `scale(${logoScale})`,
               opacity: logoOpacity,

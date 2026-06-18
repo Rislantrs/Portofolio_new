@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { ExternalLink, Award } from "lucide-react";
 import { useCertificationsTimeline } from "@/hooks/useCertificationsTimeline";
+import { useLowEndDevice } from "@/hooks/useLowEndDevice";
 import { certificates as fallbackCertificates, type Certificate } from "@/lib/certifications";
 import { fetchCertifications } from "@/lib/supabaseDb";
 
@@ -179,7 +180,6 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
             fill
             className="object-contain p-4 md:p-6 filter drop-shadow-[0_8px_24px_rgba(0,0,0,0.4)]"
             sizes="(max-width: 768px) 100vw, 400px"
-            priority
           />
         </div>
 
@@ -255,6 +255,7 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
 }
 
 export default function Certifications() {
+  const isLowEnd = useLowEndDevice();
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackViewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -283,12 +284,12 @@ export default function Certifications() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsPinned(window.innerWidth >= 768);
+      setIsPinned(!isLowEnd && window.innerWidth >= 1024);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  }, [isLowEnd]);
 
   useCertificationsTimeline({
     isPinned,
@@ -353,7 +354,7 @@ trackViewportRef,
             className="flex gap-6 items-center pr-[clamp(7rem,18vw,16rem)]"
           >
             {certificates.map((cert, idx) => (
-              <CertificateCard key={cert.id} cert={cert} showNoise={idx < 3} />
+              <CertificateCard key={cert.id} cert={cert} showNoise={!isLowEnd && idx < 3} />
             ))}
           </div>
         </div>

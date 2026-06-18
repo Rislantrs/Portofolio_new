@@ -475,6 +475,11 @@ html[data-perf-mode="lite"] .custom-cursor {
   display: none !important;
 }
 
+html[data-perf-mode="lite"] #preloader-screen,
+html[data-perf-mode="lite"] .preloader-fallback {
+  display: none !important;
+}
+
 @media (max-width: 390px) {
   :root {
     --section-gutter: 1rem;

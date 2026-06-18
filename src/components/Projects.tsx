@@ -267,7 +267,7 @@ export default function Projects() {
   const rowsPerPage = 2;
   const cardsPerPage = columns * rowsPerPage;
   const pages = chunk(projectList, cardsPerPage);
-  const isPinned = columns > 1 && pages.length >= 1;
+  const isPinned = !isLowEnd && columns > 1 && pages.length >= 1;
   const openProject = (project: Project) => router.push(`/projects/${project.slug}`);
 
   useProjectsTimeline({
