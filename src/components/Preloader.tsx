@@ -170,7 +170,7 @@ export default function Preloader({ onComplete }: PreloaderProps) {
           className="relative w-44 h-44 md:w-56 md:h-56 rounded-full overflow-hidden bg-[#f4f4f4] shadow-[0_16px_36px_rgba(0,0,0,0.12),inset_0_2px_4px_rgba(255,255,255,0.6)] flex items-center justify-center z-10 border border-black/5 animate-bounce-slow"
         >
           <Image
-            src="/assets/Loading_logo.png"
+            src="/assets/Loading_logo_compressed.webp"
             alt="Loading Logo"
             fill
             sizes="(min-width: 768px) 224px, 176px"

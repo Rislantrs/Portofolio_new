@@ -19,21 +19,21 @@ const education = [
     period: "2023 - Present",
     meta: "Telecommunication Systems",
     note: "Bachelor's Degree",
-    logo: "/assets/s1.png",
+    logo: "/assets/s1_compressed.webp",
   },
   {
     title: "SMA Negeri 1 Cibatu",
     period: "2019 - 2022",
     meta: "Purwakarta",
     note: "Senior High School",
-    logo: "/assets/sma.png",
+    logo: "/assets/sma_compressed.webp",
   },
   {
     title: "SMP Negeri 1 Campaka",
     period: "2016 - 2019",
     meta: "Purwakarta",
     note: "Junior High School",
-    logo: "/assets/smp.png",
+    logo: "/assets/smp_compressed.webp",
   },
 ];
 
@@ -44,7 +44,7 @@ const experiences = [
     org: "Dinas Arsip dan Perpustakaan Kabupaten Purwakarta",
     period: "Jan - Jun 2026",
     note: "Magang di bidang Pembinaan, Pelestarian dan Pengembangan Kearsipan (P3K).",
-    logo: "/assets/disispusda.png"
+    logo: "/assets/disispusda_compressed.webp"
   },
   {
     title: "HMST",
@@ -52,7 +52,7 @@ const experiences = [
     org: "HMST (Himpunan Mahasiswa Sistem Telekomunikasi)",
     period: "2024 - 2025",
     note: "Menyusun dan melaksanakan program pelatihan kejuruan serta sertifikasi telekomunikasi.",
-    logo: "/assets/hmst.png"
+    logo: "/assets/hmst_compressed.webp"
   }
 ];
 
@@ -101,7 +101,7 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
                 {/* Photo Container */}
                 <div className="relative shrink-0 w-16 h-16 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-2xl sm:rounded-3xl overflow-hidden border border-black/[0.08] shadow-[0_8px_30px_rgb(0,0,0,0.06)] filter grayscale hover:grayscale-0 transition-all duration-700 ease-out select-none">
                   <Image
-                    src="/assets/IMG_0304.JPG"
+                    src="/assets/IMG_0304_compressed.webp"
                     alt="M Rislan Tristansyah"
                     fill
                     sizes="(min-width: 768px) 112px, (min-width: 640px) 96px, 64px"
@@ -303,14 +303,12 @@ export default function About() {
   const skillsCurveRef = useRef<HTMLDivElement>(null);
   const cubeRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef<HTMLDivElement>(null);
-  const [progress, setProgress] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
 
   // ─── Physics state refs ──────────────────────────────────────────────────────
   const physicsStartedRef = useRef(false);
   const physicsCleanupRef = useRef<(() => void) | null>(null);
   const physicsTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lettersRevealedRef = useRef(false);
 
   useGSAP(() => {
     let lastIndex = -1;
@@ -339,7 +337,7 @@ export default function About() {
           end: () => `+=${window.innerHeight * 3.5}`, // Pinned for 3.5 screen heights total
           pin: true,
           pinSpacing: true,
-          scrub: 1.1,
+          scrub: 0.5,
           anticipatePin: 1,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
@@ -391,7 +389,6 @@ export default function About() {
               const activeProgress = (p - 0.75) / 0.25; // Map to 0 to 1
               const roll = activeProgress * (faces.length - 1);
               const nextIndex = Math.min(faces.length - 1, Math.round(roll));
-              setProgress(activeProgress);
               if (nextIndex !== lastIndex) {
                 lastIndex = nextIndex;
                 setActiveIndex(nextIndex);
@@ -400,7 +397,6 @@ export default function About() {
                 progressRef.current.style.transform = `scaleX(${Math.max(0, Math.min(1, activeProgress))})`;
               }
             } else {
-              setProgress(0);
               setActiveIndex(0);
               if (progressRef.current) {
                 progressRef.current.style.transform = "scaleX(0)";
@@ -786,7 +782,7 @@ export default function About() {
           </h2>
         </div>
 
-        <div className="about-intro-quote absolute inset-0 overflow-hidden bg-[#f4f4f4] px-6 py-10 text-black md:px-16 md:py-14" style={{ touchAction: "none" }}>
+        <div className="about-intro-quote absolute inset-0 overflow-hidden bg-[#f4f4f4] px-6 py-10 text-black md:px-16 md:py-14">
           <div className="flex h-full flex-col justify-between">
             <div className="type-meta flex items-center justify-between text-black/55">
               <span>[ About Me ]</span>

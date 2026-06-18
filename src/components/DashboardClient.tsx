@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { 
   Award, 
-  Clock, 
   Laptop, 
   Activity, 
   Terminal, 
   ArrowUpRight, 
-  BarChart2, 
   Zap, 
   Flame, 
   Shield, 
@@ -430,6 +428,7 @@ export default function DashboardClient() {
               {/* Contribution Graph Container with swipe hint */}
               <div className="relative group">
                 <div className="rounded-xl border border-white/[0.04] bg-black/25 p-4 overflow-x-auto scrollbar-thin scrollbar-thumb-white/10 flex justify-start">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={github.chartUrl}
                     alt={`${github.username} GitHub contribution graph`}

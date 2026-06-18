@@ -13,11 +13,7 @@ import {
   HelpCircle,
   MessageCircle,
   ThumbsUp,
-  X,
-  TrendingUp,
-  Activity,
-  Layers,
-  ChevronRight
+  X
 } from "lucide-react";
 
 interface Comment {
@@ -448,7 +444,7 @@ export default function ForumClient() {
                 </span>
                 <select
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as any)}
+                  onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
                   className="rounded border border-white/10 bg-bg px-2.5 py-1 font-sans text-[10px] text-text-muted focus:outline-none"
                 >
                   <option value="newest">Sort: Newest</option>
@@ -566,7 +562,7 @@ export default function ForumClient() {
                       <label className="font-mono text-[9px] uppercase tracking-widest text-text-subtle">Category</label>
                       <select
                         value={newCategory}
-                        onChange={(e) => setNewCategory(e.target.value as any)}
+                        onChange={(e) => setNewCategory(e.target.value as typeof newCategory)}
                         className="rounded border border-white/10 bg-bg px-3 py-2.5 font-sans text-xs text-white focus:outline-none"
                       >
                         <option value="Review">Project Review (Rating)</option>
@@ -812,7 +808,7 @@ export default function ForumClient() {
             {!selectedThread && !showCreateForm && (
               <div className="rounded-2xl border border-white/[0.06] bg-surface/40 p-12 text-center text-text-subtle font-sans text-xs flex flex-col items-center gap-3">
                 <MessageSquare size={24} className="text-accent opacity-50" />
-                Select a thread from the list or click "New Thread" to start a discussion.
+                Select a thread from the list or click &quot;New Thread&quot; to start a discussion.
               </div>
             )}
 

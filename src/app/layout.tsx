@@ -22,6 +22,10 @@ export const metadata: Metadata = {
   },
   description:
     "Explore the portfolio of M Rislan Tristansyah, a Telecommunication Systems student focused on AI, cloud computing, networking, and web development.",
+  icons: {
+    icon: "/assets/Loading_logo_compressed.webp",
+    apple: "/assets/Loading_logo_compressed.webp",
+  },
   authors: [{ name: "M Rislan Tristansyah", url: "https://github.com/Rislantrs" }],
   creator: "M Rislan Tristansyah",
   publisher: "M Rislan Tristansyah",
@@ -35,7 +39,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/assets/Hero/Hero.png",
+        url: "/assets/Hero/Hero.webp",
         width: 1200,
         height: 630,
         alt: "M Rislan Tristansyah Portfolio Banner",
@@ -47,7 +51,7 @@ export const metadata: Metadata = {
     title: "M Rislan Tristansyah - Creative Developer & AI Enthusiast",
     description: "AI, cloud computing, networking, and interactive web portfolio.",
     creator: "@rislantrs",
-    images: ["/assets/Hero/Hero.png"],
+    images: ["/assets/Hero/Hero.webp"],
   },
 };
 

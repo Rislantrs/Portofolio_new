@@ -53,7 +53,7 @@ const roles = [
     id: "web",
     name: "WEB DEV",
     title: "Web Development & Engineering",
-    logo: <BrandIcon src="/assets/l_webdev.png" />,
+    logo: <BrandIcon src="/assets/l_webdev_compressed.webp" />,
     description: "Merancang dan membangun platform digital interaktif, profil institusi, dan aplikasi web berbasis kecerdasan buatan (AI) menggunakan teknologi modern.",
     tools: [
       { name: "React", icon: <BrandIcon deviconSlug="react" /> },
@@ -68,7 +68,7 @@ const roles = [
     id: "ds",
     name: "AI/ML",
     title: "Artificial Intelligence & Machine Learning",
-    logo: <BrandIcon src="/assets/l_aiml.png" />,
+    logo: <BrandIcon src="/assets/l_aiml_compressed.webp" />,
     description: "Mengembangkan model klasifikasi, regresi, prediksi churn, dan analisis sentimen menggunakan algoritme machine learning modern.",
     tools: [
       { name: "Python", icon: <BrandIcon deviconSlug="python" /> },
@@ -95,19 +95,19 @@ const roles = [
     id: "cloud",
     name: "CLOUD COMPUTING",
     title: "Cloud Computing & Infrastructure",
-    logo: <BrandIcon src="/assets/l_cloud.png" />,
+    logo: <BrandIcon src="/assets/l_cloud_compressed.webp" />,
     description: "Mengimplementasikan solusi komputasi awan, virtualisasi jaringan, arsitektur serverless, serta administrasi sistem cloud pada Google Cloud Platform (GCP) dan Alibaba Cloud.",
     tools: [
       { name: "Google Cloud", icon: <BrandIcon deviconSlug="googlecloud" /> },
-      { name: "Alibaba Cloud", icon: <BrandIcon src="/assets/ACA.jpg" /> },
-      { name: "Developer Cert", icon: <BrandIcon src="/assets/DEV.jpg" /> },
+      { name: "Alibaba Cloud", icon: <BrandIcon src="/assets/ACA_compressed.webp" /> },
+      { name: "Developer Cert", icon: <BrandIcon src="/assets/DEV_compressed.webp" /> },
     ],
   },
   {
     id: "iot",
     name: "IOT",
     title: "IoT & Embedded Systems",
-    logo: <BrandIcon src="/assets/l_iot.png" />,
+    logo: <BrandIcon src="/assets/l_iot_compressed.webp" />,
     description: "Merancang dan memprogram perangkat cerdas, sensor pembaca kesehatan, modul pemantau nirkabel, dan otomasi mikrokontroler.",
     tools: [
       { name: "Arduino", icon: <BrandIcon deviconSlug="arduino" /> },
@@ -151,7 +151,7 @@ const roles = [
     id: "security",
     name: "NETWORKING",
     title: "Networking & Cyber Security",
-    logo: <BrandIcon src="/assets/l_net.png" />,
+    logo: <BrandIcon src="/assets/l_net_compressed.webp" />,
     description: "Menerapkan Software Defined Networking (SDN), analisis kualitas lalu lintas jaringan, steganografi LSB, enkripsi, dan keamanan siber.",
     tools: [
       {
@@ -250,24 +250,34 @@ export default function TechStackTabs() {
         </div>
 
         <div className="grid grid-cols-2 gap-px overflow-hidden border border-black/12 bg-black/12 sm:grid-cols-3">
-          {activeRole.tools.map((tool, idx) => (
-            <div
-              key={idx}
-              className="group flex min-h-40 flex-col justify-between bg-[#f4f4f4] p-4 transition-colors duration-300 hover:bg-[#f4f4f4] md:min-h-48 md:p-5"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-sm border border-black/10 bg-[#f4f4f4] p-2 shadow-sm transition-transform duration-300 group-hover:-translate-y-1">
-                {tool.icon}
+          {([...activeRole.tools, ...Array(Math.max(0, 6 - activeRole.tools.length)).fill(null)] as (typeof activeRole.tools[number] | null)[]).map((tool, idx) => {
+            if (!tool) {
+              return (
+                <div
+                  key={`empty-${idx}`}
+                  className="bg-[#f4f4f4] min-h-40 md:min-h-48"
+                />
+              );
+            }
+            return (
+              <div
+                key={idx}
+                className="group flex min-h-40 flex-col justify-between bg-[#f4f4f4] p-4 transition-colors duration-300 hover:bg-[#f4f4f4] md:min-h-48 md:p-5"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-sm border border-black/10 bg-[#f4f4f4] p-2 shadow-sm transition-transform duration-300 group-hover:-translate-y-1">
+                    {tool.icon}
+                  </div>
+                  <span className="type-meta text-black/28">
+                    {String(idx + 1).padStart(2, "0")}
+                  </span>
                 </div>
-                <span className="type-meta text-black/28">
-                  {String(idx + 1).padStart(2, "0")}
+                <span className="type-action mt-8 max-w-[10rem] leading-tight text-black/70 transition-colors duration-300 group-hover:text-black">
+                  {tool.name}
                 </span>
               </div>
-              <span className="type-action mt-8 max-w-[10rem] leading-tight text-black/70 transition-colors duration-300 group-hover:text-black">
-                {tool.name}
-              </span>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>

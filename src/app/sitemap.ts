@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
-import { publishedProjects } from "@/lib/projects";
+import { fetchPublishedProjects } from "@/lib/supabaseDb";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://rislantristansyah.my.id";
+  const publishedProjects = await fetchPublishedProjects();
 
   const projectUrls = publishedProjects.map((p) => ({
     url: `${baseUrl}/projects/${p.slug}`,

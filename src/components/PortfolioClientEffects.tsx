@@ -32,6 +32,31 @@ export default function PortfolioClientEffects() {
 
   useEffect(() => {
     document.documentElement.dataset.perfMode = "full";
+    
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    // Save scroll position before reload
+    const handleBeforeUnload = () => {
+      sessionStorage.setItem("portfolioScrollPosition", window.scrollY.toString());
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Restore scroll position on mount behind the preloader
+    const savedPosition = sessionStorage.getItem("portfolioScrollPosition");
+    if (savedPosition) {
+      const y = parseInt(savedPosition, 10);
+      if (!isNaN(y) && y > 0) {
+        setTimeout(() => {
+          window.scrollTo(0, y);
+        }, 100);
+      }
+    }
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   useEffect(() => {
@@ -90,6 +115,7 @@ export default function PortfolioClientEffects() {
   const completePreloader = useCallback(() => {
     setLoaded(true);
     setShowPreloader(false);
+    sessionStorage.removeItem("portfolioScrollPosition");
     setTimeout(() => {
       import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
         ScrollTrigger.refresh();

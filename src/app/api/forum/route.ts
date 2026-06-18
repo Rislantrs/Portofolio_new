@@ -14,7 +14,7 @@ async function readDb() {
   }
 }
 
-async function writeDb(data: any) {
+async function writeDb(data: unknown) {
   try {
     await fs.writeFile(dbPath, JSON.stringify(data, null, 2), "utf-8");
     return true;
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
         );
       }
 
-      const threadIndex = db.findIndex((t: any) => t.id === threadId);
+      const threadIndex = db.findIndex((t: { id: string }) => t.id === threadId);
       if (threadIndex === -1) {
         return NextResponse.json({ error: "Thread not found." }, { status: 404 });
       }

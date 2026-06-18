@@ -1,78 +1,11 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ExternalLink, Award } from "lucide-react";
 import { useCertificationsTimeline } from "@/hooks/useCertificationsTimeline";
-
-interface Certificate {
-  id: number;
-  name: string;
-  organizer: string;
-  year: string;
-  category: "ai" | "cloud" | "network" | "web";
-  badgeName: string;
-  badgeIcon: string;
-  link?: string;
-}
-
-const certificates: Certificate[] = [
-  {
-    id: 1,
-    name: "Gemini Certified — Generative AI",
-    organizer: "Google",
-    year: "2024",
-    category: "ai",
-    badgeName: "Gemini Academy",
-    badgeIcon: "/assets/Gemini.png",
-  },
-  {
-    id: 2,
-    name: "ACA Cloud Computing Certification",
-    organizer: "Alibaba Cloud",
-    year: "2024",
-    category: "cloud",
-    badgeName: "ACA Cloud",
-    badgeIcon: "/assets/ACA.jpg",
-  },
-  {
-    id: 3,
-    name: "Google Cloud Computing Foundation",
-    organizer: "Google Cloud",
-    year: "2024",
-    category: "cloud",
-    badgeName: "GCP Foundations",
-    badgeIcon: "/assets/GCP.png",
-  },
-  {
-    id: 4,
-    name: "Alibaba Cloud Certified Developer",
-    organizer: "Alibaba Cloud",
-    year: "2024",
-    category: "cloud",
-    badgeName: "Developer Cert",
-    badgeIcon: "/assets/DEV.jpg",
-  },
-  {
-    id: 5,
-    name: "HTML, CSS, and Javascript for Web Developers",
-    organizer: "Johns Hopkins University",
-    year: "2023",
-    category: "web",
-    badgeName: "JHU Web Dev",
-    badgeIcon: "/assets/JohnCer.png",
-    link: "https://coursera.org/verify/QJNY8CPX7QZ2",
-  },
-  {
-    id: 6,
-    name: "Machine Learning Certification",
-    organizer: "Coursera / Stanford",
-    year: "2024",
-    category: "ai",
-    badgeName: "Machine Learning",
-    badgeIcon: "/assets/MachineLearning.png",
-  },
-];
+import { certificates as fallbackCertificates, type Certificate } from "@/lib/certifications";
+import { fetchCertifications } from "@/lib/supabaseDb";
 
 function AnimatedAsciiNoise({
   src,
@@ -226,22 +159,6 @@ function AnimatedAsciiNoise({
 }
 
 function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: boolean }) {
-  const asciiLines = useMemo(() => {
-    if (!showNoise) return [];
-
-    const chars = "01#@$%▓░▒█▄▀■□◆◇●○+-*=:;~^><|/\\{}[]()_&!?.,";
-    const lines: string[] = [];
-    // Generate a dense grid of ASCII chars that fills the entire card
-    for (let row = 0; row < 80; row++) {
-      let line = "";
-      for (let col = 0; col < 60; col++) {
-        const charIndex = (cert.id * 997 + row * 37 + col * 17) % chars.length;
-        line += chars[charIndex];
-      }
-      lines.push(line);
-    }
-    return lines;
-  }, [cert.id, showNoise]);
 
   const credentialId = `REF #${cert.organizer.slice(0, 3).toUpperCase()}-${cert.year}-${String(cert.id).padStart(3, "0")}`;
 
@@ -344,6 +261,25 @@ export default function Certifications() {
   const sliderThumbRef = useRef<HTMLDivElement>(null);
 
   const [isPinned, setIsPinned] = useState(false);
+  const [certificates, setCertificates] = useState<Certificate[]>(fallbackCertificates);
+
+  useEffect(() => {
+    let active = true;
+    async function loadData() {
+      const data = await fetchCertifications();
+      if (!active) return;
+      setCertificates(data);
+      setTimeout(() => {
+        import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
+          ScrollTrigger.refresh();
+        });
+      }, 100);
+    }
+    loadData();
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {

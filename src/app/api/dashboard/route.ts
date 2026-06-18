@@ -14,7 +14,7 @@ export async function GET() {
   const githubToken = process.env.GITHUB_TOKEN;
 
   // Initialize data structures with realistic mock fallbacks
-  let githubData = {
+  const githubData = {
     username: githubUsername,
     profileUrl: `https://github.com/${githubUsername}`,
     chartUrl: `https://ghchart.rshah.org/39d353/${githubUsername}`,
@@ -25,7 +25,7 @@ export async function GET() {
       average: 1.2,
       currentStreak: 12,
       longestStreak: 34,
-      days: [] as any[],
+      days: [] as unknown[],
       available: false,
     },
     repositories: {
@@ -74,7 +74,7 @@ export async function GET() {
     ],
   };
 
-  let umamiData = {
+  const umamiData = {
     configured: !!(process.env.UMAMI_API_URL && process.env.UMAMI_WEBSITE_ID),
     available: false,
     pageviews: 1240,
@@ -89,7 +89,7 @@ export async function GET() {
     ],
   };
 
-  let wakatimeData = {
+  const wakatimeData = {
     configured: !!process.env.WAKATIME_API_KEY,
     available: false,
     totalHours: 28.6,
@@ -125,7 +125,7 @@ export async function GET() {
     ],
   };
 
-  let performanceData = {
+  const performanceData = {
     configured: !!process.env.WEBSITE_URL,
     available: false,
     performance: 98,
@@ -257,25 +257,25 @@ export async function GET() {
         wakatimeData.totalHours = Math.round((stats.total_seconds / 3600) * 10) / 10;
         wakatimeData.dailyAverage = Math.round((stats.daily_average / 3600) * 10) / 10;
 
-        wakatimeData.languages = (stats.languages || []).slice(0, 5).map((l: any) => ({
+        wakatimeData.languages = (stats.languages || []).slice(0, 5).map((l: { name: string; percent: number; total_seconds: number }) => ({
           name: l.name,
           percent: l.percent,
           hours: Math.round((l.total_seconds / 3600) * 10) / 10,
         }));
 
-        wakatimeData.categories = (stats.categories || []).slice(0, 3).map((c: any) => ({
+        wakatimeData.categories = (stats.categories || []).slice(0, 3).map((c: { name: string; percent: number; total_seconds: number }) => ({
           name: c.name,
           percent: c.percent,
           hours: Math.round((c.total_seconds / 3600) * 10) / 10,
         }));
 
-        wakatimeData.editors = (stats.editors || []).slice(0, 3).map((e: any) => ({
+        wakatimeData.editors = (stats.editors || []).slice(0, 3).map((e: { name: string; percent: number; total_seconds: number }) => ({
           name: e.name,
           percent: e.percent,
           hours: Math.round((e.total_seconds / 3600) * 10) / 10,
         }));
 
-        wakatimeData.operatingSystems = (stats.operating_systems || []).slice(0, 3).map((o: any) => ({
+        wakatimeData.operatingSystems = (stats.operating_systems || []).slice(0, 3).map((o: { name: string; percent: number; total_seconds: number }) => ({
           name: o.name,
           percent: o.percent,
           hours: Math.round((o.total_seconds / 3600) * 10) / 10,

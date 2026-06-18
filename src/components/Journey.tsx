@@ -41,12 +41,12 @@ const journeyData: JourneyItem[] = [
     category: "education",
     description: "Pursuing bachelor's degree in Telecommunication Systems. Deepening expertise in Machine Learning, Software-Defined Networks (SDN), Cloud Computing, and Embedded IoT Solutions.",
     badges: [
-      { name: "Gemini Certified", icon: "/assets/Gemini.png" },
-      { name: "ACA Cloud", icon: "/assets/ACA.jpg" },
-      { name: "Google Cloud", icon: "/assets/GCP.png" },
-      { name: "Alibaba Cloud Dev", icon: "/assets/DEV.jpg" },
-      { name: "HTML/JS — JHU", icon: "/assets/JohnCer.png" },
-      { name: "Machine Learning", icon: "/assets/MachineLearning.png" },
+      { name: "Gemini Certified", icon: "/assets/Gemini_compressed.webp" },
+      { name: "ACA Cloud", icon: "/assets/ACA_compressed.webp" },
+      { name: "Google Cloud", icon: "/assets/GCP_compressed.webp" },
+      { name: "Alibaba Cloud Dev", icon: "/assets/DEV_compressed.webp" },
+      { name: "HTML/JS — JHU", icon: "/assets/JohnCer_compressed.webp" },
+      { name: "Machine Learning", icon: "/assets/MachineLearning_compressed.webp" },
     ],
   },
   {

@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import ClientOnlyCustomCursor from "@/components/ClientOnlyCustomCursor";
-import { publishedProjects } from "@/lib/projects";
+import { fetchPublishedProjects } from "@/lib/supabaseDb";
 
 export const metadata = {
   title: "Project Articles",
   description: "Detailed case studies and project articles by M Rislan Tristansyah.",
 };
 
-export default function ProjectsIndexPage() {
+export default async function ProjectsIndexPage() {
+  const publishedProjects = await fetchPublishedProjects();
   return (
     <>
       <ClientOnlyCustomCursor />

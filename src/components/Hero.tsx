@@ -195,7 +195,7 @@ export default function Hero() {
             end: "+=125%", 
             pin: true, 
             pinSpacing: true, 
-            scrub: 1.2, 
+            scrub: 0.5, 
             anticipatePin: 1,
             onUpdate: (self) => {
               scrollProgressRef.current = self.progress;
@@ -208,7 +208,7 @@ export default function Hero() {
           .to(".hero-reveal-layer", { opacity: 1, ease: "power2.inOut", duration: 0.6 }, 0.1)
           .to(".base-hero-bg", { opacity: 1.0, ease: "power2.inOut", duration: 0.8 }, 0)
           .to(".hero-ink-canvas-wrapper", { opacity: 0, ease: "power2.inOut", duration: 0.5 }, 0)
-          .to(".hero-signature", { clipPath: "inset(-100% -20% -100% 0)", opacity: 1, ease: "power1.inOut", duration: 0.7 }, 0.1);
+          .to(".hero-signature", { clipPath: "inset(-100% -20% -100% -20%)", opacity: 1, ease: "power1.inOut", duration: 0.7 }, 0.1);
       }
     });
 
@@ -532,10 +532,11 @@ export default function Hero() {
 
         {/* Giant Elegant Calligraphy Signature in Gold */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <h1 className="hero-signature font-signature text-[38vw] md:text-[31vw] font-black leading-none -rotate-[8deg] select-none translate-y-[2%] -translate-x-[2.5%] [-webkit-text-stroke:1.4px_rgba(255,255,255,0.38)]"
-              style={{ clipPath: "inset(-100% 100% -100% 0)", opacity: 0, color: "rgba(255,255,255,0.34)", textShadow: "0 20px 70px rgba(255,255,255,0.18), 0 3px 18px rgba(0,0,0,0.45)" }}>
+          <span className="hero-signature font-signature text-[38vw] md:text-[31vw] font-black leading-none -rotate-[8deg] select-none translate-y-[2%] -translate-x-[2.5%] [-webkit-text-stroke:1.4px_rgba(255,255,255,0.38)]"
+              aria-hidden="true"
+              style={{ clipPath: "inset(-100% 120% -100% -20%)", opacity: 0, color: "rgba(255,255,255,0.34)", textShadow: "0 20px 70px rgba(255,255,255,0.18), 0 3px 18px rgba(0,0,0,0.45)" }}>
             Rislan
-          </h1>
+          </span>
         </div>
 
         {/* Row 2 Marquee (Bottom) - Scrolls right */}
@@ -555,13 +556,13 @@ export default function Hero() {
 
         {/* ── Base faded background (Batik Megamendung) ───────────────────────── */}
         <div className="base-hero-bg absolute inset-0 w-full h-full opacity-50 z-0 pointer-events-none select-none">
-          <HeroImage src="/assets/Hero/Hero_bg.png" alt="Base faded background" priority />
+          <HeroImage src="/assets/Hero/Hero_bg.webp" alt="Base faded background" priority />
         </div>
 
         {/* ── BG blob reveal layer ────────────────────────────────────────────── */}
         <div ref={bgLayerRef} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
              style={{ opacity: 0, clipPath: "url(#bg-blob-mask)" }}>
-          <HeroImage src="/assets/Hero/Hero_bg_hover.png" alt="BG blob hover" />
+          <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="BG blob hover" />
           <div className="absolute inset-0"
                style={{ background: "radial-gradient(ellipse at 50% 50%, rgba(212,175,55,0.10) 0%, transparent 70%)" }} />
         </div>
@@ -569,19 +570,19 @@ export default function Hero() {
         {/* ── Autonomous blob A ──────────────────────────────────────────────── */}
         <div ref={auto0Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
              style={{ opacity: 0, clipPath: "url(#auto-blob-0)" }}>
-          <HeroImage src="/assets/Hero/Hero_bg_hover.png" alt="Auto blob A hover" />
+          <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob A hover" />
         </div>
 
         {/* ── Autonomous blob B ──────────────────────────────────────────────── */}
         <div ref={auto1Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
              style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
-          <HeroImage src="/assets/Hero/Hero_bg_hover.png" alt="Auto blob B hover" />
+          <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob B hover" />
         </div>
 
         {/* ── Autonomous blob C ──────────────────────────────────────────────── */}
         <div ref={auto2Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
              style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
-          <HeroImage src="/assets/Hero/Hero_bg_hover.png" alt="Auto blob C hover" />
+          <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob C hover" />
         </div>
 
         {/* ── Three.js ink trails ───────────────────────────────────────────── */}
@@ -594,23 +595,23 @@ export default function Hero() {
           <div ref={imageRef} className="absolute inset-0 w-full h-full"
                style={{ willChange: "transform" }}>
             <div className="absolute inset-0 z-1">
-              <HeroImage src="/assets/Hero/Hero.png" alt="M Rislan Tristansyah portrait" priority />
+              <HeroImage src="/assets/Hero/Hero.webp" alt="M Rislan Tristansyah portrait" priority />
             </div>
             <div ref={portraitLayerRef} className="absolute inset-0 z-2"
                  style={{ opacity: 0, clipPath: "url(#portrait-blob-mask)" }}>
-              <HeroImage src="/assets/Hero/Hero_Hover.png" alt="Helmet watercolor overlay" />
+              <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet watercolor overlay" />
             </div>
             <div ref={auto0PortraitLayer} className="absolute inset-0 z-3"
                  style={{ opacity: 0, clipPath: "url(#auto-blob-0)" }}>
-              <HeroImage src="/assets/Hero/Hero_Hover.png" alt="Helmet auto blob A" />
+              <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob A" />
             </div>
             <div ref={auto1PortraitLayer} className="absolute inset-0 z-4"
                  style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
-              <HeroImage src="/assets/Hero/Hero_Hover.png" alt="Helmet auto blob B" />
+              <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob B" />
             </div>
             <div ref={auto2PortraitLayer} className="absolute inset-0 z-5"
                  style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
-              <HeroImage src="/assets/Hero/Hero_Hover.png" alt="Helmet auto blob C" />
+              <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob C" />
             </div>
           </div>
         </div>

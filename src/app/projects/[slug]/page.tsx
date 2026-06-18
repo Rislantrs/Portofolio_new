@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { 
   ExternalLink,
   Cpu, 
-  Database, 
   Network, 
   Brain, 
   Globe, 
@@ -18,11 +17,11 @@ import {
 } from "lucide-react";
 import ClientOnlyCustomCursor from "@/components/ClientOnlyCustomCursor";
 import {
-  getProjectBySlug,
-  getRelatedProjects,
-  publishedProjects,
-  type ProjectContentBlock,
-} from "@/lib/projects";
+  fetchProjectBySlug,
+  fetchRelatedProjects,
+  fetchPublishedProjects,
+} from "@/lib/supabaseDb";
+import { type ProjectContentBlock } from "@/lib/projects";
 
 type PageProps = {
   params: Promise<{
@@ -30,15 +29,16 @@ type PageProps = {
   }>;
 };
 
-export function generateStaticParams() {
-  return publishedProjects.map((project) => ({
+export async function generateStaticParams() {
+  const published = await fetchPublishedProjects();
+  return published.map((project) => ({
     slug: project.slug,
   }));
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await fetchProjectBySlug(slug);
 
   if (!project) {
     return {
@@ -133,6 +133,7 @@ const getTechIconDetails = (name: string) => {
   }
 
   // 3. Lucide Fallback Mapping
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const lucideMap: Record<string, any> = {
     "iot": Cpu,
     "embedded system": Cpu,
@@ -283,11 +284,11 @@ function ContentBlock({ block }: { block: ProjectContentBlock }) {
 
 export default async function ProjectArticlePage({ params }: PageProps) {
   const { slug } = await params;
-  const project = getProjectBySlug(slug);
+  const project = await fetchProjectBySlug(slug);
 
   if (!project) notFound();
 
-  const relatedProjects = getRelatedProjects(project.slug);
+  const relatedProjects = await fetchRelatedProjects(project.slug);
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "CreativeWork",
