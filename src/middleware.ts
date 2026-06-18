@@ -5,6 +5,16 @@ export function middleware(request: NextRequest) {
   const url = request.nextUrl.clone();
   const path = url.pathname;
 
+  // Force HTTPS in production to avoid cookie storage and transport rejection on HTTP
+  if (
+    process.env.NODE_ENV === "production" &&
+    request.headers.get("x-forwarded-proto") !== "https"
+  ) {
+    return NextResponse.redirect(
+      `https://${request.headers.get("host")}${request.nextUrl.pathname}${request.nextUrl.search}`
+    );
+  }
+
   // Only run for /admin routes (including sub-pages like /admin/projects)
   if (path.startsWith("/admin")) {
     const adminKey = process.env.ADMIN_ACCESS_KEY || "admin123"; // fallback in dev
@@ -20,6 +30,7 @@ export function middleware(request: NextRequest) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         maxAge: 60 * 60 * 24 * 7, // 1 week
+        path: "/",
       });
       return response;
     }
@@ -38,5 +49,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|assets).*)"],
 };
