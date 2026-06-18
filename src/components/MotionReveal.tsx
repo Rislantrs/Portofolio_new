@@ -22,9 +22,9 @@ export default function MotionReveal({
   delay = 0,
   margin = "-80px",
 }: MotionRevealProps) {
-  const reduceMotion = useLowEndDevice();
+  const { isLiteMode } = useLowEndDevice();
 
-  if (reduceMotion) {
+  if (isLiteMode) {
     return (
       <div id={id} className={className}>
         {children}

@@ -2,7 +2,6 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
-import { performanceConfig } from "@/lib/siteConfig";
 import { useLowEndDevice } from "@/hooks/useLowEndDevice";
 
 function PreloaderFallback() {
@@ -27,16 +26,19 @@ const Preloader = dynamic(() => import("@/components/Preloader"), {
 });
 
 export default function PortfolioClientEffects() {
-  const liteMode = useLowEndDevice();
+  const { isLiteMode, tier } = useLowEndDevice();
   const [loaded, setLoaded] = useState(false);
   const [showPreloader, setShowPreloader] = useState(true);
 
   useEffect(() => {
-    document.documentElement.dataset.perfMode = liteMode ? "lite" : "full";
-  }, [liteMode]);
+    const currentMode = document.documentElement.dataset.perfMode;
+    if (tier === "full" && currentMode && currentMode !== "full") return;
+    document.documentElement.dataset.perfMode = tier;
+  }, [tier]);
 
   useEffect(() => {
-    if (!liteMode || !showPreloader) return;
+    // Skip preloader hanya di lite mode (mobile tetap dapat preloader)
+    if (!isLiteMode || !showPreloader) return;
 
     const timer = window.setTimeout(() => {
       setLoaded(true);
@@ -45,7 +47,8 @@ export default function PortfolioClientEffects() {
     }, 0);
 
     return () => window.clearTimeout(timer);
-  }, [liteMode, showPreloader]);
+  }, [isLiteMode, showPreloader]);
+
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
@@ -75,7 +78,9 @@ export default function PortfolioClientEffects() {
 
   useEffect(() => {
     if (!loaded) return;
-    if (liteMode && !performanceConfig.enableSmoothScrollOnMobile) return;
+    // Lenis dimatikan HANYA di lite mode (prefers-reduced-motion/saveData)
+    // Mobile biasa (Android) tetap dapat Lenis agar scroll tidak kaku
+    if (isLiteMode) return;
 
     let frameId = 0;
     let cancelled = false;
@@ -124,7 +129,7 @@ export default function PortfolioClientEffects() {
       lenis?.destroy();
       document.removeEventListener("click", handleAnchorScroll);
     };
-  }, [loaded, liteMode]);
+  }, [loaded, isLiteMode]);
 
   const completePreloader = useCallback(() => {
     setLoaded(true);
@@ -137,5 +142,5 @@ export default function PortfolioClientEffects() {
     }, 150);
   }, []);
 
-  return showPreloader && !liteMode ? <Preloader onComplete={completePreloader} /> : null;
+  return showPreloader && !isLiteMode ? <Preloader onComplete={completePreloader} /> : null;
 }

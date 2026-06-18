@@ -255,7 +255,7 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
 }
 
 export default function Certifications() {
-  const isLowEnd = useLowEndDevice();
+  const { isMobile, isLiteMode } = useLowEndDevice();
   const sectionRef = useRef<HTMLDivElement>(null);
   const trackViewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -284,12 +284,14 @@ export default function Certifications() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsPinned(!isLowEnd && window.innerWidth >= 1024);
+      // Pin horizontal scroll GSAP hanya di non-lite dan layar ≥1024px
+      // Mobile (Android) di layar ≥1024px (tablet landscape) tetap mendapat pin
+      setIsPinned(!isLiteMode && window.innerWidth >= 1024);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [isLowEnd]);
+  }, [isLiteMode]);
 
   useCertificationsTimeline({
     isPinned,
@@ -354,7 +356,7 @@ trackViewportRef,
             className="flex gap-6 items-center pr-[clamp(7rem,18vw,16rem)]"
           >
             {certificates.map((cert, idx) => (
-              <CertificateCard key={cert.id} cert={cert} showNoise={!isLowEnd && idx < 3} />
+              <CertificateCard key={cert.id} cert={cert} showNoise={!isMobile && !isLiteMode && idx < 3} />
             ))}
           </div>
         </div>

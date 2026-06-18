@@ -101,7 +101,7 @@ function HeroImage({
 }
 
 export default function Hero() {
-  const isLowEnd = useLowEndDevice();
+  const { isMobile, isLiteMode } = useLowEndDevice();
   const [effectsReady, setEffectsReady] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const imageRef     = useRef<HTMLDivElement>(null);
@@ -146,7 +146,9 @@ export default function Hero() {
   const isDesktopRef = useRef(false);
 
   useEffect(() => {
-    if (isLowEnd) {
+    // Di lite mode: effectsReady tidak pernah jadi true → semua efek off
+    // Di isMobile: effectsReady tetap jalan (tapi blobs/InkCanvas akan di-skip di JSX)
+    if (isLiteMode) {
       return;
     }
 
@@ -162,7 +164,7 @@ export default function Hero() {
 
     const timeoutId = window.setTimeout(() => setEffectsReady(true), 900);
     return () => window.clearTimeout(timeoutId);
-  }, [isLowEnd]);
+  }, [isLiteMode]);
 
   // Physics tracking for hover fluid
   const hoverVx = useRef(0);
@@ -242,7 +244,8 @@ export default function Hero() {
     });
 
     // ── Main animation loop ────────────────────────────────────────────────────
-    if (isLowEnd || !effectsReady) {
+    // Blok main loop hanya di lite mode — mobile tetap jalan untuk GSAP scroll effects
+    if (isLiteMode || !effectsReady) {
       return () => {
         mm.revert();
         cancelAnimationFrame(rafRef.current);
@@ -250,6 +253,7 @@ export default function Hero() {
     }
 
     const loop = (now: number) => {
+      // Hentikan loop jika sekarang adalah lite mode (bukan mobile mode biasa)
       if (document.documentElement.dataset.perfMode === "lite") {
         return;
       }
@@ -466,8 +470,8 @@ export default function Hero() {
         auto0Path.current?.setAttribute("d", makeBlobPath(data0.cx, data0.cy, data0.rx, data0.ry, t, 0, 10, data0.vx, data0.vy, data0.wobble));
       }
 
-      // Slice 1 - Phase B (120 degrees staggered offset)
-      if (!isLowEnd) {
+      // Slice 1 - Phase B: dimatikan di mobile (berat di GPU mobile)
+      if (!isMobile) {
         const data1 = getSliceData(1, 0.23, (Math.PI * 2) / 3);
         const op1Target = activeIdle ? data1.rawOp * 0.9 : 0;
         setOpacity(auto1Layer.current, lerp(getOpacity(auto1Layer.current), op1Target, idleLerpSpeed));
@@ -477,8 +481,8 @@ export default function Hero() {
         }
       }
 
-      // Slice 2 - Phase C (240 degrees staggered offset)
-      if (!isLowEnd) {
+      // Slice 2 - Phase C: dimatikan di mobile (berat di GPU mobile)
+      if (!isMobile) {
         const data2 = getSliceData(2, 0.18, (Math.PI * 4) / 3);
         const op2Target = activeIdle ? data2.rawOp * 0.9 : 0;
         setOpacity(auto2Layer.current, lerp(getOpacity(auto2Layer.current), op2Target, idleLerpSpeed));
@@ -518,7 +522,7 @@ export default function Hero() {
       mm.revert();
       cancelAnimationFrame(rafRef.current);
     };
-  }, [isLowEnd, effectsReady]);
+  }, [isMobile, isLiteMode, effectsReady]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLElement>) => {
     if (scrollProgressRef.current > 0.08) return; // return early and disable updates if scrolled down!
@@ -531,7 +535,9 @@ export default function Hero() {
 
 
 
-  const shouldRenderHeroEffects = !isLowEnd && effectsReady;
+  // shouldRenderHeroEffects: false hanya di lite mode atau sebelum effects ready
+  // isMobile tetap render effects, tapi InkCanvas dan beberapa blobs difilter di dalam JSX
+  const shouldRenderHeroEffects = !isLiteMode && effectsReady;
 
   return (
     <section
@@ -601,7 +607,7 @@ export default function Hero() {
         )}
 
         {/* ── Autonomous blob B ──────────────────────────────────────────────── */}
-        {shouldRenderHeroEffects && (
+        {shouldRenderHeroEffects && !isMobile && (
           <div ref={auto1Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
                style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
             <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob B hover" />
@@ -609,15 +615,15 @@ export default function Hero() {
         )}
 
         {/* ── Autonomous blob C ──────────────────────────────────────────────── */}
-        {shouldRenderHeroEffects && (
+        {shouldRenderHeroEffects && !isMobile && (
           <div ref={auto2Layer} className="absolute inset-0 w-full h-full z-1 pointer-events-none"
                style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
             <HeroImage src="/assets/Hero/Hero_bg_hover.webp" alt="Auto blob C hover" />
           </div>
         )}
 
-        {/* ── Three.js ink trails ───────────────────────────────────────────── */}
-        {shouldRenderHeroEffects && (
+        {/* ── Three.js ink trails: DIMATIKAN di mobile (GPU WebGL berat) ──── */}
+        {shouldRenderHeroEffects && !isMobile && (
           <div className="hero-ink-canvas-wrapper absolute inset-0 w-full h-full z-2 pointer-events-none">
             <InkCanvas />
           </div>
@@ -640,14 +646,18 @@ export default function Hero() {
                      style={{ opacity: 0, clipPath: "url(#auto-blob-0)" }}>
                   <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob A" />
                 </div>
-                <div ref={auto1PortraitLayer} className="absolute inset-0 z-4"
-                     style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
-                  <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob B" />
-                </div>
-                <div ref={auto2PortraitLayer} className="absolute inset-0 z-5"
-                     style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
-                  <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob C" />
-                </div>
+                {!isMobile && (
+                  <>
+                    <div ref={auto1PortraitLayer} className="absolute inset-0 z-4"
+                         style={{ opacity: 0, clipPath: "url(#auto-blob-1)" }}>
+                      <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob B" />
+                    </div>
+                    <div ref={auto2PortraitLayer} className="absolute inset-0 z-5"
+                         style={{ opacity: 0, clipPath: "url(#auto-blob-2)" }}>
+                      <HeroImage src="/assets/Hero/Hero_Hover.webp" alt="Helmet auto blob C" />
+                    </div>
+                  </>
+                )}
               </>
             )}
           </div>

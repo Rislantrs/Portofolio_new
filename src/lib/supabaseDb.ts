@@ -9,8 +9,46 @@ const isSupabaseConfigured = (): boolean => {
   );
 };
 
+type MutationResult<T> = { success: boolean; data?: T; error?: string };
+
+type ProjectDbRow = {
+  id: number | string;
+  slug: string;
+  title: string;
+  short_title?: string | null;
+  year: string;
+  description: string;
+  category: string;
+  tags?: string[] | null;
+  image: string;
+  github?: string | null;
+  demo?: string | null;
+  featured?: boolean | null;
+  role?: string | null;
+  status?: ProjectArticle["status"] | null;
+  summary?: string | null;
+  content?: ProjectArticle["content"] | null;
+};
+
+type CertificateDbRow = {
+  id: number | string;
+  name: string;
+  organizer: string;
+  year: string;
+  category: Certificate["category"];
+  badge_name?: string | null;
+  badge_icon?: string | null;
+  link?: string | null;
+};
+
+const omitId = <T extends { id?: unknown }>(item: T): Omit<T, "id"> => {
+  const { id: omittedId, ...rest } = item;
+  void omittedId;
+  return rest;
+};
+
 // --- Mappers ---
-const mapProject = (item: any): ProjectArticle => ({
+const mapProject = (item: ProjectDbRow): ProjectArticle => ({
   id: Number(item.id),
   slug: item.slug,
   title: item.title,
@@ -48,7 +86,7 @@ const mapProjectToDb = (item: Partial<ProjectArticle>) => ({
   content: item.content,
 });
 
-const mapCertificate = (item: any): Certificate => ({
+const mapCertificate = (item: CertificateDbRow): Certificate => ({
   id: Number(item.id),
   name: item.name,
   organizer: item.organizer,
@@ -143,7 +181,7 @@ export async function fetchRelatedProjects(slug: string, limit = 3): Promise<Pro
     .slice(0, limit);
 }
 
-export async function saveProject(project: Partial<ProjectArticle>): Promise<{ success: boolean; data?: ProjectArticle; error?: any }> {
+export async function saveProject(project: Partial<ProjectArticle>): Promise<MutationResult<ProjectArticle>> {
   if (!isSupabaseConfigured()) {
     return { success: false, error: "Supabase is not configured." };
   }
@@ -160,7 +198,7 @@ export async function saveProject(project: Partial<ProjectArticle>): Promise<{ s
       .single();
   } else {
     // Exclude id so that Supabase generates a new identity id if it is configured to auto-increment
-    const { id, ...insertData } = dbData as any;
+    const insertData = omitId(dbData);
     result = await supabase
       .from("projects")
       .insert(insertData)
@@ -175,7 +213,7 @@ export async function saveProject(project: Partial<ProjectArticle>): Promise<{ s
   return { success: true, data: mapProject(result.data) };
 }
 
-export async function deleteProject(id: number): Promise<{ success: boolean; error?: any }> {
+export async function deleteProject(id: number): Promise<MutationResult<never>> {
   if (!isSupabaseConfigured()) {
     return { success: false, error: "Supabase is not configured." };
   }
@@ -204,7 +242,7 @@ export async function fetchCertifications(): Promise<Certificate[]> {
   return data.map(mapCertificate);
 }
 
-export async function saveCertification(cert: Partial<Certificate>): Promise<{ success: boolean; data?: Certificate; error?: any }> {
+export async function saveCertification(cert: Partial<Certificate>): Promise<MutationResult<Certificate>> {
   if (!isSupabaseConfigured()) {
     return { success: false, error: "Supabase is not configured." };
   }
@@ -220,7 +258,7 @@ export async function saveCertification(cert: Partial<Certificate>): Promise<{ s
       .select()
       .single();
   } else {
-    const { id, ...insertData } = dbData as any;
+    const insertData = omitId(dbData);
     result = await supabase
       .from("certifications")
       .insert(insertData)
@@ -235,7 +273,7 @@ export async function saveCertification(cert: Partial<Certificate>): Promise<{ s
   return { success: true, data: mapCertificate(result.data) };
 }
 
-export async function deleteCertification(id: number): Promise<{ success: boolean; error?: any }> {
+export async function deleteCertification(id: number): Promise<MutationResult<never>> {
   if (!isSupabaseConfigured()) {
     return { success: false, error: "Supabase is not configured." };
   }

@@ -7,7 +7,7 @@ export default function PortfolioShell({
   children: React.ReactNode;
 }>) {
   return (
-    <div id="home" className="relative min-h-screen bg-bg text-text">
+    <div className="relative min-h-screen bg-bg text-text">
       <PortfolioClientEffects />
       <ClientOnlyCustomCursor />
       {children}

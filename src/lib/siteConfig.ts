@@ -12,9 +12,12 @@ export const siteTheme = {
 export const performanceConfig = {
   smallScreenMax: 390,
   mobileMax: 767,
-  lowMemoryGB: 4,
-  lowCpuCores: 4,
-  enableSmoothScrollOnMobile: false,
+  tabletMax: 1024,
+  // Threshold "benar-benar kentang" diperketat: hanya hardware ekstrem (≤2GB RAM atau ≤2 core)
+  // yang dikombinasikan dengan true mobile device yang masuk lite mode
+  lowMemoryGB: 2,
+  lowCpuCores: 2,
+  enableSmoothScrollOnMobile: true,   // Lenis aktif di mobile agar scroll tidak kaku
   enableCustomCursorOnTouch: false,
   enableInkCanvasInLiteMode: false,
   enableHeroBlobLoopInLiteMode: false,
