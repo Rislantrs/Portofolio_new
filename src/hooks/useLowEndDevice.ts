@@ -25,17 +25,17 @@ export function useLowEndDevice() {
       const lowCpu =
         typeof navigator.hardwareConcurrency === "number" &&
         navigator.hardwareConcurrency <= performanceConfig.lowCpuCores;
-      const constrainedViewport = window.innerWidth <= performanceConfig.mobileMax;
-      const touchFirstDevice =
-        coarsePointerQuery.matches && !performanceConfig.enableCustomCursorOnTouch;
+      const mobileViewport = window.innerWidth <= performanceConfig.mobileMax;
+      const tabletViewport = window.innerWidth <= 1024;
+      const mobileLikeDevice = coarsePointerQuery.matches && tabletViewport;
+      const constrainedMobileHardware = (lowMemory || lowCpu) && tabletViewport;
 
       setIsLowEnd(
         reducedMotionQuery.matches ||
-          touchFirstDevice ||
-          constrainedViewport ||
-          lowMemory ||
-          lowCpu ||
-          navigatorHints.connection?.saveData === true,
+          navigatorHints.connection?.saveData === true ||
+          mobileViewport ||
+          mobileLikeDevice ||
+          constrainedMobileHardware,
       );
     };
 

@@ -104,8 +104,11 @@ export default function RootLayout({
                   var lowMemory = typeof nav.deviceMemory === "number" && nav.deviceMemory <= 4;
                   var lowCpu = typeof nav.hardwareConcurrency === "number" && nav.hardwareConcurrency <= 4;
                   var mobile = window.innerWidth <= 767;
+                  var tablet = window.innerWidth <= 1024;
+                  var mobileLike = coarse && tablet;
+                  var constrainedMobileHardware = (lowMemory || lowCpu) && tablet;
                   var saveData = !!(nav.connection && nav.connection.saveData);
-                  document.documentElement.dataset.perfMode = (coarse || reduced || lowMemory || lowCpu || mobile || saveData) ? "lite" : "full";
+                  document.documentElement.dataset.perfMode = (reduced || saveData || mobile || mobileLike || constrainedMobileHardware) ? "lite" : "full";
                 } catch (error) {
                   document.documentElement.dataset.perfMode = "full";
                 }

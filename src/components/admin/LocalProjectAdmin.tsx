@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Edit3, Eye, Plus, Save, Trash2, Upload, FileText, Award, Loader2, Trash } from "lucide-react";
+import { Eye, Plus, Save, Trash2, Upload, FileText, Award, Loader2, Trash } from "lucide-react";
 import { type ProjectArticle, type ProjectContentBlock } from "@/lib/projects";
 import { type Certificate } from "@/lib/certifications";
 import {
@@ -15,10 +15,20 @@ import {
 } from "@/lib/supabaseDb";
 import { supabase } from "@/lib/supabase";
 
-// Fallback arrays to know structural types and defaults
-import { projects as fallbackProjects } from "@/lib/projects";
-import { certificates as fallbackCertificates } from "@/lib/certifications";
 
+function getErrorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function createProjectContentBlock(type: "paragraph" | "heading", index: number): ProjectContentBlock {
+  return type === "heading"
+    ? { id: `block_${index}`, type: "heading", level: 2, text: "New Section Heading" }
+    : { id: `block_${index}`, type: "paragraph", text: "New paragraph content..." };
+}
+
+function getTextContent(block: ProjectContentBlock) {
+  return block.type === "paragraph" || block.type === "heading" ? block.text : "";
+}
 // Helper to compress and convert file to WebP client-side using HTML5 Canvas
 async function compressAndConvertToWebP(file: File, maxWidth = 1200, quality = 0.8): Promise<Blob> {
   return new Promise((resolve, reject) => {
@@ -92,7 +102,8 @@ export default function LocalProjectAdmin() {
   };
 
   useEffect(() => {
-    loadAllData();
+    const timer = window.setTimeout(() => void loadAllData(), 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   // Selected Items
@@ -121,7 +132,8 @@ export default function LocalProjectAdmin() {
       const webpBlob = await compressAndConvertToWebP(file);
 
       // 2. Upload to Storage
-      const fileName = `${Date.now()}_${file.name.replace(/\.[^/.]+$/, "")}.webp`;
+      const safeBaseName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
+      const fileName = `${file.lastModified}_${safeBaseName}.webp`;
       const folder = type === "project" ? "projects" : "certifications";
       const filePath = `${folder}/${fileName}`;
 
@@ -147,9 +159,9 @@ export default function LocalProjectAdmin() {
         updateCert({ badgeIcon: publicUrl });
         showFeedback("Certificate badge compressed to WebP and uploaded!", "success");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      showFeedback(`Upload failed: ${err.message || err}`, "error");
+      showFeedback(`Upload failed: ${getErrorMessage(err)}`, "error");
     } finally {
       setUploading(false);
     }
@@ -176,8 +188,8 @@ export default function LocalProjectAdmin() {
       } else {
         throw new Error(res.error);
       }
-    } catch (err: any) {
-      showFeedback(`Save failed: ${err.message || err}`, "error");
+    } catch (err: unknown) {
+      showFeedback(`Save failed: ${getErrorMessage(err)}`, "error");
     } finally {
       setSaving(false);
     }
@@ -231,8 +243,8 @@ export default function LocalProjectAdmin() {
       } else {
         throw new Error(res.error);
       }
-    } catch (err: any) {
-      showFeedback(`Delete failed: ${err.message || err}`, "error");
+    } catch (err: unknown) {
+      showFeedback(`Delete failed: ${getErrorMessage(err)}`, "error");
     } finally {
       setSaving(false);
     }
@@ -259,8 +271,8 @@ export default function LocalProjectAdmin() {
       } else {
         throw new Error(res.error);
       }
-    } catch (err: any) {
-      showFeedback(`Save failed: ${err.message || err}`, "error");
+    } catch (err: unknown) {
+      showFeedback(`Save failed: ${getErrorMessage(err)}`, "error");
     } finally {
       setSaving(false);
     }
@@ -306,8 +318,8 @@ export default function LocalProjectAdmin() {
       } else {
         throw new Error(res.error);
       }
-    } catch (err: any) {
-      showFeedback(`Delete failed: ${err.message || err}`, "error");
+    } catch (err: unknown) {
+      showFeedback(`Delete failed: ${getErrorMessage(err)}`, "error");
     } finally {
       setSaving(false);
     }
@@ -330,11 +342,7 @@ export default function LocalProjectAdmin() {
 
   const addContentBlock = (type: "paragraph" | "heading") => {
     if (!selectedProject) return;
-    const newBlock: ProjectContentBlock = {
-      id: `block_${Date.now()}`,
-      type,
-      ...(type === "heading" ? { level: 2, text: "New Section Heading" } : { text: "New paragraph content..." })
-    } as any;
+    const newBlock = createProjectContentBlock(type, selectedProject.content.length + 1);
     updateProject({ content: [...selectedProject.content, newBlock] });
   };
 
@@ -348,7 +356,7 @@ export default function LocalProjectAdmin() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="admin-workbench flex flex-col gap-6">
       {/* Toast Feedback Message */}
       {message && (
         <div
@@ -363,7 +371,7 @@ export default function LocalProjectAdmin() {
       )}
 
       {/* Tab Switcher */}
-      <div className="flex border-b border-white/5 pb-2">
+      <div className="admin-tabs flex flex-wrap gap-2">
         <button
           onClick={() => setActiveTab("projects")}
           className={`flex items-center gap-2 px-6 py-3 font-display text-sm font-bold uppercase tracking-wider transition-colors border-b-2 ${
@@ -390,7 +398,7 @@ export default function LocalProjectAdmin() {
 
       {activeTab === "projects" ? (
         // --- PROJECTS TAB ---
-        <div className="grid gap-5 xl:grid-cols-[340px_1fr]">
+        <div className="admin-editor-grid grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
           <aside className="rounded-lg border border-white/5 bg-surface">
             <div className="flex items-center justify-between gap-3 border-b border-white/5 p-4">
               <div>
@@ -518,7 +526,7 @@ export default function LocalProjectAdmin() {
                     <span className="font-mono text-[10px] uppercase tracking-widest text-text-subtle">Status</span>
                     <select
                       value={selectedProject.status}
-                      onChange={(e) => updateProject({ status: e.target.value as any })}
+                      onChange={(e) => updateProject({ status: e.target.value as ProjectArticle["status"] })}
                       className="rounded-lg border border-white/10 bg-bg-elevated px-4 py-3 font-sans text-sm text-text outline-none focus:border-accent/50"
                     >
                       <option value="draft">Draft</option>
@@ -540,6 +548,7 @@ export default function LocalProjectAdmin() {
                     <span className="font-mono text-[10px] uppercase tracking-widest text-text-subtle">Project Image</span>
                     <div className="flex flex-col gap-3 rounded-lg border border-white/5 bg-bg-elevated p-4 md:flex-row md:items-center">
                       <div className="relative aspect-[4/3] w-28 overflow-hidden rounded border border-white/10 bg-black">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews support arbitrary stored image URLs. */}
                         <img
                           src={selectedProject.image}
                           alt="Preview"
@@ -634,7 +643,7 @@ export default function LocalProjectAdmin() {
                         <div className="flex-1">
                           {(block.type === "paragraph" || block.type === "heading") ? (
                             <textarea
-                              value={(block as any).text || ""}
+                              value={getTextContent(block)}
                               onChange={(e) => updateContentBlock(block.id, e.target.value)}
                               rows={block.type === "heading" ? 1 : 3}
                               className="w-full resize-none rounded border border-white/10 bg-bg px-3 py-2 font-sans text-sm text-text outline-none focus:border-accent/40"
@@ -675,7 +684,7 @@ export default function LocalProjectAdmin() {
         </div>
       ) : (
         // --- CERTIFICATIONS TAB ---
-        <div className="grid gap-5 xl:grid-cols-[340px_1fr]">
+        <div className="admin-editor-grid grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
           <aside className="rounded-lg border border-white/5 bg-surface">
             <div className="flex items-center justify-between gap-3 border-b border-white/5 p-4">
               <div>
@@ -776,7 +785,7 @@ export default function LocalProjectAdmin() {
                     <span className="font-mono text-[10px] uppercase tracking-widest text-text-subtle">Category</span>
                     <select
                       value={selectedCert.category}
-                      onChange={(e) => updateCert({ category: e.target.value as any })}
+                      onChange={(e) => updateCert({ category: e.target.value as Certificate["category"] })}
                       className="rounded-lg border border-white/10 bg-bg-elevated px-4 py-3 font-sans text-sm text-text outline-none focus:border-accent/50"
                     >
                       <option value="ai">AI / Machine Learning</option>
@@ -810,6 +819,7 @@ export default function LocalProjectAdmin() {
                     <span className="font-mono text-[10px] uppercase tracking-widest text-text-subtle">Badge Icon / Logo</span>
                     <div className="flex flex-col gap-3 rounded-lg border border-white/5 bg-bg-elevated p-4 md:flex-row md:items-center">
                       <div className="relative aspect-square w-16 overflow-hidden rounded border border-white/10 bg-black flex items-center justify-center p-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- Admin previews support arbitrary stored image URLs. */}
                         <img
                           src={selectedCert.badgeIcon}
                           alt="Badge Preview"
