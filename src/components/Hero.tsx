@@ -16,7 +16,7 @@ const InkCanvas = dynamic(() => import("./InkCanvas"), {
 // ─── Organic blob path generator (Supports oblong/oval shapes with physical liquid dynamics) ────────────────
 function makeBlobPath(
   cx: number, cy: number, radiusX: number, radiusY: number,
-  t: number, phase = 0, pts = 12,
+  t: number, phase = 0, pts = 24,
   vx = 0, vy = 0, wobble = 0
 ): string {
   const step = (Math.PI * 2) / pts;
@@ -27,31 +27,36 @@ function makeBlobPath(
   // Calculate travel angle. If almost stationary, default to 0 or phase offset
   const travelAngle = speed > 0.001 ? Math.atan2(vy, vx) : phase;
   
-  // Stretch along velocity, squeeze perpendicular to preserve volume
-  // Gentle stretch factor (max 1.24x) keeps the shape organic and rounded (kadang membulat)
-  const stretchFactor = 1.0 + Math.min(0.24, speed * 8.0);
+  const stretchFactor = 1.0 + Math.min(0.36, speed * 11.0 + wobble * 0.16);
   const squeezeFactor = 1.0 / Math.sqrt(stretchFactor);
+  const tailPull = Math.min(0.42, speed * 15.0 + wobble * 0.18);
+  const frontPush = Math.min(0.12, speed * 3.4);
   
-  // Wobble and speed increase the noise wave intensity and speed
-  // A lower baseline scale of 0.13 (was 0.22) makes stationary fluids perfectly smooth and rounded, like a puddle!
-  const noiseScale = 0.13 * (1.0 + wobble * 2.2 + speed * 4.5);
-  const dynamicT = t * 0.9 + speed * 12.0 + wobble * 5.0;
+  const noiseScale = 0.075 + Math.min(0.14, wobble * 0.42 + speed * 1.8);
+  const microNoiseScale = 0.006 + Math.min(0.018, speed * 0.28 + wobble * 0.035);
+  const dynamicT = t * 0.82 + speed * 8.0 + wobble * 2.2;
 
   for (let i = 0; i < pts; i++) {
     const a = i * step - Math.PI / 2;
-    
-    // Wave deformation (Using clean integer harmonics for perfect seamless loop, no creases or spikes!)
-    const n = 1
-      + Math.sin(a * 2 + dynamicT + phase)        * noiseScale
-      + Math.cos(a * 3 - dynamicT * 0.7 + phase * 1.5)  * (noiseScale * 0.60)
-      + Math.sin(a * 1 + dynamicT * 1.2 + phase * 0.8)  * (noiseScale * 0.40);
-      
-    // Local coordinates oriented along velocity axis
     const localA = a - travelAngle;
-    const lx = Math.cos(localA) * radiusX * stretchFactor;
-    const ly = Math.sin(localA) * radiusY * squeezeFactor;
+    const behind = clamp01(-Math.cos(localA));
+    const front = clamp01(Math.cos(localA));
+    const side = Math.abs(Math.sin(localA));
+
+    const n = 1
+      + Math.sin(a * 1.37 + dynamicT + phase) * noiseScale
+      + Math.cos(a * 2.61 - dynamicT * 0.78 + phase * 1.7) * (noiseScale * 0.72)
+      + Math.sin(a * 5.23 + dynamicT * 1.8 + phase * 0.35) * microNoiseScale
+      + Math.cos(a * 8.11 - dynamicT * 1.15 + phase * 2.1) * (microNoiseScale * 0.78);
+
+    const lateralSwell = 1 + side * (0.06 + tailPull * 0.08);
+    const tailTaper = 1 - behind * Math.min(0.14, tailPull * 0.16);
+    const noseRound = 1 + front * frontPush;
+    const localStretch = stretchFactor * (1 + behind * tailPull * 0.52 + front * frontPush);
+
+    const lx = Math.cos(localA) * radiusX * localStretch * noseRound;
+    const ly = Math.sin(localA) * radiusY * squeezeFactor * lateralSwell * tailTaper;
     
-    // Rotate back to world coordinates
     const rx_rot = lx * Math.cos(travelAngle) - ly * Math.sin(travelAngle);
     const ry_rot = lx * Math.sin(travelAngle) + ly * Math.cos(travelAngle);
     
@@ -154,7 +159,7 @@ export default function Hero() {
   const hoverScale = useRef(0); // Grow from small to large (dari kecil membesar)
 
   // Hover fluid trail history (bekas cairan)
-  const hoverTrail = useRef<{ cx: number; cy: number; rx: number; ry: number; t: number; vx: number; vy: number; wobble: number }[]>([]);
+  const hoverTrail = useRef<{ cx: number; cy: number; rx: number; ry: number; t: number; vx: number; vy: number; wobble: number; phase: number }[]>([]);
 
   // Physics tracking for 3 idle fluids
   const idlePhysics = useRef({
@@ -208,7 +213,7 @@ export default function Hero() {
           .to(".hero-reveal-layer", { opacity: 1, ease: "power2.inOut", duration: 0.6 }, 0.1)
           .to(".base-hero-bg", { opacity: 1.0, ease: "power2.inOut", duration: 0.8 }, 0)
           .to(".hero-ink-canvas-wrapper", { opacity: 0, ease: "power2.inOut", duration: 0.5 }, 0)
-          .to(".hero-signature", { clipPath: "inset(-100% -20% -100% 0)", opacity: 1, ease: "power1.inOut", duration: 0.7 }, 0.1);
+          .to(".hero-signature", { clipPath: "inset(-35% -35% -35% -35%)", opacity: 1, force3D: true, ease: "power1.inOut", duration: 0.7 }, 0.1);
       }
     });
 
@@ -268,15 +273,15 @@ export default function Hero() {
       const portLerpSpeed = isScrolled ? 1.0 : (mouseActive ? 0.28 : 0.04);
       setOpacity(portraitLayerRef.current, lerp(getOpacity(portraitLayerRef.current), portOpTarget, portLerpSpeed));
 
-      portCX.current = lerp(portCX.current, mouse.current.nx, 0.18);
-      portCY.current = lerp(portCY.current, mouse.current.ny, 0.18);
+      portCX.current = lerp(portCX.current, mouse.current.nx, 0.36);
+      portCY.current = lerp(portCY.current, mouse.current.ny, 0.36);
 
       // Physics tracking for hover fluid - highly smoothed (0.08) for organic fluid flow during maneuvers
       const hDx = portCX.current - hoverPrevCx.current;
       const hDy = portCY.current - hoverPrevCy.current;
       
-      hoverVx.current = lerp(hoverVx.current, hDx, 0.08);
-      hoverVy.current = lerp(hoverVy.current, hDy, 0.08);
+      hoverVx.current = lerp(hoverVx.current, hDx, 0.22);
+      hoverVy.current = lerp(hoverVy.current, hDy, 0.22);
       
       hoverPrevCx.current = portCX.current;
       hoverPrevCy.current = portCY.current;
@@ -286,64 +291,60 @@ export default function Hero() {
       hoverPrevSpeed.current = hSpeed;
       
       // Excitation / Wobble spring physics
-      hoverWobble.current += hAccel * 1.8;
-      hoverWobbleSpeed.current += (0 - hoverWobble.current) * 0.18;
+      hoverWobble.current += hAccel * 2.0 + hSpeed * 0.06;
+      hoverWobbleSpeed.current += (0 - hoverWobble.current) * 0.16;
       hoverWobbleSpeed.current *= 0.84;
       hoverWobble.current += hoverWobbleSpeed.current;
 
-      // Scale-on-drag: starts at a small baseline circular droplet (0.35) when still, and expands to full size (1.0) when moving!
-      // Grow rate (lerp 0.05) makes it grow slowly "dari kecil membesar", contract rate (0.08) returns it to base size when still.
-      const targetScale = (mouseActive && hSpeed > 0.0005) ? 1.0 : (mouseActive ? 0.35 : 0.0);
-      hoverScale.current = lerp(hoverScale.current, targetScale, targetScale > 0.5 ? 0.05 : 0.08);
+      const targetScale = (mouseActive && hSpeed > 0.00035) ? 1.0 : (mouseActive ? 0.30 : 0.0);
+      hoverScale.current = lerp(hoverScale.current, targetScale, targetScale > 0.5 ? 0.18 : 0.14);
 
-      // Start with a highly rounded base shape (0.58 ratio - droplet sweet spot!)
-      // And scale it dynamically by hoverScale.current!
-      const portRX = Math.min(sw, sh) * (0.22 + Math.sin(t * 2.1) * 0.015 + Math.sin(t * 1.3) * 0.008) * hoverScale.current;
-      const portRY = portRX * 0.58; // Perfect viscous oval (not a bread capsule, nor a perfect circle!)
+      const speedPressure = Math.min(0.035, hSpeed * 4.5);
+      const portRX = Math.min(sw, sh) * (0.135 + speedPressure + Math.sin(t * 1.7) * 0.009 + Math.sin(t * 1.1) * 0.005) * hoverScale.current;
+      const portRY = portRX * (0.58 + Math.min(0.045, hSpeed * 2.0));
       
       const headCX = portCX.current * sw;
       const headCY = portCY.current * sh;
 
       // Record mouse trail nodes dynamically when active and moving
-      if (mouseActive && hSpeed > 0.0005) {
+      if (mouseActive && hSpeed > 0.00025) {
         const lastSeg = hoverTrail.current[hoverTrail.current.length - 1];
         const dist = lastSeg ? Math.sqrt(Math.pow(headCX - lastSeg.cx, 2) + Math.pow(headCY - lastSeg.cy, 2)) : 999;
         
-        // Push a new trail segment if cursor moved past 1.2% of screen width (dense, seamless overlapping!)
-        if (dist > sw * 0.012) {
+        if (dist > sw * 0.0095) {
+          const lifeScale = 0.68 + Math.min(0.22, hSpeed * 5.0);
           hoverTrail.current.push({
             cx: headCX,
             cy: headCY,
-            rx: portRX,
-            ry: portRY,
+            rx: portRX * lifeScale,
+            ry: portRY * (0.84 + Math.min(0.12, hSpeed * 3.0)),
             t,
             vx: hoverVx.current,
             vy: hoverVy.current,
-            wobble: hoverWobble.current
+            wobble: hoverWobble.current,
+            phase: hoverTrail.current.length * 0.73 + t * 0.17,
           });
         }
       }
 
-      // Decay and shrink all previous trail segments slowly over time (leaves trailing wake that slowly dissolves)
       hoverTrail.current.forEach(seg => {
-        seg.rx *= 0.96; // Slower decay (was 0.94) to keep segments overlapping longer and avoid spottiness
-        seg.ry *= 0.96;
+        seg.rx *= 0.952;
+        seg.ry *= 0.944;
+        seg.wobble *= 0.90;
       });
-      // Remove segments that are almost fully dissolved
-      hoverTrail.current = hoverTrail.current.filter(seg => seg.rx >= 8);
-      // Keep a max of 16 segments (increased from 12 for denser, longer viscous trails)
-      if (hoverTrail.current.length > 16) {
+      hoverTrail.current = hoverTrail.current.filter(seg => seg.rx >= 5);
+      if (hoverTrail.current.length > 18) {
         hoverTrail.current.shift();
       }
 
       // Generate the union path (concatenates the head puddle and all trailing water droplet wakes)
       let visorPath = makeBlobPath(
-        headCX, headCY, portRX, portRY, t, 0, 10,
+        headCX, headCY, portRX, portRY, t, 0, 24,
         hoverVx.current, hoverVy.current, hoverWobble.current
       );
       
       hoverTrail.current.forEach(seg => {
-        const segPath = makeBlobPath(seg.cx, seg.cy, seg.rx, seg.ry, seg.t, 0, 10, seg.vx, seg.vy, seg.wobble);
+        const segPath = makeBlobPath(seg.cx, seg.cy, seg.rx, seg.ry, seg.t, seg.phase, 20, seg.vx, seg.vy, seg.wobble);
         visorPath += " " + segPath;
       });
 
@@ -436,34 +437,34 @@ export default function Hero() {
       };
 
       // Slice 0 - Phase A (0 offset)
-      const data0 = getSliceData(0, 0.20, 0);
+      const data0 = getSliceData(0, 0.155, 0);
       const op0Target = activeIdle ? data0.rawOp * 0.9 : 0;
       const idleLerpSpeed = isScrolled ? 1.0 : 0.25;
       setOpacity(auto0Layer.current, lerp(getOpacity(auto0Layer.current), op0Target, idleLerpSpeed));
       setOpacity(auto0PortraitLayer.current, lerp(getOpacity(auto0PortraitLayer.current), op0Target, idleLerpSpeed));
       if (activeIdle) {
-        auto0Path.current?.setAttribute("d", makeBlobPath(data0.cx, data0.cy, data0.rx, data0.ry, t, 0, 10, data0.vx, data0.vy, data0.wobble));
+        auto0Path.current?.setAttribute("d", makeBlobPath(data0.cx, data0.cy, data0.rx, data0.ry, t, 0, 22, data0.vx, data0.vy, data0.wobble));
       }
 
       // Slice 1 - Phase B (120 degrees staggered offset)
       if (!isLowEnd) {
-        const data1 = getSliceData(1, 0.23, (Math.PI * 2) / 3);
+        const data1 = getSliceData(1, 0.175, (Math.PI * 2) / 3);
         const op1Target = activeIdle ? data1.rawOp * 0.9 : 0;
         setOpacity(auto1Layer.current, lerp(getOpacity(auto1Layer.current), op1Target, idleLerpSpeed));
         setOpacity(auto1PortraitLayer.current, lerp(getOpacity(auto1PortraitLayer.current), op1Target, idleLerpSpeed));
         if (activeIdle) {
-          auto1Path.current?.setAttribute("d", makeBlobPath(data1.cx, data1.cy, data1.rx, data1.ry, t, Math.PI * 0.4, 10, data1.vx, data1.vy, data1.wobble));
+          auto1Path.current?.setAttribute("d", makeBlobPath(data1.cx, data1.cy, data1.rx, data1.ry, t, Math.PI * 0.4, 22, data1.vx, data1.vy, data1.wobble));
         }
       }
 
       // Slice 2 - Phase C (240 degrees staggered offset)
       if (!isLowEnd) {
-        const data2 = getSliceData(2, 0.18, (Math.PI * 4) / 3);
+        const data2 = getSliceData(2, 0.145, (Math.PI * 4) / 3);
         const op2Target = activeIdle ? data2.rawOp * 0.9 : 0;
         setOpacity(auto2Layer.current, lerp(getOpacity(auto2Layer.current), op2Target, idleLerpSpeed));
         setOpacity(auto2PortraitLayer.current, lerp(getOpacity(auto2PortraitLayer.current), op2Target, idleLerpSpeed));
         if (activeIdle) {
-          auto2Path.current?.setAttribute("d", makeBlobPath(data2.cx, data2.cy, data2.rx, data2.ry, t, Math.PI * 0.8, 10, data2.vx, data2.vy, data2.wobble));
+          auto2Path.current?.setAttribute("d", makeBlobPath(data2.cx, data2.cy, data2.rx, data2.ry, t, Math.PI * 0.8, 22, data2.vx, data2.vy, data2.wobble));
         }
       }
 
@@ -533,7 +534,7 @@ export default function Hero() {
         {/* Giant Elegant Calligraphy Signature in Gold */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <h1 className="hero-signature font-signature text-[38vw] md:text-[31vw] font-black leading-none -rotate-[8deg] select-none translate-y-[2%] -translate-x-[2.5%] [-webkit-text-stroke:1.4px_rgba(255,255,255,0.38)]"
-              style={{ clipPath: "inset(-100% 100% -100% 0)", opacity: 0, color: "rgba(255,255,255,0.34)", textShadow: "0 20px 70px rgba(255,255,255,0.18), 0 3px 18px rgba(0,0,0,0.45)" }}>
+              style={{ clipPath: "inset(-35% 100% -35% -35%)", opacity: 0, color: "rgba(255,255,255,0.34)", textShadow: "0 20px 70px rgba(255,255,255,0.18), 0 3px 18px rgba(0,0,0,0.45)", willChange: "clip-path, opacity, transform" }}>
             Rislan
           </h1>
         </div>
@@ -631,17 +632,17 @@ export default function Hero() {
         <defs>
           {/* Viscous liquid goo filter for portrait blob (fuses overlapping drops like mercury!) */}
           <filter id="edge-bleed-sm" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="11.5" result="blur" />
-            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" result="goo" />
-            <feTurbulence type="fractalNoise" baseFrequency="0.008" numOctaves="1" seed="3" result="noise" />
-            <feDisplacementMap in="goo" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="7.5" result="blur" />
+            <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 21 -8" result="goo" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.008 0.012" numOctaves="2" seed="3" result="noise" />
+            <feDisplacementMap in="goo" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G" />
           </filter>
           {/* Viscous liquid goo filter for background/idle blobs */}
           <filter id="edge-bleed-lg" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur in="SourceGraphic" stdDeviation="14.5" result="blur" />
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur" />
             <feColorMatrix in="blur" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -9" result="goo" />
-            <feTurbulence type="fractalNoise" baseFrequency="0.005" numOctaves="1" seed="9" result="noise" />
-            <feDisplacementMap in="goo" in2="noise" scale="16" xChannelSelector="R" yChannelSelector="G" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.006 0.01" numOctaves="2" seed="9" result="noise" />
+            <feDisplacementMap in="goo" in2="noise" scale="12" xChannelSelector="R" yChannelSelector="G" />
           </filter>
 
           {/* Portrait hover blob */}

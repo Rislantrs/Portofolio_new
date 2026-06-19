@@ -334,7 +334,7 @@ export default function About() {
         scrollTrigger: {
           trigger: intro,
           start: "top top",
-          end: () => `+=${window.innerHeight * 3.5}`, // Pinned for 3.5 screen heights total
+          end: () => `+=${window.innerHeight * 3.0}`, // Pinned for 3.0 screen heights total
           pin: true,
           pinSpacing: true,
           scrub: 0.5,
@@ -343,8 +343,8 @@ export default function About() {
           onUpdate: (self) => {
             const p = self.progress;
 
-            // Start physics at 35% of the total timeline progress
-            if (p >= 0.35 && p < 0.65 && !physicsStartedRef.current) {
+            // Start physics at 28% of the total timeline progress (was 35%)
+            if (p >= 0.28 && p < 0.65 && !physicsStartedRef.current) {
               physicsStartedRef.current = true;
               if (physicsTimeoutRef.current) {
                 clearTimeout(physicsTimeoutRef.current);
@@ -357,8 +357,8 @@ export default function About() {
               }, 100);
             }
 
-            // Reset physics when scrolling back up past 33%
-            if (p < 0.33 && physicsStartedRef.current) {
+            // Reset physics when scrolling back up past 25% (was 33%)
+            if (p < 0.25 && physicsStartedRef.current) {
               physicsStartedRef.current = false;
               if (physicsTimeoutRef.current) {
                 clearTimeout(physicsTimeoutRef.current);
@@ -407,14 +407,14 @@ export default function About() {
       });
 
       // Build unified timeline:
-      // - 0.0 to 0.25: title panel and quote panel slide up
-      // - 0.25 to 0.55: static manifesto text and letters fall (at 0.35 onUpdate)
+      // - 0.0 to 0.15: title panel and quote panel slide up (natural linear scroll speed)
+      // - 0.15 to 0.55: static manifesto text and letters fall (at 0.28 onUpdate)
       // - 0.55 to 0.70: curtain slides up (covers screen completely at 0.70)
       // - 0.70 to 0.75: fade-in cube panel, scale-up bouncy cube automatically
       // - 0.75 to 1.0: roll cube Y
       aboutTimeline
-        .to(titlePanel, { yPercent: -100, duration: 0.25, ease: "power2.inOut" }, 0)
-        .to(quotePanel, { yPercent: 0, duration: 0.25, ease: "power2.inOut" }, 0)
+        .to(titlePanel, { yPercent: -100, duration: 0.15, ease: "none" }, 0)
+        .to(quotePanel, { yPercent: 0, duration: 0.15, ease: "none" }, 0)
         .to(cubePanel, { yPercent: 0, pointerEvents: "auto", duration: 0.15, ease: "power2.inOut" }, 0.55)
         .to(cubeRef.current, { scale: 1, rotateX: 0, rotateZ: 0, duration: 0.05, ease: "back.out(1.5)" }, 0.70)
         .to(cubeRef.current, { rotateY: -(faces.length - 1) * 90, duration: 0.25, ease: "none" }, 0.75);
@@ -789,7 +789,7 @@ export default function About() {
               <span>02/04</span>
             </div>
 
-            <div className="flex min-h-0 flex-1 w-full items-start px-[clamp(1rem,4vw,5rem)] py-6">
+            <div className="flex min-h-0 flex-1 w-full items-center px-[clamp(1rem,4vw,5rem)] py-6">
               <p className="flex max-w-[min(92rem,100%)] flex-wrap justify-start gap-x-[0.28em] gap-y-[0.12em] font-sans text-[clamp(1.35rem,3.35vw,4.15rem)] font-black uppercase leading-[0.98] tracking-normal">
                 {manifestoWords.map((word, index) => {
                   const quietWord = index % 3 === 1 || index % 5 === 0;

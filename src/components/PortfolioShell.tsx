@@ -1,4 +1,3 @@
-import ClientOnlyCustomCursor from "@/components/ClientOnlyCustomCursor";
 import PortfolioClientEffects from "@/components/PortfolioClientEffects";
 
 export default function PortfolioShell({
@@ -9,7 +8,6 @@ export default function PortfolioShell({
   return (
     <div className="relative min-h-screen bg-bg text-text">
       <PortfolioClientEffects />
-      <ClientOnlyCustomCursor />
       {children}
     </div>
   );
