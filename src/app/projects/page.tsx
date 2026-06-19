@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import ClientOnlyCustomCursor from "@/components/ClientOnlyCustomCursor";
 import { fetchPublishedProjects } from "@/lib/db";
+import { connection } from "next/server";
 
 import { Suspense } from "react";
 
@@ -11,6 +12,7 @@ export const metadata = {
 };
 
 async function ProjectsList() {
+  await connection();
   const publishedProjects = await fetchPublishedProjects();
   return (
     <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { connection } from "next/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { 
@@ -28,13 +29,6 @@ type PageProps = {
     slug: string;
   }>;
 };
-
-export async function generateStaticParams() {
-  const published = await fetchPublishedProjects();
-  return published.map((project) => ({
-    slug: project.slug,
-  }));
-}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
@@ -282,7 +276,9 @@ function ContentBlock({ block }: { block: ProjectContentBlock }) {
   return null;
 }
 
-async function ProjectArticleContent({ slug }: { slug: string }) {
+async function ProjectArticleContent({ params }: { params: Promise<{ slug: string }> }) {
+  await connection();
+  const { slug } = await params;
   const project = await fetchProjectBySlug(slug);
 
   if (!project) notFound();
@@ -487,9 +483,7 @@ async function ProjectArticleContent({ slug }: { slug: string }) {
 
 import { Suspense } from "react";
 
-export default async function ProjectArticlePage({ params }: PageProps) {
-  const { slug } = await params;
-
+export default function ProjectArticlePage({ params }: PageProps) {
   return (
     <Suspense
       fallback={
@@ -498,7 +492,7 @@ export default async function ProjectArticlePage({ params }: PageProps) {
         </div>
       }
     >
-      <ProjectArticleContent slug={slug} />
+      <ProjectArticleContent params={params} />
     </Suspense>
   );
 }
