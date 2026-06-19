@@ -77,7 +77,7 @@ const faces = [
 function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
   return (
     <div
-      className="absolute inset-0 overflow-hidden border border-black/15 bg-[#f4f4f4] p-5 font-sans text-black shadow-[0_0_40px_rgba(0,0,0,0.12)] sm:p-7 md:p-10"
+      className="absolute inset-0 overflow-hidden border border-black/15 bg-[#f4f4f4] p-4 sm:p-7 md:p-10 font-sans text-black shadow-[0_0_40px_rgba(0,0,0,0.12)]"
       style={{
         transform: `rotateY(${faceIndex * 90}deg) translateZ(calc(var(--roll-size) / 2))`,
         backfaceVisibility: "hidden",
@@ -85,7 +85,7 @@ function CubeFaceContent({ faceIndex }: { faceIndex: number }) {
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_15%,rgba(0,0,0,0.04),transparent_28%),radial-gradient(circle_at_85%_85%,rgba(0,0,0,0.035),transparent_34%)]" />
       <div className="relative z-10 flex h-full flex-col">
-        <div className="mb-4 flex items-center justify-between gap-4 border-b border-black/15 pb-3 md:mb-5">
+        <div className="mb-2.5 flex items-center justify-between gap-4 border-b border-black/15 pb-2 md:mb-5 md:pb-3">
           <span className="type-meta text-black">
             {faces[faceIndex].caption}
           </span>
@@ -823,7 +823,7 @@ export default function About() {
         </div>
 
         {/* 3. Cube Panel (Combined seamlessly inside introRef pinned viewport) */}
-        <div className="about-cube-panel absolute inset-0 bg-[#f4f4f4] z-40 select-none overflow-hidden" style={{ "--roll-size": "min(78vh, 82vw)" } as CSSProperties}>
+        <div className="about-cube-panel absolute inset-0 bg-[#f4f4f4] z-40 select-none overflow-hidden" style={{ "--roll-size": "var(--roll-size-val, min(78vh, 82vw))" } as CSSProperties}>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_32%,rgba(0,0,0,0.035),transparent_30%),radial-gradient(circle_at_78%_70%,rgba(0,0,0,0.03),transparent_36%)]" />
 
           <div className="relative z-10 h-full min-h-screen">
@@ -922,11 +922,122 @@ export default function About() {
           padding-left: clamp(2.25rem, 4vw, 4.25rem);
           padding-right: clamp(1.75rem, 4vw, 4rem);
         }
+        
+        :root {
+          --roll-size-val: min(78vh, 82vw);
+        }
+        
         @media (max-width: 640px) {
+          :root {
+            --roll-size-val: min(75vh, 92vw);
+          }
           .about-profile-face,
           .about-detail-face {
-            padding-left: 1.75rem;
-            padding-right: 1.25rem;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            overflow-y: auto;
+            max-height: 100%;
+            scrollbar-width: none; /* Firefox */
+          }
+          .about-profile-face::-webkit-scrollbar,
+          .about-detail-face::-webkit-scrollbar {
+            display: none; /* Safari and Chrome */
+          }
+          
+          /* Prevent justify-center clipping during overflow */
+          .about-profile-face {
+            justify-content: flex-start !important;
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+          }
+          .about-detail-face {
+            align-content: flex-start !important;
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+          }
+          
+          /* Compact typography inside cube faces */
+          .about-profile-face .type-panel-title,
+          .about-detail-face .type-panel-title {
+            font-size: 1.15rem !important;
+            line-height: 1.1 !important;
+          }
+          .about-profile-face .type-body {
+            font-size: 0.8rem !important;
+            line-height: 1.4 !important;
+          }
+          .about-profile-face .type-meta,
+          .about-profile-face .type-small,
+          .about-detail-face .type-meta,
+          .about-detail-face .type-small {
+            font-size: 0.7rem !important;
+            line-height: 1.25 !important;
+          }
+          
+          /* Compact photo on mobile */
+          .about-profile-face .w-16.h-16 {
+            width: 3.25rem !important;
+            height: 3.25rem !important;
+            border-radius: 0.75rem !important;
+          }
+          
+          /* Compact social icons & resume button */
+          .about-profile-face .type-action {
+            height: 2.15rem !important;
+            min-width: 100px !important;
+            padding-left: 0.75rem !important;
+            padding-right: 0.75rem !important;
+            font-size: 0.65rem !important;
+          }
+          .about-profile-face a.w-9.h-9 {
+            width: 2.15rem !important;
+            height: 2.15rem !important;
+          }
+          .about-profile-face a.w-9.h-9 svg {
+            width: 0.85rem !important;
+            height: 0.85rem !important;
+          }
+          
+          /* Compact detail items (education, experiences) */
+          .about-detail-face .flex.items-center,
+          .about-detail-face .flex.items-start {
+            padding-top: 0.4rem !important;
+            padding-bottom: 0.4rem !important;
+            padding-left: 0.6rem !important;
+            padding-right: 0.6rem !important;
+            gap: 0.5rem !important;
+          }
+          .about-detail-face h4 {
+            font-size: 0.78rem !important;
+          }
+          .about-detail-face p {
+            font-size: 0.72rem !important;
+            margin-top: 0.05rem !important;
+          }
+          .about-detail-face .h-11.w-11 {
+            width: 1.75rem !important;
+            height: 1.75rem !important;
+          }
+          .about-detail-face ul {
+            gap: 0.35rem !important;
+          }
+          .about-detail-face li {
+            padding-top: 0.4rem !important;
+            padding-bottom: 0.4rem !important;
+            padding-left: 0.6rem !important;
+            padding-right: 0.6rem !important;
+            font-size: 0.72rem !important;
+          }
+          .about-detail-face .flex-wrap {
+            gap: 0.35rem !important;
+            padding-top: 0.15rem !important;
+          }
+          .about-detail-face .flex-wrap span {
+            padding-left: 0.5rem !important;
+            padding-right: 0.5rem !important;
+            padding-top: 0.2rem !important;
+            padding-bottom: 0.2rem !important;
+            font-size: 0.65rem !important;
           }
         }
       `}</style>
