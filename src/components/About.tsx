@@ -790,7 +790,7 @@ export default function About() {
             </div>
 
             <div className="flex min-h-0 flex-1 w-full items-start px-[clamp(1rem,4vw,5rem)] py-6">
-              <p className="flex max-w-[min(88rem,100%)] flex-wrap justify-start gap-x-[0.28em] gap-y-[0.12em] font-sans text-[clamp(1.25rem,3.05vw,3.65rem)] font-black uppercase leading-[0.98] tracking-normal">
+              <p className="flex max-w-[min(92rem,100%)] flex-wrap justify-start gap-x-[0.28em] gap-y-[0.12em] font-sans text-[clamp(1.35rem,3.35vw,4.15rem)] font-black uppercase leading-[0.98] tracking-normal">
                 {manifestoWords.map((word, index) => {
                   const quietWord = index % 3 === 1 || index % 5 === 0;
 

@@ -85,6 +85,13 @@ export default function Footer() {
     const circle = footer.querySelector(".footer-grid-circle");
     const revealItems = footer.querySelectorAll(".footer-reveal");
 
+    if (window.innerWidth < 1024) {
+      gsap.set(wordmark, { opacity: 1, x: 0, y: 0, scale: 1, clipPath: "inset(0 0% 0 0)", filter: "blur(0px)" });
+      gsap.set(revealItems, { y: 0, opacity: 1 });
+      gsap.set([gridLines, circle], { opacity: 1 });
+      return;
+    }
+
     gsap.set(wordmark, {
       opacity: 0,
       x: -24,
@@ -146,13 +153,13 @@ export default function Footer() {
     <footer
       ref={footerRef}
       id="contact-footer"
-      className="relative flex min-h-[100svh] w-full overflow-hidden border-t border-white/5 bg-bg px-[clamp(1.25rem,5vw,6rem)] py-14 md:py-18"
+      className="relative z-30 isolate flex min-h-[100svh] w-full overflow-hidden border-t border-white/5 bg-bg px-[clamp(1.25rem,5vw,6rem)] py-12 sm:py-14 lg:py-18"
     >
 
       <div className="absolute inset-0 z-0 bg-[radial-gradient(ellipse_70%_55%_at_68%_75%,rgba(255,255,255,0.06),transparent)] pointer-events-none" />
       <FooterGrid />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[92rem] flex-1 flex-col justify-between">
+      <div className="relative z-10 mx-auto flex w-full max-w-[92rem] flex-1 flex-col gap-10 lg:justify-between">
         <div className="footer-reveal type-meta flex items-start justify-between gap-6 text-white/50">
           <span className="inline-flex items-center gap-3">
             <span className="h-px w-10 bg-white/45" />
@@ -161,21 +168,21 @@ export default function Footer() {
           <span className="hidden text-right text-white/30 md:block">MRT / 2026</span>
         </div>
 
-        <div className="relative my-12 select-none md:my-16">
+        <div className="relative my-4 select-none sm:my-8 lg:my-16">
           <h2
             ref={wordmarkRef}
-            className="relative z-10 w-full overflow-visible py-[0.08em] font-sans text-[clamp(5rem,18vw,18rem)] font-black uppercase leading-none tracking-[-0.085em] text-white md:text-[clamp(8rem,14vw,16rem)]"
+            className="relative z-10 w-full overflow-visible py-[0.08em] font-sans text-[clamp(3.8rem,17vw,8.5rem)] font-black uppercase leading-none tracking-[-0.055em] text-white sm:text-[clamp(5.5rem,16vw,11rem)] lg:text-[clamp(8rem,14vw,16rem)] lg:tracking-[-0.085em]"
           >
             RISLAN
           </h2>
 
-          <div className="footer-reveal type-meta mt-5 grid gap-4 border-y border-white/10 py-4 text-white/38 md:grid-cols-[1.15fr_0.85fr]">
+          <div className="footer-reveal type-meta mt-4 grid gap-3 border-y border-white/10 py-4 text-white/38 md:grid-cols-[1.15fr_0.85fr]">
             <p>M. Rislan Tristansyah / Systems / Intelligent Tech / Infrastructure</p>
             <p className="md:text-right">Purwakarta, Indonesia / Available for thoughtful builds</p>
           </div>
         </div>
 
-        <div className="footer-reveal grid gap-4 md:grid-cols-[1.1fr_1fr_1fr_0.9fr]">
+        <div className="footer-reveal grid gap-5 sm:grid-cols-2 lg:grid-cols-[1.1fr_1fr_1fr_0.9fr]">
           <div className="border-t border-white/12 pt-5">
             <span className="type-meta text-white/35">01 / Explore</span>
             <nav className="mt-5 grid gap-2 text-[clamp(1.1rem,1.6vw,1.45rem)] font-black uppercase leading-none text-white">
@@ -208,7 +215,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="border-t border-white/12 pt-5 md:text-right">
+          <div className="border-t border-white/12 pt-5 lg:text-right">
             <span className="type-meta text-white/35">04 / Return</span>
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

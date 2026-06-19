@@ -167,8 +167,7 @@ function CertificateCard({ cert, showNoise }: { cert: Certificate; showNoise: bo
     <div
       data-cert-card
       data-cursor={cert.link ? "view" : ""}
-      className="cert-card group relative flex-shrink-0 w-[320px] md:w-[400px] bg-bg-elevated border border-white/10 rounded-2xl overflow-hidden flex flex-col select-none transition-all duration-500 hover:border-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.06)]"
-      style={{ height: "clamp(340px, 48vh, 520px)" }}
+      className="cert-card group relative flex h-[clamp(300px,42vh,440px)] w-full min-w-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-bg-elevated select-none transition-all duration-500 hover:border-white/30 hover:shadow-[0_0_30px_rgba(255,255,255,0.06)] lg:h-[clamp(340px,48vh,520px)] lg:w-[400px] lg:flex-shrink-0"
     >
       {/* Showcase Frame — takes up all available space above the info section */}
       <div className="relative w-full flex-1 overflow-hidden bg-bg flex items-center justify-center">
@@ -284,7 +283,7 @@ export default function Certifications() {
 
   useEffect(() => {
     const handleResize = () => {
-      setIsPinned(window.innerWidth >= 768);
+      setIsPinned(window.innerWidth >= 1024);
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -359,8 +358,8 @@ trackViewportRef,
           </div>
         </div>
       ) : (
-        /* Responsive vertical list for mobile */
-        <div className="section-shell flex flex-col gap-6">
+        /* Responsive grid for tablet/mobile */
+        <div className="section-shell grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6 lg:flex lg:flex-col">
           {certificates.map((cert) => (
             <CertificateCard key={cert.id} cert={cert} showNoise={false} />
           ))}

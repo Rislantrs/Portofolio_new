@@ -229,7 +229,7 @@ export default function Projects() {
   const teaserTextRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const [columns, setColumns] = useState(3);
+  const [columns, setColumns] = useState(1);
   const [projectList, setProjectList] = useState<Project[]>(
     fallbackProjects.filter((p) => p.status === "published")
   );
@@ -267,7 +267,7 @@ export default function Projects() {
   const rowsPerPage = 2;
   const cardsPerPage = columns * rowsPerPage;
   const pages = chunk(projectList, cardsPerPage);
-  const isPinned = columns > 1 && pages.length >= 1;
+  const isPinned = columns > 2 && pages.length >= 1;
   const openProject = (project: Project) => router.push(`/projects/${project.slug}`);
 
   useProjectsTimeline({
@@ -286,7 +286,7 @@ export default function Projects() {
     <section
       ref={sectionRef}
       id="projects"
-      className={`relative w-full bg-bg ${isPinned ? "overflow-hidden" : "py-20"}`}
+      className={`relative w-full overflow-hidden bg-bg ${isPinned ? "" : "py-20"}`}
       style={isPinned ? { height: "100svh" } : undefined}
     >
       {/* ── UNIFIED TEASER OVERLAY (Active only when pinned on desktop) ── */}
@@ -338,7 +338,7 @@ export default function Projects() {
       {/* ── PROJECTS CONTENT STAGE ── */}
       <div
         ref={stageRef}
-        className="section-shell h-full flex flex-col py-8 relative z-10"
+        className={`section-shell flex flex-col relative z-10 ${isPinned ? "h-full py-8" : "h-auto py-0"}`}
         style={isPinned ? { opacity: 0 } : undefined}
       >
         {/* Section Header */}
@@ -373,7 +373,7 @@ export default function Projects() {
           </div>
         ) : (
           /* Mobile layout: standard scrolling */
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-2">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mt-2">
             {projectList.map((project) => (
               <MobileCard
                 key={project.id}
