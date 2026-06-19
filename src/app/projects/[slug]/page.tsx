@@ -20,7 +20,7 @@ import {
   fetchProjectBySlug,
   fetchRelatedProjects,
   fetchPublishedProjects,
-} from "@/lib/supabaseDb";
+} from "@/lib/db";
 import { type ProjectContentBlock } from "@/lib/projects";
 
 type PageProps = {
@@ -282,8 +282,7 @@ function ContentBlock({ block }: { block: ProjectContentBlock }) {
   return null;
 }
 
-export default async function ProjectArticlePage({ params }: PageProps) {
-  const { slug } = await params;
+async function ProjectArticleContent({ slug }: { slug: string }) {
   const project = await fetchProjectBySlug(slug);
 
   if (!project) notFound();
@@ -483,5 +482,23 @@ export default async function ProjectArticlePage({ params }: PageProps) {
         <div aria-hidden="true" className="h-24 md:h-32" />
       </main>
     </>
+  );
+}
+
+import { Suspense } from "react";
+
+export default async function ProjectArticlePage({ params }: PageProps) {
+  const { slug } = await params;
+
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-bg text-text-muted">
+          <span>Loading project...</span>
+        </div>
+      }
+    >
+      <ProjectArticleContent slug={slug} />
+    </Suspense>
   );
 }

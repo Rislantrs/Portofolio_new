@@ -1,15 +1,66 @@
 import Image from "next/image";
 import Link from "next/link";
 import ClientOnlyCustomCursor from "@/components/ClientOnlyCustomCursor";
-import { fetchPublishedProjects } from "@/lib/supabaseDb";
+import { fetchPublishedProjects } from "@/lib/db";
+
+import { Suspense } from "react";
 
 export const metadata = {
   title: "Project Articles",
   description: "Detailed case studies and project articles by M Rislan Tristansyah.",
 };
 
-export default async function ProjectsIndexPage() {
+async function ProjectsList() {
   const publishedProjects = await fetchPublishedProjects();
+  return (
+    <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+      {publishedProjects.map((project) => (
+        <Link
+          key={project.slug}
+          href={`/projects/${project.slug}`}
+          className="group overflow-hidden rounded-lg border border-white/5 bg-surface transition-colors hover:border-accent/40"
+        >
+          <div className="relative aspect-[4/3] overflow-hidden">
+            <Image
+              src={project.image}
+              alt={project.title}
+              fill
+              sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 90vw"
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent" />
+          </div>
+          <div className="flex min-h-[220px] flex-col justify-between gap-5 p-5">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-widest text-text-subtle">
+                <span>{project.category}</span>
+                <span>{project.year}</span>
+              </div>
+              <h2 className="font-display text-2xl font-black leading-tight tracking-tight text-accent-light">
+                {project.title}
+              </h2>
+              <p className="font-sans text-sm leading-relaxed text-text-muted">
+                {project.summary}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {project.tags.slice(0, 4).map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-accent/15 bg-accent/5 px-2.5 py-1 font-sans text-[10px] font-semibold text-accent-light"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+        </Link>
+      ))}
+    </section>
+  );
+}
+
+export default async function ProjectsIndexPage() {
   return (
     <>
       <ClientOnlyCustomCursor />
@@ -36,50 +87,15 @@ export default async function ProjectsIndexPage() {
             </div>
           </header>
 
-          <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {publishedProjects.map((project) => (
-              <Link
-                key={project.slug}
-                href={`/projects/${project.slug}`}
-                className="group overflow-hidden rounded-lg border border-white/5 bg-surface transition-colors hover:border-accent/40"
-              >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <Image
-                    src={project.image}
-                    alt={project.title}
-                    fill
-                    sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 90vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent" />
-                </div>
-                <div className="flex min-h-[220px] flex-col justify-between gap-5 p-5">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-widest text-text-subtle">
-                      <span>{project.category}</span>
-                      <span>{project.year}</span>
-                    </div>
-                    <h2 className="font-display text-2xl font-black leading-tight tracking-tight text-accent-light">
-                      {project.title}
-                    </h2>
-                    <p className="font-sans text-sm leading-relaxed text-text-muted">
-                      {project.summary}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {project.tags.slice(0, 4).map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-accent/15 bg-accent/5 px-2.5 py-1 font-sans text-[10px] font-semibold text-accent-light"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </section>
+          <Suspense
+            fallback={
+              <div className="flex h-48 items-center justify-center text-text-muted">
+                <span>Loading projects...</span>
+              </div>
+            }
+          >
+            <ProjectsList />
+          </Suspense>
         </div>
       </main>
     </>

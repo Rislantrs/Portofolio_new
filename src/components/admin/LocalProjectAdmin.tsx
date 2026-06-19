@@ -13,7 +13,6 @@ import {
   saveCertification,
   deleteCertification as dbDeleteCertification,
 } from "@/lib/supabaseDb";
-import { supabase } from "@/lib/supabase";
 
 
 function getErrorMessage(error: unknown) {
@@ -118,46 +117,38 @@ export default function LocalProjectAdmin() {
 
   // Image Upload Handler
   const handleImageUpload = async (file: File, type: "project" | "certification") => {
-    const isSupabaseConfigured =
-      !!process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!isSupabaseConfigured) {
-      showFeedback("Supabase is not configured. Upload disabled.", "error");
-      return;
-    }
-
     setUploading(true);
     try {
-      // 1. Compress client-side
+      // 1. Compress client-side to WebP to minimize upload bandwidth
       const webpBlob = await compressAndConvertToWebP(file);
 
-      // 2. Upload to Storage
+      // 2. Prepare FormData
+      const formData = new FormData();
       const safeBaseName = file.name.replace(/\.[^/.]+$/, "").replace(/[^a-z0-9-]+/gi, "-").toLowerCase();
       const fileName = `${file.lastModified}_${safeBaseName}.webp`;
-      const folder = type === "project" ? "projects" : "certifications";
-      const filePath = `${folder}/${fileName}`;
+      formData.append("file", webpBlob, fileName);
+      formData.append("folder", type === "project" ? "projects" : "certifications");
 
-      const { error } = await supabase.storage
-        .from("portfolio")
-        .upload(filePath, webpBlob, {
-          contentType: "image/webp",
-          upsert: true,
-        });
+      // 3. Upload via Cloudinary API Route
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: formData,
+      });
 
-      if (error) throw error;
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to upload image");
+      }
 
-      // 3. Get Public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from("portfolio")
-        .getPublicUrl(filePath);
+      const imageUrl = data.url;
 
       // 4. Update state
       if (type === "project" && selectedProject) {
-        updateProject({ image: publicUrl });
-        showFeedback("Project image compressed to WebP and uploaded!", "success");
+        updateProject({ image: imageUrl });
+        showFeedback("Project image compressed and uploaded to Cloudinary!", "success");
       } else if (type === "certification" && selectedCert) {
-        updateCert({ badgeIcon: publicUrl });
-        showFeedback("Certificate badge compressed to WebP and uploaded!", "success");
+        updateCert({ badgeIcon: imageUrl });
+        showFeedback("Certificate badge compressed and uploaded to Cloudinary!", "success");
       }
     } catch (err: unknown) {
       console.error(err);
@@ -181,7 +172,7 @@ export default function LocalProjectAdmin() {
     try {
       const res = await saveProject(selectedProject);
       if (res.success) {
-        showFeedback("Project successfully saved to Supabase!", "success");
+        showFeedback("Project successfully saved to MongoDB!", "success");
         const pData = await fetchProjects();
         setProjectsList(pData);
         if (res.data) setSelectedProjectId(res.data.id);
@@ -264,7 +255,7 @@ export default function LocalProjectAdmin() {
     try {
       const res = await saveCertification(selectedCert);
       if (res.success) {
-        showFeedback("Certification successfully saved to Supabase!", "success");
+        showFeedback("Certification successfully saved to MongoDB!", "success");
         const cData = await fetchCertifications();
         setCertsList(cData);
         if (res.data) setSelectedCertId(res.data.id);
@@ -350,7 +341,7 @@ export default function LocalProjectAdmin() {
     return (
       <div className="flex h-96 items-center justify-center gap-3 text-text-muted">
         <Loader2 className="animate-spin text-accent" size={24} />
-        <span>Loading from Supabase...</span>
+        <span>Loading database...</span>
       </div>
     );
   }
@@ -449,7 +440,7 @@ export default function LocalProjectAdmin() {
                 <div className="flex flex-col justify-between gap-4 border-b border-white/5 pb-5 md:flex-row md:items-start">
                   <div>
                     <p className="font-mono text-[10px] uppercase tracking-widest text-text-subtle">
-                      Supabase Cloud Storage
+                      Cloudinary Cloud Storage
                     </p>
                     <h2 className="mt-2 font-display text-3xl font-black tracking-tight text-accent-light">
                       Project Editor
@@ -471,7 +462,7 @@ export default function LocalProjectAdmin() {
                       className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-3 font-display text-xs font-bold uppercase tracking-wider text-black transition-colors hover:bg-accent-light disabled:opacity-50"
                     >
                       {saving ? <Loader2 className="animate-spin" size={15} /> : <Save size={15} />}
-                      Save to Supabase
+                      Save to MongoDB
                     </button>
                   </div>
                 </div>
@@ -735,7 +726,7 @@ export default function LocalProjectAdmin() {
                 <div className="flex flex-col justify-between gap-4 border-b border-white/5 pb-5 md:flex-row md:items-start">
                   <div>
                     <p className="font-mono text-[10px] uppercase tracking-widest text-text-subtle">
-                      Supabase Cloud Storage
+                      Cloudinary Cloud Storage
                     </p>
                     <h2 className="mt-2 font-display text-3xl font-black tracking-tight text-accent-light">
                       Certificate Editor
@@ -749,7 +740,7 @@ export default function LocalProjectAdmin() {
                     className="inline-flex items-center gap-2 rounded-lg bg-accent px-4 py-3 font-display text-xs font-bold uppercase tracking-wider text-black transition-colors hover:bg-accent-light disabled:opacity-50"
                   >
                     {saving ? <Loader2 className="animate-spin" size={15} /> : <Save size={15} />}
-                    Save to Supabase
+                    Save to MongoDB
                   </button>
                 </div>
 

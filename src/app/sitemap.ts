@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { fetchPublishedProjects } from "@/lib/supabaseDb";
+import { fetchPublishedProjects } from "@/lib/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://rislantristansyah.my.id";
