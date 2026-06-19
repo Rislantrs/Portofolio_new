@@ -782,15 +782,15 @@ export default function About() {
           </h2>
         </div>
 
-        <div className="about-intro-quote absolute inset-0 overflow-hidden bg-[#f4f4f4] px-6 py-10 text-black md:px-16 md:py-14">
-          <div className="flex h-full flex-col justify-between">
+        <div className="about-intro-quote absolute inset-0 overflow-hidden bg-[#f4f4f4] px-5 py-8 text-black sm:px-8 md:px-12 md:py-10 lg:px-14">
+          <div className="flex h-full min-h-0 flex-col justify-between">
             <div className="type-meta flex items-center justify-between text-black/55">
               <span>[ About Me ]</span>
               <span>02/04</span>
             </div>
 
-            <div className="flex min-h-[58vh] w-full items-center pl-[clamp(3.5rem,12vw,16rem)] pr-[clamp(2rem,8vw,10rem)]">
-              <p className="flex max-w-[78rem] flex-wrap justify-start gap-x-[0.34em] gap-y-[0.18em] font-sans text-[clamp(1.55rem,4.25vw,4.75rem)] font-black uppercase leading-[1.05] tracking-normal">
+            <div className="flex min-h-0 flex-1 w-full items-start px-[clamp(1rem,4vw,5rem)] py-6">
+              <p className="flex max-w-[min(88rem,100%)] flex-wrap justify-start gap-x-[0.28em] gap-y-[0.12em] font-sans text-[clamp(1.25rem,3.05vw,3.65rem)] font-black uppercase leading-[0.98] tracking-normal">
                 {manifestoWords.map((word, index) => {
                   const quietWord = index % 3 === 1 || index % 5 === 0;
 

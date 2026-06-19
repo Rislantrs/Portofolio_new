@@ -61,7 +61,7 @@ const roles = [
       { name: "JavaScript", icon: <BrandIcon deviconSlug="javascript" /> },
       { name: "Flask", icon: <BrandIcon deviconSlug="flask" /> },
       { name: "MySQL", icon: <BrandIcon deviconSlug="mysql" /> },
-      { name: "Groq API / AI", icon: <BrandIcon simpleIconSlug="groq" simpleIconColor="#111111" /> },
+      { name: "Groq API / AI", icon: <BrandIcon fallback={<span className="flex h-9 w-9 items-center justify-center rounded-full bg-neutral-950 font-sans text-[10px] font-black tracking-normal text-white">GQ</span>} /> },
     ],
   },
   {

@@ -59,7 +59,8 @@ export default function Navbar() {
     if (!id) return;
     const el = document.getElementById(id);
     if (el) {
-      const top = el.getBoundingClientRect().top + window.scrollY - 80;
+      const noOffset = id === "home" || id === "about" || id === "projects" || id === "certifications" || id === "contact-footer";
+      const top = el.getBoundingClientRect().top + window.scrollY - (noOffset ? 0 : 80);
       window.scrollTo({ top, behavior: "smooth" });
     }
   };

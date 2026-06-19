@@ -456,29 +456,6 @@ html.lenis, html.lenis body {
   animation: gold-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-html[data-perf-mode="lite"] .grain-overlay {
-  opacity: 0.018;
-}
-
-html[data-perf-mode="lite"] .glass-panel {
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-
-html[data-perf-mode="lite"] .animate-marquee-left,
-html[data-perf-mode="lite"] .animate-marquee-right {
-  animation-duration: 58s;
-}
-
-html[data-perf-mode="lite"] .hero-ink-canvas-wrapper,
-html[data-perf-mode="lite"] .custom-cursor {
-  display: none !important;
-}
-
-html[data-perf-mode="lite"] #preloader-screen,
-html[data-perf-mode="lite"] .preloader-fallback {
-  display: none !important;
-}
 
 @media (max-width: 390px) {
   :root {

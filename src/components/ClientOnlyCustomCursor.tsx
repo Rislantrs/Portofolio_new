@@ -6,9 +6,9 @@ import { useLowEndDevice } from "@/hooks/useLowEndDevice";
 const CustomCursor = dynamic(() => import("./CustomCursor"), { ssr: false });
 
 export default function ClientOnlyCustomCursor() {
-  const { isLiteMode, isTouchOnly } = useLowEndDevice();
+  const isLowEnd = useLowEndDevice();
 
-  if (isTouchOnly || isLiteMode) return null;
+  if (isLowEnd) return null;
 
   return <CustomCursor />;
 }

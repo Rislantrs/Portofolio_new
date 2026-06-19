@@ -221,7 +221,7 @@ function MobileCard({
 // ─── Main Combined Projects & Teaser Component ─────────────────────────────
 export default function Projects() {
   const router = useRouter();
-  const { isLiteMode } = useLowEndDevice();
+  const isLowEnd = useLowEndDevice();
   const sectionRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const teaserRef = useRef<HTMLDivElement>(null);
@@ -267,9 +267,7 @@ export default function Projects() {
   const rowsPerPage = 2;
   const cardsPerPage = columns * rowsPerPage;
   const pages = chunk(projectList, cardsPerPage);
-  // isPinned: pin timeline GSAP tetap aktif di mobile selama ada cukup columns
-  // Hanya dimatikan di lite mode (accessibility/saveData)
-  const isPinned = !isLiteMode && columns > 1 && pages.length >= 1;
+  const isPinned = columns > 1 && pages.length >= 1;
   const openProject = (project: Project) => router.push(`/projects/${project.slug}`);
 
   useProjectsTimeline({
@@ -381,7 +379,7 @@ export default function Projects() {
                 key={project.id}
                 project={project}
                 onClick={() => openProject(project)}
-                reduceMotion={isLiteMode}
+                reduceMotion={isLowEnd}
               />
             ))}
           </div>

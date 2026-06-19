@@ -115,8 +115,6 @@ const getTechIconDetails = (name: string) => {
 
   // 2. Simple Icons Mapping
   const simpleIconMap: Record<string, { slug: string; color: string }> = {
-    "groq api": { slug: "groq", color: "#f4f4f4" },
-    "groq": { slug: "groq", color: "#f4f4f4" },
     "llama3": { slug: "meta", color: "#044af4" },
     "blynk": { slug: "blynk", color: "#1cf3a6" },
     "esp8266": { slug: "espressif", color: "#e7352c" },
@@ -140,6 +138,8 @@ const getTechIconDetails = (name: string) => {
     "embedded": Cpu,
     "max30102": Cpu,
     "machine learning": Brain,
+    "groq api": Brain,
+    "groq": Brain,
     "nlp": Brain,
     "web crawling": Globe,
     "sastrawi": Globe,

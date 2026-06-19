@@ -2,7 +2,7 @@
 
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
-import { useLowEndDevice } from "@/hooks/useLowEndDevice";
+import { performanceConfig } from "@/lib/siteConfig";
 
 function PreloaderFallback() {
   return (
@@ -26,61 +26,17 @@ const Preloader = dynamic(() => import("@/components/Preloader"), {
 });
 
 export default function PortfolioClientEffects() {
-  const { isLiteMode, tier } = useLowEndDevice();
   const [loaded, setLoaded] = useState(false);
   const [showPreloader, setShowPreloader] = useState(true);
+  const liteMode = false;
 
   useEffect(() => {
-    const currentMode = document.documentElement.dataset.perfMode;
-    if (tier === "full" && currentMode && currentMode !== "full") return;
-    document.documentElement.dataset.perfMode = tier;
-  }, [tier]);
-
-  useEffect(() => {
-    // Skip preloader hanya di lite mode (mobile tetap dapat preloader)
-    if (!isLiteMode || !showPreloader) return;
-
-    const timer = window.setTimeout(() => {
-      setLoaded(true);
-      setShowPreloader(false);
-      sessionStorage.removeItem("portfolioScrollPosition");
-    }, 0);
-
-    return () => window.clearTimeout(timer);
-  }, [isLiteMode, showPreloader]);
-
-  useEffect(() => {
-    if ("scrollRestoration" in window.history) {
-      window.history.scrollRestoration = "manual";
-    }
-
-    // Save scroll position before reload
-    const handleBeforeUnload = () => {
-      sessionStorage.setItem("portfolioScrollPosition", window.scrollY.toString());
-    };
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    // Restore scroll position on mount behind the preloader
-    const savedPosition = sessionStorage.getItem("portfolioScrollPosition");
-    if (savedPosition) {
-      const y = parseInt(savedPosition, 10);
-      if (!isNaN(y) && y > 0) {
-        setTimeout(() => {
-          window.scrollTo(0, y);
-        }, 100);
-      }
-    }
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
+    document.documentElement.dataset.perfMode = "full";
   }, []);
 
   useEffect(() => {
     if (!loaded) return;
-    // Lenis dimatikan HANYA di lite mode (prefers-reduced-motion/saveData)
-    // Mobile biasa (Android) tetap dapat Lenis agar scroll tidak kaku
-    if (isLiteMode) return;
+    if (liteMode && !performanceConfig.enableSmoothScrollOnMobile) return;
 
     let frameId = 0;
     let cancelled = false;
@@ -117,7 +73,8 @@ export default function PortfolioClientEffects() {
       if (!target) return;
 
       event.preventDefault();
-      lenis.scrollTo(target, { offset: -80 });
+      const noOffset = ["#home", "#about", "#projects", "#certifications", "#contact-footer"].includes(anchor.hash);
+      lenis.scrollTo(target, { offset: noOffset ? 0 : -80 });
     };
 
     void startSmoothScroll();
@@ -129,12 +86,11 @@ export default function PortfolioClientEffects() {
       lenis?.destroy();
       document.removeEventListener("click", handleAnchorScroll);
     };
-  }, [loaded, isLiteMode]);
+  }, [loaded, liteMode]);
 
   const completePreloader = useCallback(() => {
     setLoaded(true);
     setShowPreloader(false);
-    sessionStorage.removeItem("portfolioScrollPosition");
     setTimeout(() => {
       import("gsap/ScrollTrigger").then(({ ScrollTrigger }) => {
         ScrollTrigger.refresh();
@@ -142,5 +98,5 @@ export default function PortfolioClientEffects() {
     }, 150);
   }, []);
 
-  return showPreloader && !isLiteMode ? <Preloader onComplete={completePreloader} /> : null;
+  return showPreloader ? <Preloader onComplete={completePreloader} /> : null;
 }

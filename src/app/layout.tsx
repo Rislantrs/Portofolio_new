@@ -96,36 +96,7 @@ export default function RootLayout({
       <head suppressHydrationWarning>
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-              (function () {
-                try {
-                  var nav = navigator || {};
-                  var hasMatchMedia = typeof window.matchMedia === "function";
-                  var reduced = hasMatchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-                  var coarse = hasMatchMedia && window.matchMedia("(pointer: coarse)").matches;
-                  var noHover = hasMatchMedia && window.matchMedia("(hover: none)").matches;
-                  var saveData = !!(nav.connection && nav.connection.saveData);
-                  var width = window.innerWidth || document.documentElement.clientWidth || 0;
-                  var isTouchOnly = coarse && noHover;
-                  var isPhoneViewport = !(width > 767);
-                  var isMobile = isPhoneViewport || (isTouchOnly && !(width > 767));
-                  var isTablet = !isMobile && (!(width > 1024) || (isTouchOnly && !(width > 1180)));
-                  var lowMemory = typeof nav.deviceMemory === "number" && !(nav.deviceMemory > 2);
-                  var lowCpu = typeof nav.hardwareConcurrency === "number" && !(nav.hardwareConcurrency > 2);
-                  var isExtremelyLowEnd = (lowMemory || lowCpu) && isMobile;
-                  var isLite = reduced || saveData || isExtremelyLowEnd;
-                  document.documentElement.dataset.perfMode = isLite
-                    ? "lite"
-                    : isMobile
-                      ? "mobile"
-                      : isTablet
-                        ? "tablet"
-                        : "full";
-                } catch (error) {
-                  document.documentElement.dataset.perfMode = "full";
-                }
-              })();
-            `.replace(/</g, "\\u003c"),
+            __html: `document.documentElement.dataset.perfMode = "full";`,
           }}
         />
         <script
