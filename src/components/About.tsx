@@ -929,7 +929,7 @@ export default function About() {
         
         @media (max-width: 640px) {
           :root {
-            --roll-size-val: min(75vh, 92vw);
+            --roll-size-val: min(75vh, 81vw);
           }
           .about-profile-face,
           .about-detail-face {
