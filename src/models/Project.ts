@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
-import { ProjectArticle, ProjectContentBlock } from "@/lib/projects";
+import { ProjectArticle } from "@/lib/projects";
 
 export interface IProjectDocument extends Omit<ProjectArticle, "_id">, Document {}
 

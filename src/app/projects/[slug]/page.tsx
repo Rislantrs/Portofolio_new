@@ -20,7 +20,6 @@ import ClientOnlyCustomCursor from "@/components/ClientOnlyCustomCursor";
 import {
   fetchProjectBySlug,
   fetchRelatedProjects,
-  fetchPublishedProjects,
 } from "@/lib/db";
 import { type ProjectContentBlock } from "@/lib/projects";
 

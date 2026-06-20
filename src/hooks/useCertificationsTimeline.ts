@@ -3,11 +3,13 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Certificate } from "@/lib/certifications";
 
 gsap.registerPlugin(ScrollTrigger);
 
 type CertificationsTimelineArgs = {
   isPinned: boolean;
+  certificates: Certificate[];
   sectionRef: React.RefObject<HTMLElement | null>;
   trackViewportRef: React.RefObject<HTMLDivElement | null>;
   trackRef: React.RefObject<HTMLDivElement | null>;
@@ -16,6 +18,7 @@ type CertificationsTimelineArgs = {
 
 export function useCertificationsTimeline({
   isPinned,
+  certificates,
   sectionRef,
   trackViewportRef,
   trackRef,
@@ -128,7 +131,7 @@ export function useCertificationsTimeline({
     },
     {
       scope: sectionRef,
-      dependencies: [isPinned],
+      dependencies: [isPinned, certificates],
       revertOnUpdate: true,
     }
   );

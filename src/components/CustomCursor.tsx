@@ -56,12 +56,18 @@ export default function CustomCursor() {
       setIsHovered(!!isInteractive);
     };
 
+    const handleTouchStart = () => {
+      setIsVisible(false);
+      visibleRef.current = false;
+    };
+
     window.addEventListener("mousemove", updatePosition);
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("mouseleave", handleMouseLeave);
     document.addEventListener("mouseenter", handleMouseEnter);
     window.addEventListener("mouseover", handleMouseOver);
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
 
     // Smooth trailing animation using requestAnimationFrame
     let animationFrameId: number;
@@ -80,6 +86,7 @@ export default function CustomCursor() {
       document.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("mouseenter", handleMouseEnter);
       window.removeEventListener("mouseover", handleMouseOver);
+      window.removeEventListener("touchstart", handleTouchStart);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

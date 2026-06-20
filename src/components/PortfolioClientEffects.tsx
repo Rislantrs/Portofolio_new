@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { performanceConfig } from "@/lib/siteConfig";
+import { useLowEndDevice } from "@/hooks/useLowEndDevice";
 
 function PreloaderFallback() {
   return (
@@ -28,11 +29,11 @@ const Preloader = dynamic(() => import("@/components/Preloader"), {
 export default function PortfolioClientEffects() {
   const [loaded, setLoaded] = useState(false);
   const [showPreloader, setShowPreloader] = useState(true);
-  const liteMode = false;
+  const liteMode = useLowEndDevice();
 
   useEffect(() => {
-    document.documentElement.dataset.perfMode = "full";
-  }, []);
+    document.documentElement.dataset.perfMode = liteMode ? "lite" : "full";
+  }, [liteMode]);
 
   useEffect(() => {
     if (!loaded) return;

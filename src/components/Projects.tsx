@@ -274,6 +274,7 @@ export default function Projects() {
     columns,
     isPinned,
     pagesLength: pages.length,
+    projectList,
     sectionRef,
     stageRef,
     teaserRef,

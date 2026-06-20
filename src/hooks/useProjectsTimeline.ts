@@ -3,6 +3,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ProjectArticle } from "@/lib/projects";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,6 +11,7 @@ type ProjectsTimelineArgs = {
   columns: number;
   isPinned: boolean;
   pagesLength: number;
+  projectList: ProjectArticle[];
   sectionRef: React.RefObject<HTMLDivElement | null>;
   stageRef: React.RefObject<HTMLDivElement | null>;
   teaserRef: React.RefObject<HTMLDivElement | null>;
@@ -22,6 +24,7 @@ export function useProjectsTimeline({
   columns,
   isPinned,
   pagesLength,
+  projectList,
   sectionRef,
   stageRef,
   teaserRef,
@@ -240,7 +243,7 @@ export function useProjectsTimeline({
     },
     {
       scope: sectionRef,
-      dependencies: [columns, isPinned, pagesLength],
+      dependencies: [columns, isPinned, pagesLength, projectList],
       revertOnUpdate: true,
     }
   );

@@ -292,8 +292,9 @@ export default function Certifications() {
 
   useCertificationsTimeline({
     isPinned,
+    certificates,
     sectionRef,
-trackViewportRef,
+    trackViewportRef,
     trackRef,
     sliderThumbRef,
   });
