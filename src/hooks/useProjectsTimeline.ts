@@ -11,7 +11,7 @@ type ProjectsTimelineArgs = {
   columns: number;
   isPinned: boolean;
   pagesLength: number;
-  projectList: ProjectArticle[];
+  projectList: unknown[];
   sectionRef: React.RefObject<HTMLDivElement | null>;
   stageRef: React.RefObject<HTMLDivElement | null>;
   teaserRef: React.RefObject<HTMLDivElement | null>;
