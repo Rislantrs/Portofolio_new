@@ -33,9 +33,11 @@ export function useLowEndDevice(): boolean {
         typeof navigator.hardwareConcurrency === "number" &&
         navigator.hardwareConcurrency <= performanceConfig.lowCpuCores;
 
+      // Only trigger lite mode on mobile devices with low specs, prefers-reduced-motion, or saveData.
+      // This keeps full animations active on desktops/laptops for development and presentation.
       const isLiteMode =
-        matches("(prefers-reduced-motion: reduce)") ||
-        navigatorHints.connection?.saveData === true ||
+        (matches("(prefers-reduced-motion: reduce)") && isMobile) ||
+        (navigatorHints.connection?.saveData === true && isMobile) ||
         ((lowMemory || lowCpu) && isMobile);
 
       setIsLowEnd(isLiteMode);
