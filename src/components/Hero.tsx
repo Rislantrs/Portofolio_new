@@ -227,6 +227,23 @@ export default function Hero() {
 
     // ── Main animation loop ────────────────────────────────────────────────────
     if (isLowEnd) {
+      // Reset all paths to empty to prevent frozen shapes
+      if (portraitPathRef.current) portraitPathRef.current.setAttribute("d", "M 0,0 Z");
+      if (bgPathRef.current) bgPathRef.current.setAttribute("d", "M 0,0 Z");
+      if (auto0Path.current) auto0Path.current.setAttribute("d", "M 0,0 Z");
+      if (auto1Path.current) auto1Path.current.setAttribute("d", "M 0,0 Z");
+      if (auto2Path.current) auto2Path.current.setAttribute("d", "M 0,0 Z");
+
+      // Reset layer opacities
+      if (portraitLayerRef.current) portraitLayerRef.current.style.opacity = "0";
+      if (bgLayerRef.current) bgLayerRef.current.style.opacity = "0";
+      if (auto0Layer.current) auto0Layer.current.style.opacity = "0";
+      if (auto1Layer.current) auto1Layer.current.style.opacity = "0";
+      if (auto2Layer.current) auto2Layer.current.style.opacity = "0";
+      if (auto0PortraitLayer.current) auto0PortraitLayer.current.style.opacity = "0";
+      if (auto1PortraitLayer.current) auto1PortraitLayer.current.style.opacity = "0";
+      if (auto2PortraitLayer.current) auto2PortraitLayer.current.style.opacity = "0";
+
       return () => {
         mm.revert();
         cancelAnimationFrame(rafRef.current);

@@ -3,7 +3,6 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ProjectArticle } from "@/lib/projects";
 
 gsap.registerPlugin(ScrollTrigger);
 
